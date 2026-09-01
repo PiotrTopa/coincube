@@ -129,9 +129,12 @@ def main():
                "one coincube sub-step = conversion factor x transport factor x "
                "env factor as consecutive Grassmann layers.*")
 
-    with open("docs/notes/e2-extracted-actions.md", "a") as f:
+    import os
+    out_path = ("docs/notes/e2-extracted-actions.md"
+                if os.path.isdir("docs/notes") else "results/e2-actions.md")
+    with open(out_path, "a") as f:
         f.write("\n".join(out) + "\n")
-    print("appended: docs/notes/e2-extracted-actions.md")
+    print(f"appended: {out_path}")
 
 
 if __name__ == "__main__":

@@ -191,7 +191,7 @@ def closed_form_positions(env0: np.ndarray, x0: int, n_sub: int):
         p = X + k if d == +1 else X - k          # initial site of the fresh bit
         # freshness parity: right-moving reads initial left-movers (odd sites),
         # left-moving reads initial right-movers (even sites)
-        assert (p - x0) % 2 == (1 if d == +1 else 0) % 2 or True
+        assert (p - x0) % 2 == (1 if d == +1 else 0) % 2
         b = int(env0[p % L])
         reads.append(p)
         if b == b_prev:

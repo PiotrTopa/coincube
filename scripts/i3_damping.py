@@ -5,10 +5,11 @@ Theory (docs/notes/theory-interaction.md, proven at annealed order): the
 parity control makes the vacuum imprint-transparent, so the ensemble 1p
 amplitude stays CLOSED under back-reaction:
 
-    G1_g(t) = (1 - 2 g q (1-q))^t  G1_0(t)    (+ recross corrections)
+    G1_g(t) = (1 - 2 g q_eff)^t G1_0(t), q_eff lift-gauge dependent
+    (permutation lift: q^2; Givens: q(1-q)); 1D substrates further modify it
+    (companion lock; see ADR 0014) -- this script MEASURES, it does not assume.
 
-i.e. pure scalar damping Gamma_int = 2q(1-q) g per cycle; cone, residues and
-mass untouched. Here: exact check on the 18-mode Fock substrate (quenched
+Here: exact check on the 18-mode Fock substrate (quenched
 static iota patterns, exact Bernoulli(g) average), extracting the per-cycle
 factor from the projection of G1_g onto G1_0 and comparing to the law.
 """

@@ -1,0 +1,167 @@
+{
+ "seed": 20260901,
+ "identities": {
+  "block_identity_dev": 2.24110227672362e-16,
+  "k0_tensor_dev": 0.0,
+  "mass_block_eigs": [
+   "-q_m + I*q_m + 1",
+   "-q_m - I*q_m + 1"
+  ],
+  "mass_block_eigs_verified": true,
+  "mass_law_spectrum_dev_max": 0.0,
+  "mass_law_note": "spectrum at k=0 is exactly {lam4} x {r e^+-itheta}: gap 2 arctan(qm/(1-qm)), centre omega0(q) unshifted, damping x r -- independent of q; when theta > omega0 the naive Im>0 frequency filter wraps (bookkeeping, not physics)",
+  "minusC_is_other_family": {
+   "arg_C": 0.9487004522655407,
+   "arg_minusC": 0.6580827232007774,
+   "distinct": true
+  }
+ },
+ "identities_seconds": 0.5,
+ "clifford": {
+  "per_q": [
+   {
+    "q": 0.05,
+    "v": 1.1720191921692389,
+    "mu": 1.0,
+    "mu_minus_1": 0.0,
+    "max_algebra_dev": 5.9903194175121386e-15
+   },
+   {
+    "q": 0.15,
+    "v": 1.195501957190519,
+    "mu": 0.9999999999999999,
+    "mu_minus_1": 1.1102230246251565e-16,
+    "max_algebra_dev": 2.76808820013825e-15
+   },
+   {
+    "q": 0.3,
+    "v": 1.207075975795661,
+    "mu": 1.0,
+    "mu_minus_1": 0.0,
+    "max_algebra_dev": 2.7905398302373164e-15
+   }
+  ],
+  "structure": "h_a = h_a^(4) (x) sigma_z^(m) (opposite sector velocities), h_m = 1 (x) sigma_y^(m)-type from C_m projection; {h_a,h_b} = 2v^2 delta_ab from the massless c_a^2-equality (sympy-proven in theory_real_cone), {h_a,h_m} = 0 and h_m^2 = 1 from the Pauli algebra of the b_m factor -- identically in q",
+  "mu_exactly_1": true
+ },
+ "clifford_seconds": 0.0,
+ "dispersion": {
+  "dispersion_rows": [
+   {
+    "k": 0.02,
+    "dw": 0.06014160018902731,
+    "dev_sqrt": 0.0025005959116639817,
+    "dev_cos_vk": 0.0025050542422922553,
+    "dev_cos_phi": 0.001402341743205554
+   },
+   {
+    "k": 0.05,
+    "dw": 0.09413032433859397,
+    "dev_sqrt": 0.015077195658266776,
+    "dev_cos_vk": 0.015097518690299669,
+    "dev_cos_phi": 0.002745821996050418
+   },
+   {
+    "k": 0.1,
+    "dw": 0.18624287094599795,
+    "dev_sqrt": 0.05700412477654146,
+    "dev_cos_vk": 0.05705388764143385,
+    "dev_cos_phi": 0.0017354624226919302
+   },
+   {
+    "k": 0.15,
+    "dw": 0.303625068886791,
+    "dev_sqrt": 0.11889622046214837,
+    "dev_cos_vk": 0.11897464644384334,
+    "dev_cos_phi": 0.0007657808217966244
+   }
+  ],
+  "cos_phi_absorbs": true,
+  "fixed_ratio_scaling": [
+   {
+    "qm": 0.1,
+    "rel_dev_sqrt": 0.4998948687890907,
+    "abs_dev_sqrt": 0.05531697705928995
+   },
+   {
+    "qm": 0.05,
+    "rel_dev_sqrt": 0.27560831825946697,
+    "abs_dev_sqrt": 0.014492329179525587
+   },
+   {
+    "qm": 0.025,
+    "rel_dev_sqrt": 0.1444529423169329,
+    "abs_dev_sqrt": 0.0037031101884528878
+   },
+   {
+    "qm": 0.0125,
+    "rel_dev_sqrt": 0.07388486576494335,
+    "abs_dev_sqrt": 0.0009352015181717417
+   }
+  ],
+  "rel_dev_halving_ratio": 0.5114805180142219,
+  "direction_spread": {
+   "0.005": 0.0008669340640126814,
+   "0.01": 0.003315277102001109,
+   "0.02": 0.012590129828125456
+  },
+  "spread_k2_ratio": 3.8241398505626303,
+  "symmetrized_spectrum_dev": 1.4043333874306805e-15,
+  "interleaved_spectrum_dev": 0.004716746367799336,
+  "interleave_comparison": [
+   {
+    "qm": 0.1,
+    "dev_end": 0.05531697705928995,
+    "dev_interleaved": 0.05599290031780657
+   },
+   {
+    "qm": 0.05,
+    "dev_end": 0.014492329179525587,
+    "dev_interleaved": 0.014651175569078523
+   }
+  ]
+ },
+ "dispersion_seconds": 0.0,
+ "census": {
+  "census_set_factorization_dev": 2.7992140177686794e-16,
+  "gap_minus_2m": {
+   "Gamma": 1.3877787807814457e-17,
+   "X": 1.3877787807814457e-17
+  },
+  "R_point": {
+   "mults": [
+    4,
+    4
+   ],
+   "dev": 5.561946577567963e-17
+  },
+  "line_mult_pattern": [
+   2,
+   2,
+   2,
+   2
+  ],
+  "doubling_exact_on_edges": 2.0014830212433605e-16,
+  "doubling_split_generic": {
+   "k_02": 0.037634591410337884,
+   "k_04": 0.12335385550534665
+  },
+  "min_pairwise_gap_off_spectator_loci": 6.630052796039075e-05,
+  "argmin_second_distance_to_special": 0.3141592653589793,
+  "min_freq_gap_near_Gamma": 0.10546112124167983,
+  "scale_2m": 0.10516612322188344,
+  "scale_2m_rho6": 0.04348552151821324,
+  "sector_chiralities": {
+   "Gamma": [
+    -1,
+    1
+   ],
+   "X": [
+    1,
+    -1
+   ]
+  },
+  "pointwise_chi_net_zero": true
+ },
+ "census_seconds": 0.1
+}

@@ -1054,9 +1054,6 @@ def main():
         out[name + "_seconds"] = round(time.time() - t, 1)
         print(f"[{time.time() - t0:7.1f}s] {name} done ({out[name + '_seconds']}s)")
 
-    RESULTS.parent.mkdir(exist_ok=True)
-    RESULTS.write_text(json.dumps(out, indent=1))
-    print(f"wrote {RESULTS}")
 
     # headline assertions (fail loudly if the theory note's claims break)
     assert out["n2_algebra"]["signature_of_N_on_sl2R"] == (2, 1)
@@ -1086,6 +1083,9 @@ def main():
             else:
                 assert abs(r["r110"] - np.sqrt(2)) < 1e-3
     print("all headline assertions passed")
+    RESULTS.parent.mkdir(exist_ok=True)
+    RESULTS.write_text(json.dumps(out, indent=1))
+    print(f"wrote {RESULTS}")
 
 
 if __name__ == "__main__":

@@ -142,6 +142,10 @@ def main():
             warg = float((np.abs(np.angle(rho)) * w).sum() / w.sum())
             print(f" {t + 1:>3} {wmean:>12.5f} {law ** (t + 1):>8.5f} "
                   f"{wspread:>9.5f} {warg:>9.5f} {int(gate.sum()):>4}")
+            if t == 0:
+                # GATE (hard): first-cycle per-event law (paired estimator)
+                assert abs(wmean - law) < 5e-3, "GATE FAILED: t=1 law"
+                assert wspread < 5e-3, "GATE FAILED: t=1 k-dependence"
 
 
 

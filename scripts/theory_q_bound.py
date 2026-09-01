@@ -392,9 +392,6 @@ def main():
         out[name] = fn()
         out[name + "_seconds"] = round(time.time() - t, 1)
         print(f"[{time.time() - t0:6.1f}s] {name} done")
-    RESULTS.parent.mkdir(exist_ok=True)
-    RESULTS.write_text(json.dumps(out, indent=1))
-    print(f"wrote {RESULTS}")
 
     ch = out["chord"]
     assert abs(ch["chord_max"] - KAPPA) < 1e-6
@@ -422,6 +419,9 @@ def main():
     assert arc["symbolic_isotropy_general_alpha_beta"]
     assert arc["max_aniso"] < 1e-9 and arc["max_unitary_dev"] < 1e-12
     print("all headline assertions passed")
+    RESULTS.parent.mkdir(exist_ok=True)
+    RESULTS.write_text(json.dumps(out, indent=1))
+    print(f"wrote {RESULTS}")
 
 
 if __name__ == "__main__":

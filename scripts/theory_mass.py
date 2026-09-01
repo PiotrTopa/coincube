@@ -460,9 +460,6 @@ def main():
         out[name + "_seconds"] = round(time.time() - t, 1)
         print(f"[{time.time() - t0:6.1f}s] {name} done")
 
-    RESULTS.parent.mkdir(exist_ok=True)
-    RESULTS.write_text(json.dumps(out, indent=1))
-    print(f"wrote {RESULTS}")
 
     # headline assertions
     ident = out["identities"]
@@ -490,6 +487,9 @@ def main():
     assert cen["min_freq_gap_near_Gamma"] >= cen["scale_2m"] - 1e-9
     assert cen["pointwise_chi_net_zero"]
     print("all headline assertions passed")
+    RESULTS.parent.mkdir(exist_ok=True)
+    RESULTS.write_text(json.dumps(out, indent=1))
+    print(f"wrote {RESULTS}")
 
 
 if __name__ == "__main__":

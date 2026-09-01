@@ -403,9 +403,6 @@ def main():
     out["mutation_controls"] = mutation_controls(rng)
     print(f"[{time.time() - t0:6.1f}s] mutation controls done")
 
-    RESULTS.parent.mkdir(exist_ok=True)
-    RESULTS.write_text(json.dumps(out, indent=1))
-    print(f"wrote {RESULTS}")
 
     for key in ("L2", "L3"):
         r = out[key]
@@ -419,6 +416,9 @@ def main():
     assert out["mutation_controls"]["no_string"]["mismatches"] > 0
     assert out["mutation_controls"]["no_shift_parity"]["mismatches"] > 0
     print("all headline assertions passed")
+    RESULTS.parent.mkdir(exist_ok=True)
+    RESULTS.write_text(json.dumps(out, indent=1))
+    print(f"wrote {RESULTS}")
 
 
 if __name__ == "__main__":

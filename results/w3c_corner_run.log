@@ -1,0 +1,42 @@
+
+--- annealed q=0.08  (R=3000 x 4 launches, 10 blocks, 868s evolve) ---
+  node: |lam0|=0.622 om0=0.3231  (annealed theory 0.620/0.3159)
+   fam  v(d->0)  sig_jk   ratio   sig_r    lin  diamond
+   100   1.1686  0.1887  1.0000  0.0000  0.017    1.000
+   110   1.1690  0.1866  1.0004  0.0021  0.007    1.414
+   111   1.1693  0.1859  1.0006  0.0028  0.015    1.732
+    r1   1.1904  0.1934  1.0187  0.0205  0.003    1.574
+    r2   1.1095  0.1921  0.9494  0.0411  0.012    1.593
+  [gate PASSED]  systematics (|ratio-1|): 110:0.0004  111:0.0006  r1:0.0187  r2:0.0506
+
+--- quenched q=0.08  (R=3000 x 4 launches, 10 blocks, 688s evolve) ---
+  node: |lam0|=0.637 om0=0.3431  (annealed theory 0.620/0.3159)
+   fam  v(d->0)  sig_jk   ratio   sig_r    lin  diamond
+   100   1.0291  0.1785  1.0000  0.0000  0.044    1.000
+   110   1.0303  0.1769  1.0012  0.0017  0.062    1.414
+   111   1.0308  0.1764  1.0017  0.0023  0.068    1.732
+    r1   1.0622  0.1877  1.0322  0.0198  0.056    1.574
+    r2   1.0047  0.1891  0.9763  0.0386  0.068    1.593
+  diamond exclusion (all channels, sigma_total = sqrt(sig_jk^2 + gate_syst^2)):
+    110: ratio 1.0012 +- 0.0018, diamond 1.414  ->  z = 236.0
+    111: ratio 1.0017 +- 0.0024, diamond 1.732  ->  z = 309.4
+    r1: ratio 1.0322 +- 0.0273, diamond 1.574  ->  z = 19.9
+    r2: ratio 0.9763 +- 0.0636, diamond 1.593  ->  z = 9.7
+    weakest channel: z = 9.7
+
+--- quenched q=0.15  (R=3000 x 4 launches, 10 blocks, 686s evolve) ---
+  node: |lam0|=0.449 om0=0.7277  (annealed theory 0.413/0.6609)
+   fam  v(d->0)  sig_jk   ratio   sig_r    lin  diamond
+   100   2.9164  0.7311  1.0000  0.0000  0.306    1.000
+   110   2.9156  0.7311  0.9997  0.0001  0.304    1.414
+   111   2.9153  0.7312  0.9996  0.0001  0.304    1.732
+    r1   2.9367  0.7392  1.0070  0.0068  0.295    1.574
+    r2   2.9514  0.7404  1.0120  0.0071  0.291    1.593
+  diamond exclusion (all channels, sigma_total = sqrt(sig_jk^2 + gate_syst^2)):
+    110: ratio 0.9997 +- 0.0004, diamond 1.414  ->  z = 1082.7
+    111: ratio 0.9996 +- 0.0006, diamond 1.732  ->  z = 1229.4
+    r1: ratio 1.0070 +- 0.0199, diamond 1.574  ->  z = 28.5
+    r2: ratio 1.0120 +- 0.0511, diamond 1.593  ->  z = 11.4
+    weakest channel: z = 11.4
+
+written: results/w3c_corner.json

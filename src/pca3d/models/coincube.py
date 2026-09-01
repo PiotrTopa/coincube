@@ -130,7 +130,9 @@ def step_bits(n: np.ndarray, env: np.ndarray):
 
 def evolve_field_cc(L: int, R: int, TCYC: int, q: float, seed: int = 3,
                     annealed: bool = False, launch: int = 0,
-                    co_stream: bool = False) -> np.ndarray:
+                    co_stream: bool = False, n_blocks: int = 1) -> np.ndarray:
+    if L % 2:
+        raise ValueError("coincube requires even L (pair-swap env streaming)")
     """Signed single-particle field of the layered CA, mean over R media.
 
     Per medium the field evolution is the exact fermionic single-particle
@@ -140,9 +142,10 @@ def evolve_field_cc(L: int, R: int, TCYC: int, q: float, seed: int = 3,
     perms = [xp.asarray(p) for p in PERMS]
     signs = [xp.asarray(s) for s in SIGNS]
     r = np.random.default_rng(seed)
-    acc = np.zeros((TCYC + 1, 4, L, L, L))
+    acc = np.zeros((max(1, n_blocks), TCYC + 1, 4, L, L, L))
+    per_block = max(1, R // max(1, n_blocks))
 
-    for _ in range(R):
+    for rep in range(R):
         env = xp.asarray(r.random((3, L, L, L)) < q)
         g = xp.zeros((4, L, L, L))
         g[launch, L // 2, L // 2, L // 2] = 1.0
@@ -179,8 +182,10 @@ def evolve_field_cc(L: int, R: int, TCYC: int, q: float, seed: int = 3,
                     substep(a, o)
             out.append(g.copy())
         stack = xp.stack(out)
-        acc += stack.get() if GPU else stack
-    return acc / R
+        b = min(rep // per_block, max(1, n_blocks) - 1)
+        acc[b] += stack.get() if GPU else stack
+    acc /= (R / max(1, n_blocks))
+    return acc[0] if n_blocks <= 1 else acc
 
 
 # -- M8: the massive (inversion-doubled) coincube ------------------------------
@@ -212,8 +217,11 @@ def annealed_u8(kvec, q: float, qm: float) -> np.ndarray:
 
 def evolve_field_m8(L: int, R: int, TCYC: int, q: float, qm: float,
                     seed: int = 3, annealed: bool = False,
-                    launch: int = 0) -> np.ndarray:
-    """Signed single-particle field of the massive coincube, mean over media.
+                    launch: int = 0, n_blocks: int = 1) -> np.ndarray:
+    """Signed single-particle field of the massive coincube, mean over media."""
+    if L % 2:
+        raise ValueError("coincube requires even L (pair-swap env streaming)")
+    _doc = """
 
     Axis layers as in evolve_field_cc (conversion, coin-steered shift,
     cross-streamed env); one mass layer per cycle (site-controlled Givens on
@@ -225,7 +233,8 @@ def evolve_field_m8(L: int, R: int, TCYC: int, q: float, qm: float,
     mperm = np.asarray(MASS_PERM)
     msign = np.asarray(MASS_SIGN)
     r = np.random.default_rng(seed)
-    acc = np.zeros((TCYC + 1, 8, L, L, L))
+    acc = np.zeros((max(1, n_blocks), TCYC + 1, 8, L, L, L))
+    per_block = max(1, R // max(1, n_blocks))
 
     def stream(field, axis, o):
         m = xp.moveaxis(field, axis, -1)
@@ -238,7 +247,7 @@ def evolve_field_m8(L: int, R: int, TCYC: int, q: float, qm: float,
             m = xp.roll(m, 1, axis=-1)
         return xp.moveaxis(m, -1, axis)
 
-    for _ in range(R):
+    for rep in range(R):
         env = xp.asarray(r.random((3, L, L, L)) < q)
         envm = xp.asarray(r.random((L, L, L)) < qm)
         g = xp.zeros((8, L, L, L))
@@ -274,8 +283,10 @@ def evolve_field_m8(L: int, R: int, TCYC: int, q: float, qm: float,
                 envm = stream(envm, 0, t % 2)
             out.append(g.copy())
         stack = xp.stack(out)
-        acc += stack.get() if GPU else stack
-    return acc / R
+        b = min(rep // per_block, max(1, n_blocks) - 1)
+        acc[b] += stack.get() if GPU else stack
+    acc /= (R / max(1, n_blocks))
+    return acc[0] if n_blocks <= 1 else acc
 
 
 # -- Phase I: the imprint (back-reaction) layer L4 -----------------------------
@@ -293,8 +304,10 @@ def evolve_field_m8(L: int, R: int, TCYC: int, q: float, qm: float,
 # frequency drift). The imprint field is therefore 4-valued:
 # iota(x) in {0, (xy), (yz), (zx)} with probability g/3 for each pair --
 # C3-covariant, cannot generate anisotropic node corrections at any order.
-# One-sided amplitude law (proven): U_g(k) = (1 - 2 g q (1-q)) U(k) -- pure
-# isotropic damping Gamma_int = 2q(1-q) g; cone, residues, mass untouched.
+# One-sided amplitude law (annealed order, LIFT-GAUGE DEPENDENT): with the
+# production PERMUTATION lift (ADR 0014), U_g(k) = (1 - 2 g q^2) U(k); the
+# Givens lift would give (1 - 2 g q (1-q)). Pure isotropic damping either
+# way; cone, residues, mass untouched.
 
 
 PAIRS = ((0, 1), (1, 2), (2, 0))

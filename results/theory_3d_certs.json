@@ -1,0 +1,52 @@
+{
+ "seed": 20260901,
+ "L2": {
+  "L": 2,
+  "M": 32,
+  "P_squared_1p": [
+   1
+  ],
+  "trials": 4,
+  "dev_1p_vs_instrument": 0,
+  "n_2p_mismatch_vs_wedge": 0,
+  "n_2p_states": 496,
+  "sigma_full": [
+   1,
+   1,
+   1,
+   1
+  ],
+  "duality_1h_per_layer": true,
+  "duality_1h_cycle": true,
+  "duality_2h_cycle": true
+ },
+ "L3": {
+  "L": 3,
+  "M": 108,
+  "P_squared_1p": [
+   1
+  ],
+  "trials": 2,
+  "dev_1p_vs_instrument": 0,
+  "n_2p_mismatch_vs_wedge": 0,
+  "n_2p_states": 5778,
+  "sigma_full": [
+   1,
+   1
+  ],
+  "duality_1h_per_layer": true,
+  "duality_1h_cycle": true
+ },
+ "mutation_controls": {
+  "no_string": {
+   "L": 2,
+   "mismatches": 8,
+   "n": 496
+  },
+  "no_shift_parity": {
+   "L": 3,
+   "mismatches": 2772,
+   "n": 5778
+  }
+ }
+}
