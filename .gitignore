@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.pyc
+results/*.json
+results/*.npz
+results/*.log
+*.egg-info/
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/*.bbl
+paper/*.blg
+paper/main*.synctex*

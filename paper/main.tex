@@ -1,0 +1,867 @@
+\documentclass[aps,prd,twocolumn,superscriptaddress,nofootinbib,floatfix]{revtex4-2}
+\usepackage{amsmath,amssymb,bm}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{booktabs}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+
+% evidence-class tags
+\newcommand{\evP}{\textnormal{\textsc{[proven]}}}
+\newcommand{\evM}{\textnormal{\textsc{[machine-checked]}}}
+\newcommand{\evX}{\textnormal{\textsc{[measured]}}}
+
+\begin{document}
+
+\title{Fermionic quantum field theories as probabilistic cellular automata
+in three dimensions}
+
+\author{Piotr Topa}
+\affiliation{Independent researcher}
+
+\date{\today}
+
+\begin{abstract}
+Wetterich has shown that certain probabilistic cellular automata in $1+1$
+dimensions are exactly equivalent to fermionic quantum field theories, and
+posed the construction of three-dimensional examples as an open problem. We
+solve the free-fermion sector of this problem under the strictest reading:
+single-fermion carriers, one homogeneous local invertible update rule, no
+composite transport. We first prove the obstructions that made the problem
+hard: ballistic one-particle transport admits only finite velocity sets
+(no cone); Abelian sign gauges cannot repair this; and two-component
+internal states are excluded by a real-representation argument. The
+solution is a layered automaton (``coincube'') whose conversion blocks form
+the real quaternion representation of $\mathrm{Cl}(0,3)$, controlled by
+autonomous binary environment fields. We exhibit an explicit complex
+structure with respect to which the step operator is exactly unitary,
+extract the local Grassmann action mechanically in exact arithmetic, and
+verify the fermionic lift including all sign coherences. The single-carrier
+excitation on a clustering product vacuum is an isotropic Weyl fermion:
+slope ratios equal $1$ within $1\%$ (a factorized dispersion is excluded at
+more than $13\sigma$), and the residues are rank-one helicity projectors of
+chirality $-1$. Doubling by spatial inversion yields a Dirac fermion whose
+gap is exactly $2\arctan[q_m/(1-q_m)]$ in the density $q_m$ of a fourth
+environment field. A media-mediated interaction with a continuous coupling
+is constructed and certified, with the free spectrum surviving to leading
+order. Finally we prove that for classical in-state observables an isotropic
+cone forces a nonzero quasiparticle width, with the exact bound
+$\mathrm{Q}\le\pi/(2\ln 2)$ on phase advance per unit decoherence, and show
+that the two-boundary (in--out) propagator is the unique completion that is
+unitary with the cone intact.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}
+\label{sec:intro}
+
+A probabilistic cellular automaton (PCA) is a classical statistical system:
+a lattice of bits, a probability distribution over bit configurations, and
+one local, invertible, homogeneous update rule applied in discrete time.
+Wetterich~\cite{Wetterich2022,Wetterich2022b} established that a class of
+such automata is \emph{exactly} equivalent to fermionic quantum field
+theories in $1+1$ dimensions: the same wave function, density matrix,
+operators and expectation values, at every lattice size, with no
+approximation. The equivalence rests on three pillars: occupation bits map
+to fermions through a Grassmann functional integral; the step operator is a
+signed permutation, hence orthogonal; and a compatible complex structure
+turns orthogonal into unitary evolution. The construction in three or four
+spatial dimensions was left open; the known four-dimensional
+route~\cite{Wetterich2022c} transports Lorentz-invariant four-fermion
+composites rather than single fermions.
+
+The program sits within a wider landscape. In the \emph{unitary}
+quantum-cellular-automaton and quantum-walk tradition, discrete dynamics
+with postulated complex amplitudes yields Weyl and Dirac kinematics in one
+to three dimensions~\cite{BialynickiBirula,Meyer,DArianoPerinotti,
+BisioDAriano,Arrighi,Farrelly,Kitagawa}, and Mlodinow and Brun have proven
+a no-go theorem for quantum-field limits of such automata above one
+dimension together with evasions that antisymmetrize distinguishable
+particles in two and three dimensions~\cite{MlodinowBrunNoGo,BrunMlodinow2D,
+MlodinowBrun3D}; fermion doubling in these discrete settings remains an
+active subject~\cite{DoublingQW}. The present work lives in the strictly
+harder \emph{probabilistic} class, where amplitudes are not postulated but
+must emerge from classical statistics---the program of
+Refs.~\cite{Wetterich2021NPB,Wetterich2022,Wetterich2022b,WetterichPotential,
+KreuzkampWetterich,Wetterich2025}, with conceptual roots in 't~Hooft's
+cellular-automaton interpretation~\cite{tHooft}. The obstructions proven
+below (finite rays, Q-pinning) are properties of this probabilistic class
+and have no analogue in the unitary setting, which is precisely why the
+construction requires the dressing and coin mechanisms developed here.
+
+This paper solves the three-dimensional problem for the free sector under
+the strictest contract: the propagating carrier is a single-fermion
+occupation number; the rule set (locality, invertibility with the
+unique-jump property, homogeneity, fermion-parity conservation per block,
+particle--hole symmetry, no hidden continuum input) is fixed at the outset
+and every construction below is verified against it mechanically.
+
+The results divide into obstructions and constructions, and we state the
+evidence class of every claim: \evP{} for symbolic or algebraic proofs,
+\evM{} for exact finite verifications (tolerances quoted), \evX{} for
+measurements, which are always accompanied by a known-answer gate run
+through the identical analysis pipeline. The complete verification code is
+public~\cite{repo}.
+
+Obstructions (Sec.~\ref{sec:obstructions}): ballistic one-particle
+transport in this class has a \emph{finite} set of group velocities, so no
+three-dimensional cone is possible (Theorem~\ref{thm:finiteray}); on the
+symmetric vacuum all transport speeds are rational, while a tuned vacuum
+density $q$ provides a continuous, exactly stationary knob with the closed
+dressing law $v=2|1-2q|$; Abelian position-periodic sign gauges relocate
+band features but cannot bend the factorized (``diamond'') group-velocity
+surface into a cone; and no two-component internal state can carry an
+isotropic cone, by a real-representation argument
+(Theorem~\ref{thm:ntwo}).
+
+Constructions (Secs.~\ref{sec:coincube}--\ref{sec:interaction}): a
+four-component carried coin whose conversion blocks form the real
+quaternion representation of $\mathrm{Cl}(0,3)$ produces an exactly
+isotropic Weyl cone; the automaton realizing it (the \emph{coincube}) is a
+composition of three manifestly legal layers whose fermionic lift is
+verified including all sign coherences; the step operator is exactly
+unitary with respect to an explicit complex structure; the local Grassmann
+action is extracted in exact rational arithmetic; spatial-inversion
+doubling yields a Dirac fermion with an exact, continuously tunable mass;
+and a media-mediated interaction with a continuous coupling is certified,
+with the free spectrum surviving.
+
+Finally, Sec.~\ref{sec:damping} addresses the one systematic cost of the
+construction. The dressed quasiparticle of the classical in-state
+observable is damped, and this is not a technical deficiency:
+we prove that an isotropic cone \emph{forces} a nonzero width, with the
+exact bound $\mathrm{Q}=\omega_0/\Gamma\le\pi/(2\ln2)$, over the entire
+legal class including engineered correlated media. The two-boundary
+(in--out) propagator---a legitimate object in the same transfer-matrix
+formalism---is exactly unitary with the cone intact, and we prove it is the
+unique such completion.
+
+Throughout, the lattice spacing and the duration of one full update cycle
+are unity; frequencies are per cycle and momenta are in lattice units.
+
+\section{Setup}
+\label{sec:setup}
+
+\subsection{States, step operator, lifts}
+
+Configurations $\tau$ are assignments of occupation bits to species at the
+sites of a cubic lattice. The probabilistic information is a real wave
+function $q_\tau$ with $p_\tau=q_\tau^2$~\cite{Wetterich2022}. One time
+step applies a deterministic, invertible map of configurations together
+with a sign gauge: the step operator $\hat S$ is a \emph{signed
+permutation} of the configuration basis, hence real orthogonal. A rule is
+\emph{legal} if it is a composition of layers, each of which is (i) local,
+(ii) a bijection on configurations with a unique image (the unique-jump
+property), (iii) homogeneous, and (iv) fermion-parity even on its support,
+so that a fermionic lift exists. The lift assigns the signs: occupation
+bits map to fermionic modes in a fixed Jordan--Wigner ordering, and each
+layer's signed permutation must equal the matrix of an explicit fermionic
+operator in the occupation basis. All lifts below are verified at this
+level, including two-particle sign coherence (Sec.~\ref{sec:coincube}).
+
+\subsection{Environment fields and dressed carriers}
+
+Besides the carrier species, the automata below contain autonomous binary
+\emph{environment} fields: one per spatial axis (density $q$), plus one for
+the mass sector ($q_m$) and one for the interaction ($g$). Environment
+dynamics is free streaming by pair swaps; a Bernoulli product measure is
+exactly stationary. Carriers never modify the environment except through
+the explicitly constructed interaction layer of Sec.~\ref{sec:interaction}.
+The vacuum is the product of the carrier vacuum with the Bernoulli
+environment measure: translation invariant, clustering, with a continuous
+parameter $q$ that is the central dial of the construction.
+
+\section{Obstructions}
+\label{sec:obstructions}
+
+\begin{theorem}[Finite rays]\label{thm:finiteray}
+For any legal rule that conserves particle number in the one-particle
+sector, the one-particle Bloch operator is a monomial matrix for every
+momentum $k$. Consequently every dispersion branch is exactly linear in
+$k$, the set of group velocities is finite, and no three-dimensional cone
+$\omega=v|k|$ is possible ballistically. \evP{}
+\end{theorem}
+
+The proof is elementary---a signed permutation with momentum phases has
+monomial matrix elements, and eigenvalues of monomial matrices are roots of
+single monomials---but the consequence is structural: the error is
+scale invariant, so no continuum limit removes it, and periodic cycles of
+rotated rules do not evade it because products of unique-jump operators are
+unique-jump. In one spatial dimension the light cone genuinely consists of
+two rays, which is why the $1+1$-dimensional construction exists. An
+adversarial test suite (19 attempted evasions) accompanies the theorem in
+the repository.
+
+Two further results fix the strategy. First, on the symmetric
+(density-$\tfrac12$) vacuum the transport speeds of the conditional
+class~\cite{Wetterich2022b} are rational \evP{}; the vacuum density $q$ is
+the legal continuous parameter, with the closed dressing law, for the
+representative rule used throughout,
+\begin{equation}
+v(q) = 2\,|1-2q| , \qquad
+\label{eq:vq}
+\end{equation}
+proven as a two-class Markov-additive limit and verified against exact ring
+enumeration as polynomial identities in $q$ \evP{}. Second, dressing alone
+yields a factorized walk whose group-velocity surface is the $\ell^1$ ball
+(the \emph{diamond}): slope ratios along $(110)$ and $(111)$ relative to
+$(100)$ equal $\sqrt2$ and $\sqrt3$. Abelian position-periodic sign gauges
+(Kogut--Susskind axis phases~\cite{KogutSusskind,Susskind}, per-stall signs, and
+their products) relocate the nodal points and modify residues but leave the
+ratios on the diamond, measured as
+$r_{110}/r_{111}=1.40/1.68$ (base and stall gauges, identical spectra) and
+$1.46/1.82$ (KS gauges) \evX{}; a carried non-Abelian structure is
+therefore necessary.
+
+\begin{theorem}[No two-component cone]\label{thm:ntwo}
+No legal automaton whose carrier has a two-dimensional internal space
+admits a propagating isotropic Weyl node. Any pairwise-anticommuting triple
+of real $2\times2$ matrices has Clifford signature $(2,1)$; equivalently,
+at any momentum where the (real) Bloch operator has a degenerate
+propagating pair, the pair is a complex-conjugate pair and can only meet on
+the real axis. An exhaustive scan of all $8^3$ sign-gauge assignments finds
+no propagating corner degeneracy. \evP{}, \evM{}
+\end{theorem}
+
+The escape must therefore be a four-dimensional real internal space, where
+the real Clifford algebra $\mathrm{Cl}(0,3)$ has its quaternionic
+representation.
+\section{The coincube automaton}
+\label{sec:coincube}
+
+\subsection{Layers}
+
+The carrier has four species per site: a two-bit coin $(b_1,b_2)$, channel
+index $c=2b_1+b_2$. Writing $X$, $Z$ for the real Pauli matrices and
+$XZ$ for their (antisymmetric) product, define the conversion triple and
+direction assignments
+\begin{align}
+C_x &= XZ\otimes\openone, & C_y &= Z\otimes XZ, & C_z &= -X\otimes XZ,
+\nonumber\\
+d_x &= \mathrm{diag}(Z\otimes\openone), &
+d_y &= \mathrm{diag}(Z\otimes Z), &
+d_z &= \mathrm{diag}(\openone\otimes Z).
+\label{eq:tables}
+\end{align}
+The $C_a$ are pairwise anticommuting with $C_a^2=-\openone$: the real
+quaternion representation of $\mathrm{Cl}(0,3)$ \evM{}. Each full cycle
+applies, for each axis $a$ and each of two block origins, three layers:
+
+\emph{L2 (conversion).} At every site, controlled on the axis-$a$
+environment bit at that site, the two channel pairs of $C_a$ are swapped
+(a one-site block; two bit flips, parity even).
+
+\emph{L1 (motion).} Channel $c$ translates by $d_a(c)\in\{\pm1\}$ along
+axis $a$, unconditionally.
+
+\emph{L3 (environment).} The axis-$a$ environment field pair-swap streams
+along axis $a{+}1\ (\mathrm{mod}\ 3)$. This \emph{cross-streaming} is
+mandatory: if the field streams along its own axis, a co-moving carrier
+re-reads its own bit, conversions arrive in nearly scalar bursts
+($C_a^2=-\openone$), and the measured Weyl pair splits into one damped-real
+and one oscillating pole---an exceptional-point transition of the damped
+band structure in the sense of non-Hermitian topology~\cite{Bergholtz}---
+and the node is destroyed \evX{}.
+
+Each layer is manifestly legal; the composition defines the automaton.
+
+\subsection{Fermionic lift and sign coherence}
+
+The lift of L2 is an environment-controlled pair of $\pm90^\circ$ Givens
+rotations $G=\exp[\tfrac{\pi}{2}(a^\dagger_c a_{c'}-a^\dagger_{c'}a_c)]$
+acting on same-site modes: a signed permutation of the Fock basis,
+parity-even, identity at empty control, with single-particle matrix equal
+to the corresponding signed-swap block of $C_a$ and $G^2=-\openone$ on the
+one-particle sector; the quaternion sign structure \emph{is} the fermionic
+rotation sign \evM{} (dense verification, all axes). Translations and
+environment swaps lift with the standard reordering parity. The composite
+cycle is sign coherent: in the segregated mode ordering (all carrier modes
+before all environment modes) the full lifted cycle is a signed permutation
+whose one-particle sector equals the stated rule and whose two-particle
+sector equals the exact antisymmetrized square $\Lambda^2 M_1$---verified
+in genuine three-dimensional geometry on all 5778 pair states at linear
+size $L=3$, with mutation controls (deliberately corrupted sign rules fail
+the check) \evM{}. We record one instrument fact: at $L=2$ the two
+sub-steps per axis make net translation crossings even, so $L=2$ is blind
+to translation-sign errors; three-dimensional sign claims must be checked
+at $L\ge3$.
+
+\section{Free spectrum: the Weyl cone}
+\label{sec:spectrum}
+
+\subsection{Annealed closed forms}
+
+With independent environment reads the one-particle transfer per sub-step
+is $T_a(k)=E_a(k_a)\,[(1-q)\openone+qC_a]$ with
+$E_a=\mathrm{diag}(e^{ik_ad_a})$, and the cycle operator is
+$U(k)=\prod_a T_a(k_a)^2$. The following are proven symbolically,
+identically in $q$ \evP{}: $U(k+\pi e_a)=U(k)$, so all Brillouin-zone
+corners host copies of a single node; the node eigenvalue obeys
+$|\lambda_0|^2=[(1-q)^2+q^2]^6$; and the linear splitting of the node
+doublet is exactly isotropic, with speed $v(q)$ rising from $2/\sqrt3$ at
+$q\to0$ to a maximum $1.207$ near $q=0.30$ ($v(0.08)=1.1806$). The eight
+node copies carry chiralities summing to zero (Nielsen--Ninomiya
+\cite{NielsenNinomiya}). Numerically the splitting isotropy holds to
+$2\times10^{-4}$ over 50 random directions after $h\to0$ extrapolation
+\evM{}.
+
+\subsection{Quenched measurement}
+\label{sec:quenchedcone}
+
+On the streaming (quenched) environment the propagator is measured from the
+exact per-medium single-particle signed field, averaged over media. The
+instrument fits the full $4\times4$ one-cycle Bloch matrix per momentum
+from all four basis launches, pools symmetry-equivalent momenta at the
+level of characteristic-polynomial coefficients (basis invariant, hence
+unbiased) before rooting, probes momenta off the lattice grid inside the
+node's linear range, and extrapolates $\delta k\to0$. Every production run
+carries an annealed known-answer row through the identical pipeline; a run
+whose gate row fails is discarded. Near-degenerate pole extraction is the
+dominant threat (eigenvalues of a noisy nearly defective matrix split as
+$\sqrt{\text{noise}}$), which this design removes.
+
+\begin{figure}[!htb]
+\includegraphics[width=\columnwidth]{figs/cone_ratios.pdf}
+\caption{Slope ratios at the node, gate row and quenched rows, against the
+factorized-transport (diamond) prediction. Error bars are jackknife halves
+of the medium ensemble. \evX{}}
+\label{fig:cone}
+\end{figure}
+
+Results (Fig.~\ref{fig:cone}): the gate row reproduces the exact answer
+($v=1.225$ vs $1.20$; ratios $1.000/1.001$); the quenched rows give
+$r_{110}=1.000\pm0.03$, $r_{111}=1.000\pm0.10$ at $q=0.05$ and
+$1.000\pm0.01$, $1.000\pm0.12$ at $q=0.08$, with the measured per-momentum
+curvatures matching the exact operator family by family. The diamond value
+$\sqrt2$ is excluded at more than $13\sigma$. \evX{}
+
+\subsection{Helicity residues}
+
+At the node the effective generators $h_a$ on the doublet satisfy the exact
+Clifford algebra $\{h_a,h_b\}=2v^2\delta_{ab}$; because the node frame of
+the damped (non-normal) operator is not unitary, the Pauli coefficients of
+$h_a$ are complex with \emph{bilinear} orthogonality
+$R^TR=v^2\openone$ ($R\in O(3,\mathbb C)$), and
+$\det R=-v^3$ exactly: chirality $\chi=-1$ \evM{}. The split branches'
+spectral projectors equal the helicity projectors
+$\tfrac12(\openone\pm n\cdot\sigma)$, $n=Ru/\sqrt{(Ru)\!\cdot\!(Ru)}$.
+Measured on the quenched vacuum (78 directions on the sphere, gate row
+passed): residue purity $1.000$, helicity-map bilinear isotropy $0.020$,
+chirality $-1$, pointwise $|1-n\cdot n_{\rm exact}|$ of mean $0.010$
+\evX{}. One convention is essential for eigenvector work: the
+$e^{-ik\cdot x}$ Fourier contraction estimates $U(-k)=\bar U(k)$, whose
+upper-half eigenvectors belong to the opposite-helicity conjugate doublet;
+residue measurements must use $e^{+ik\cdot x}$.
+
+\section{Exact quantum mechanics}
+\label{sec:exactqm}
+
+\subsection{Complex structure}
+
+Let $P$ be the lifted carrier particle--hole conjugation, the Majorana
+string $\prod_i(a_i+a_i^\dagger)$ over carrier modes. In the segregated
+ordering, $P$ is real orthogonal with $P^2=+1$ (carrier mode number
+$M=4L^3\equiv0 \bmod 4$), and
+\begin{equation}
+[\hat S, P]=0
+\end{equation}
+\emph{exactly, including all lift signs}: verified on the complete Fock
+space of a ring substrate, and in genuine three-dimensional geometry on the
+sector pairs $\{0,1,2,M{-}2,M{-}1,M\}$ (particle--hole duality maps the
+deep sectors to one- and two-hole problems), per layer and full cycle at
+$L=2,3$ \evM{}. With the grading $\eta=\mathrm{sign}(N_c-M/2)$---conserved
+by every layer, odd under $P$, and size independent away from half
+filling---define
+\begin{equation}
+K=\mathrm{diag}(\eta), \qquad I = P\,\mathrm{diag}(\eta).
+\end{equation}
+Then $K^2=1$, $I^2=-1$, $\{K,I\}=0$, $I$ antisymmetric, and $[\hat S,I]=0$;
+with multiplication $(\alpha+i\beta)q:=\alpha q+\beta Iq$ and the induced
+Hermitian form, $\hat S$ is a unitary operator on a complex Hilbert
+space~\cite{Wetterich2022}: the automaton's quantum mechanics is exact
+\evM{}. On the substrate the construction extends to the half-filled sector
+by an explicit orbit-wise grading; in three dimensions no size-independent
+grading of the half-filled sector was found and the question is left open.
+All physical sectors (vacuum plus finitely many carriers) are covered
+rigorously at every size.
+
+\subsection{Grassmann action}
+
+The local factors and actions of all blocks are extracted mechanically in
+exact rational arithmetic by the pipeline of
+Ref.~\cite{Wetterich2022}, Eqs.~(51)--(58), validated term by term on the
+interaction block of that reference%
+\footnote{The validation surfaced one typographical error in
+Ref.~\cite{Wetterich2022b}: the coefficient of the top monomial in the
+closed-form interaction action (their CS9) must be $-2$, not $-1$; the
+printed value fails the defining relation $e^{-L}=K$ at that single
+monomial.}. For the coincube conversion blocks the physical (Givens-lift)
+gauge yields an axis-universal action: 40 terms with identical degree
+structure for all three axes; the quadratic part is the signed-swap
+bilinear of $C_a$ plus the environment transport term, and the
+environment control appears as quartic and higher couplings between the
+channel bilinears and $e^\prime\tilde e$ \evM{}.
+
+\section{Mass: inversion doubling}
+\label{sec:mass}
+
+Doubling the coin with a mass bit $b_m$ whose value \emph{reverses all
+direction assignments}, $d^{(8)}_a=d_a\otimes\mathrm{diag}(1,-1)$, with
+conversions blind to $b_m$, places two opposite-chirality copies of the
+node at the same momentum and frequency (the $b_m{=}1$ sector is the
+spatial-inversion image; sector chiralities $\mp1$ verified) \evM{}. The
+alternative doubling $C_a\otimes Z$ fails for cause: $-C_a$ generates the
+opposite triple orientation, which is the \emph{other} corner frequency
+family, so the two sectors share no node. A mass layer
+$M=(1-q_m)\openone+q_m C_m$ with $C_m=\openone_4\otimes XZ$ (a
+$b_m$-flipping controlled Givens, driven by a fourth environment field of
+density $q_m$) couples the chiralities. Two operator identities carry the
+sector \evP{}: $U(k)=(\openone\otimes R_m)[U_4(k)\oplus U_4(-k)]$ and, at
+the node, $U(0)=U_4(0)\otimes M_2$ with $M_2$ a scaled rotation of the mass
+bit; hence the gap is \emph{exactly}
+\begin{equation}
+2m \;=\; 2\arctan\!\frac{q_m}{1-q_m},
+\label{eq:massgap}
+\end{equation}
+independent of $q$, with the multiplet center unshifted; frequencies add
+angles as in a telegraph process, and $m=q_m+O(q_m^2)$ recovers the Kac
+form. On the node space the generators obey the full Dirac--Clifford
+algebra $\{h_a,h_b\}=2v^2\delta_{ab}$, $\{h_a,\beta\}=0$, $\beta^2=1$,
+identically in $q$ \evP{}, so
+$\omega=\omega_c\pm\sqrt{m^2+v^2k^2}$ at leading order with the exact
+finite-$k$ composition law
+$\cos(\omega-\omega_c)=\cos m\,\cos\varphi_{\rm massless}(k)$.
+No real anticommuting mass exists at four components (the anticommutant of
+the triple squares negatively) \evP{}; eight components are minimal, as
+realized here.
+
+\begin{figure*}[!t]
+\includegraphics[width=0.85\textwidth]{figs/mass.pdf}
+\caption{Left: measured quenched massive dispersion (markers,
+$q=0.08,\ q_m=0.05$) on the exact operator branches (lines); the family
+ordering of the curvatures is the exact model's. Right: the operator gap
+against the closed form, Eq.~(\ref{eq:massgap}), agreeing to machine
+precision. \evX{}, \evP{}}
+\label{fig:mass}
+\end{figure*}
+
+Measured on the quenched vacuum with the gated eight-launch instrument
+(Fig.~\ref{fig:mass}): the dispersion lies on the exact branches
+($111$ family to $0.1\%$, $110$ to $1\%$, $100$ to $2$--$3\%$, at the gate
+row's own precision), with the gap on the arctan law \evX{}.
+
+\section{Interaction}
+\label{sec:interaction}
+
+For fixed media the multi-carrier sector is exactly determinantal
+(Sec.~\ref{sec:coincube}), so genuine interaction requires
+\emph{back-reaction}. The imprint layer L4 acts once per cycle: at sites
+where an autonomous four-valued field fires (pair $(xy)$, $(yz)$ or $(zx)$
+with probability $g/3$ each) \emph{and} the site's carrier fermion parity
+is odd, the selected two environment species at that site are swapped.
+Three design facts are load bearing. (i)~A fixed swap pair breaks cubic
+symmetry at $O(g)$ (anisotropic node corrections at $10\sigma$); the
+rotating $C_3$-covariant triple is protected at all orders \evX{}, \evP{}.
+(ii)~Parity control (not occupancy) is particle--hole even, so the complex
+structure of Sec.~\ref{sec:exactqm} survives at $g>0$ unchanged \evM{}.
+(iii)~The lift gauge of the imprint is \emph{physical}: the permutation
+lift ($|11\rangle\to-|11\rangle$) and the Givens lift differ by a
+parity-controlled sign with identical classical dynamics but per-event
+coherent deficits $2q^2$ versus $2q(1-q)$; we fix the permutation lift
+(minimal decoherence) \evM{}.
+
+Certificates. The connected two-particle correlator
+$C_2=G_2-\det G_1$ is nonzero already at $g=0$---the model is an
+interacting carrier--environment theory at the correlator level, with
+free-fermion structure only per medium realization---so the interaction
+certificate is differential: $\Delta C_2(g)=C_2(g)-C_2(0)$ vanishes
+identically at $g=0$ and switches on linearly,
+$\Delta C_2/g\simeq0.35$ on the exact substrate \evM{}. A control-variant
+experiment (occupancy-controlled imprint, used only as an instrument
+control) separates the parity-blocking contact artifact: $2$--$3\%$ of the
+signal \evM{}.
+
+Survival. The parity control makes the vacuum imprint-transparent, so the
+one-sided ensemble amplitude stays closed:
+$U_g(k)=(1-2gq^2)\,U(k)$ at annealed order---the cone, residues and mass
+are untouched, at a damping cost $\Gamma_{\rm int}=2q^2g$ per cycle
+($\sim0.3\%$ of the free width at $q=0.08$, $g=0.1$) \evP{}. The identity
+that anchors the instrument: the media-ensemble walker average \emph{equals}
+the canonical coherent-vacuum correlator exactly \evM{}. Quenched
+three-dimensional measurement with paired common-noise walkers: the
+per-event law is confirmed at the first cycle to $5\times10^{-4}$ absolute;
+the effect is momentum independent (scalar) to $\le1\%$ across the node
+region, so isotropy survives interaction by measurement as well; beyond
+leading order the re-read (recross) channel partially \emph{recoheres} the
+amplitude, so the asymptotic $\Gamma_{\rm int}$ is bounded above by the law
+\evX{}.
+
+\section{Damping: a theorem and its unique completion}
+\label{sec:damping}
+
+\begin{figure}[!htb]
+\includegraphics[width=0.75\columnwidth]{figs/chord_arc.pdf}
+\caption{Geometry of Theorem~\ref{thm:qbound}. Probabilistic (in-state)
+mixtures of the identity and a quaternion unit lie on the chord (damped
+interior); the two-boundary weights lie on the unitary arc. The isotropic
+node splitting is a property of the whole family
+$E_a(\alpha\openone+\beta C_a)$, for all weights.}
+\label{fig:chord}
+\end{figure}
+
+The dressed quasiparticle of the classical in-state observable is damped:
+$\Gamma(q)=-3\ln[(1-q)^2+q^2]$ exactly, with quality factor
+$Q=\omega_0/\Gamma$ between $0.60$ and $0.90$ across the working range,
+\emph{not} improving as $q\to0$ inside the relativistic window (both
+$\omega_0$ and $\Gamma$ scale with $q$). This is structural:
+
+\begin{theorem}[Q-pinning]\label{thm:qbound}
+For any convex mixture over the legal event set (signed permutations with
+eigenvalue angles in $(\pi/2)\mathbb Z$), the usable phase advance per unit
+decoherence obeys
+$\mathrm{dist}(\arg\lambda,(\pi/2)\mathbb Z)\le\kappa\,\Gamma$ with
+$\kappa=\pi/(2\ln2)$ exactly. Only convexity and the discrete angle set are
+used; correlated media are included. Moreover an isotropic node forces
+$\Gamma>0$: node unitarity requires a deterministic conversion word,
+translation-invariant binary media with deterministic read-window counts
+are exactly the crystals, and both crystal classes destroy the cone. \evP{}
+\end{theorem}
+
+The idealized ordered-dimer environment does achieve the commutator-limited
+decoherence $\Gamma=k^2/2$ per event---the branch-remerging mechanism is
+real---but its velocity fan collapses to the diamond: within the legal
+class, cone and in-state unitarity are mutually exclusive.
+
+The completion is the two-boundary object. The isotropic node splitting
+holds for the whole family $E_a(\alpha\openone+\beta C_a)$ \evP{};
+in-state weights $(1-q,q)$ lie on the damped chord, while the in--out
+boundary choice (uniform final environment term, legitimate in the
+transfer-matrix formalism) moves them radially to the unitary arc
+$(\sqrt{1-q},\sqrt q)$ (Fig.~\ref{fig:chord}): all $|\lambda|=1$ to
+$4\times10^{-16}$ with slope isotropy $1.00005$ and
+$\omega_0$ tunable at the $\sqrt q$ scale \evM{}. This is the
+\emph{unique} completion that is unitary with the cone intact \evP{}. In
+quenched three dimensions the fresh-read law is exact at the first cycle
+(coherent path enumeration, no sampling), with growing recoherent re-read
+corrections thereafter ($11$--$25\%$ by three cycles at $q=0.08$); the
+long-time pole structure of the quenched two-boundary object is open.
+\evM{}
+
+\section{Discussion}
+\label{sec:discussion}
+
+Under the strictest single-fermion contract, the free-fermion sector of the
+three-dimensional problem posed in Ref.~\cite{Wetterich2022} is solved: a
+legal probabilistic cellular automaton whose dynamics is exactly unitary
+quantum mechanics and whose single-carrier excitation on a clustering
+product vacuum is an isotropic Weyl fermion---dispersion and spinor
+residues---extendable to a massive Dirac fermion with an exact tunable
+mass, and to a certified media-mediated interaction under which the free
+spectrum survives at leading order. Every closed form is verified against
+the operators it describes, and every measurement runs behind a
+known-answer gate.
+
+The precise open problems are: (i) the half-filled carrier sector of the
+complex-structure construction in three dimensions; (ii) the long-time
+behavior of the quenched two-boundary propagator (re-read resummation);
+(iii) the continuum limit and the fate of Lorentz symmetry beyond the
+leading cone, including interaction corrections beyond the scalar law; and
+(iv) multi-carrier physics beyond the contact terms already present in the
+extracted quartic action. The damping of the in-state quasiparticle is not
+on this list: it is an exact prediction of the construction, bounded by
+Theorem~\ref{thm:qbound}, and absent from the two-boundary amplitude.
+
+\begin{acknowledgments}
+Derivations, code, verification protocols and drafts were prepared with
+substantial assistance from the AI system Claude (Anthropic); all results
+were machine-verified as described, and the author takes full
+responsibility for the content. The complete verification code, evidence
+logs and research ledger are available at Ref.~\cite{repo}, tag
+\texttt{v1.2-publication-base}.
+\end{acknowledgments}
+
+
+\appendix
+
+\section{Proofs}
+\label{app:proofs}
+
+\subsection{Theorem \ref{thm:finiteray} (finite rays)}
+
+Let the rule conserve particle number in the one-particle sector. Its
+restriction to that sector is a signed permutation of the species basis
+composed with site shifts, so the Bloch operator has matrix elements
+$S(k)_{\alpha\beta}=s_{\alpha\beta}e^{ik\cdot d_{\alpha\beta}}$ with, by
+the unique-jump property, exactly one nonzero entry in each row and column:
+a monomial matrix. Its characteristic polynomial factorizes over the cycles
+of the underlying permutation; a cycle of length $\ell$, accumulated
+displacement $D$ and sign $\sigma$ contributes
+$\lambda^\ell=\sigma\,e^{ik\cdot D}$, i.e.
+$\omega_m(k)=(k\cdot D+\arg\sigma+2\pi m)/\ell$: every branch is exactly
+linear with group velocity $D/\ell$, drawn from the finite set of cycle
+data. A cone $\omega=v|k|$ requires a two-sphere of group velocities. The
+deviation of any finite ray set from a sphere is scale invariant, so no
+continuum limit removes it; and a periodic cycle of rotated rules is again
+unique-jump (products of signed permutations are signed permutations), so
+the theorem applies to the composite rule. \hfill$\square$
+
+\subsection{Theorem \ref{thm:ntwo} (no two-component cone)}
+
+(i) On $\mathfrak{sl}_2(\mathbb R)$ every element satisfies
+$X^2=-\det(X)\openone$, and anticommuting elements are orthogonal in the
+polarization of $\det$. In the basis $\{X,Z,XZ\}$ the squares are
+$+\openone,+\openone,-\openone$: the form $-\det$ has signature $(2,1)$.
+Three pairwise-orthogonal directions therefore cannot all have positive
+norm, so any pairwise-anticommuting real triple has at most two elements
+squaring to $+\openone$: the real Clifford algebra $\mathrm{Cl}(3,0)$ has
+no two-dimensional real representation, and the best possible effective
+metric is $(+,+,-)$. (ii) Independently, at any momentum where the Bloch
+operator is real (all zone corners), a real $2\times2$ matrix with non-real
+spectrum has exactly one complex-conjugate pair of eigenvalues; a
+degenerate \emph{propagating} pair would require two equal non-real
+eigenvalues, which forces the matrix to be a rotation multiple of the
+identity---impossible for a real matrix with non-real diagonal
+entries---so conjugate branches meet only on the real axis (overdamped
+crossings, not nodes). \hfill$\square$
+
+\subsection{The mass identity, Eq.~(\ref{eq:massgap})}
+
+At $k=0$ the momentum factors are the identity, so the direction reversal
+that distinguishes the two $b_m$ sectors is invisible and the axis layers
+act as $U_4(0)\otimes\openone_2$. The mass layer acts on the $b_m$ factor
+alone: $M_2=(1-q_m)\openone+q_m XZ$, a real multiple of a rotation with
+$\arg$-eigenvalues $\pm\arctan[q_m/(1-q_m)]$ and modulus
+$\sqrt{(1-q_m)^2+q_m^2}$. Hence
+$U(0)=U_4(0)\otimes M_2$: the spectrum is the product set, frequencies add
+angles, the multiplet center is unshifted, and the gap is exactly
+$2\arctan[q_m/(1-q_m)]$, independent of $q$. \hfill$\square$
+
+\subsection{Theorem \ref{thm:qbound} (Q-pinning), sketch}
+
+A per-event map is a convex mixture $\lambda=\sum_ip_iu_i$ of points on the
+unit circle at angles in $(\pi/2)\mathbb Z$. By convexity the extremal
+phase-per-damping is attained on a chord between adjacent vertices; for the
+chord $1\to i$, $\lambda=(1-t)+it$ gives
+$\arg\lambda=\arctan\frac{t}{1-t}$ and
+$|\lambda|^2=(1-t)^2+t^2$, and the ratio
+$\arg\lambda/(-\ln|\lambda|)$ is maximized at the midpoint $t=\frac12$,
+where it equals $(\pi/4)/(\tfrac12\ln2)=\pi/(2\ln2)$. For the second
+statement: unitarity of the node eigenvalue of a mixture requires the
+distribution of the conversion count $N$ (mod 4) along a read window to be
+deterministic, by $|\mathbb E[i^N]|^2=(p_0-p_2)^2+(p_1-p_3)^2\le1$ with
+equality only at a vertex; translation-invariant binary media whose
+window counts are deterministic are exactly the two uniform and the two
+staggered crystal configurations (enumerated exactly on rings); and the
+spectra of the corresponding deterministic-word cycles are computed
+explicitly and are never isotropic (a ballistic anisotropic fan in the
+uniform case; two inert axes in the staggered case). Full details and the
+machine checks are in the repository note and script accompanying this
+theorem~\cite{repo}. \hfill$\square$
+
+\section{Verification protocols}
+\label{app:verify}
+
+Every claim tagged \evM{} is an assertion in a runnable script; the
+tolerances quoted below are the assertion thresholds, and each script is
+self-checking (it fails loudly rather than reporting).
+
+\emph{Layer lifts.} The conversion layer is verified densely on the
+one-site Fock space (32 states): the controlled double Givens is a signed
+permutation of the basis, unitary, commutes with fermion parity, is the
+identity on the empty control sector, has single-particle matrix equal to
+the signed-swap block of $C_a$, satisfies $G^2=-\openone$ on the
+one-particle sector, and maps the doubly occupied pair to $+$ itself
+(determinant one), for all three axes, to $10^{-12}$.
+
+\emph{Composite sign coherence.} The full cycle is built as a signed
+permutation of the many-body basis from the stored per-layer sign rules
+(spectator Jordan--Wigner strings for conversions; inversion and wrap
+parity for translations), in the segregated mode ordering. For random
+environment configurations the zero-, one- and two-particle sectors are
+extracted and compared: the one-particle sector must equal the stated rule
+and the two-particle sector the antisymmetrized square $\Lambda^2M_1$,
+exactly. This holds on the full Fock space of a ring substrate ($2^{15}$
+states) and in three-dimensional geometry at $L=2$ (496 pair states) and
+$L=3$ (5778 pair states). Mutation controls certify sensitivity: deleting
+the spectator string produces $8/496$ mismatches; deleting translation
+parity produces $2730/5778$ at $L=3$ and---the recorded caveat---$0$ at
+$L=2$, where two sub-steps per axis make net crossings even.
+
+\emph{Complex structure.} $P$ is applied as the Majorana string with its
+Jordan--Wigner signs; $[\hat S,P]=0$ is checked as an identity of signed
+permutations (both orderings byte-identical), on the full substrate Fock
+space and, in three dimensions, on the sectors
+$\{0,1,2,M-2,M-1,M\}$ using particle--hole duality to reduce the deep
+sectors to one- and two-hole problems; per layer and for the full cycle.
+The unitarity of the complex picture is verified as invariance of the
+induced Hermitian form on random vectors to $10^{-9}$.
+
+\emph{Grassmann extraction.} Local factors are built from the block tables
+over exact rationals; $e^{-L}=K$ is asserted exactly before any action is
+reported, and the inverse map $K\to(\text{perm},\text{signs})$ must
+round-trip. The pipeline is validated term by term against the closed-form
+interaction action of Ref.~\cite{Wetterich2022}.
+
+\section{Measurement pipeline}
+\label{app:instrument}
+
+All \evX{} results use one instrument family. The object is the exact
+per-medium single-particle signed field (the single-carrier sector is
+linear in the field for fixed media, so this is walker-exact with infinite
+walkers), averaged over $R$ media; the media-ensemble average provably
+equals the canonical coherent-vacuum correlator.
+
+\emph{Bloch-matrix estimation.} All $n$ basis launches are evolved, giving
+the full $n\times n$ propagator series $G(t,k)$; the one-cycle operator is
+fit by least squares, $\hat U(k)=G_{t+1}G_t^+$ over a post-transient
+window. Momenta are probed off the lattice grid by direct phase
+contraction, with probe radii inside the node's measured linear range.
+
+\emph{Pooling.} Naive eigenvalue extraction near a two-fold node is
+$\sqrt{\text{noise}}$-ill-conditioned (a noisy nearly defective matrix
+splits its double eigenvalue as the square root of the perturbation);
+pooling is therefore performed on characteristic-polynomial coefficients
+over the symmetry orbit of measurement momenta---a basis-invariant,
+\emph{linear} (hence unbiased) average---before rooting. Slopes use
+symmetric splittings at two step sizes with $\delta k\to0$ Richardson
+extrapolation; errors are jackknife halves of the medium ensemble.
+
+\emph{Gates.} Every production run carries an annealed known-answer row
+through the identical pipeline; a failed gate discards the run. Amplitude
+gates exclude momenta near free-beat amplitude nodes for ratio estimators
+(shot-noise gating alone is insufficient there). Eigenvector work uses the
+$e^{+ik\cdot x}$ contraction (Sec.~\ref{sec:spectrum}). For interaction
+ratios, paired common-noise evolution (identical randomness with the
+imprint on and off) cancels the medium-ensemble variance, which is
+otherwise dominated by low-order conversion caustics.
+
+\emph{Recorded failure modes.} The following estimator pathologies were
+each encountered, diagnosed and firewalled during this program, and are
+listed because they generically afflict lattice pole measurements:
+(i) $\sqrt{\text{noise}}$ splitting at near-degenerate poles;
+(ii) exceptional-point misidentification in damped operators (real double
+eigenvalues accepted as propagating nodes);
+(iii) through-origin fits across a packet's death into the noise floor;
+(iv) ratio blowup at beat-amplitude nodes;
+(v) probing outside the (renormalized) linear cone window;
+(vi) branch mixing under scalar single-pole estimators at two-fold
+degenerate nodes;
+(vii) one-dimensional co-streaming substrates, whose companion locking
+invalidates absolute calibrations that do transfer in three dimensions.
+
+\section{Closed forms}
+\label{app:closedforms}
+
+\begin{table}[!htb]
+\caption{Exact expressions of the free and dressed spectra. All are
+verified against the operators they describe to at least $10^{-9}$;
+$D=\sqrt{1-q}+\sqrt q$.}
+\label{tab:closed}
+\begin{ruledtabular}
+\begin{tabular}{ll}
+node modulus & $|\lambda_0|^2=[(1-q)^2+q^2]^6$\\
+free width & $\Gamma(q)=-3\ln[(1-q)^2+q^2]$\\
+cone speed & $v(q)\colon\ 2/\sqrt3 \to 1.207$ (max at $q\simeq0.30$)\\
+dressing law (1D) & $v=2|1-2q|$\\
+mass gap & $2m=2\arctan[q_m/(1-q_m)]$\\
+mass-layer modulus & $\sqrt{(1-q_m)^2+q_m^2}$ per cycle\\
+massive dispersion & $\cos(\omega-\omega_c)=\cos m\,\cos\varphi(k)$\\
+interaction law & $U_g(k)=(1-2gq^2)\,U(k)$\\
+Q-pinning constant & $\kappa=\pi/(2\ln2)=2.2662$\\
+in--out transfer & $E_a(k)\,[\sqrt{1-q}\,\openone+\sqrt q\,C_a]/D$,
+\ $|\lambda|\equiv1/D$
+\end{tabular}
+\end{ruledtabular}
+\end{table}
+
+Table~\ref{tab:closed} collects the closed forms. Two remarks. The
+in--out transfer's uniform modulus $1/D$ per read is a global scalar
+(every path reads one bit per sub-step) and is absorbed into wave-function
+renormalization; the physical statement is the vanishing of all
+\emph{relative} damping. The quality factor of the in-state quasiparticle,
+$Q=\omega_0/\Gamma$, rises from $0.60$ to $0.90$ over
+$q\in[0.02,0.25]$ and is bounded by $\kappa$ per
+Theorem~\ref{thm:qbound}.
+
+\begin{thebibliography}{99}
+\bibitem{Wetterich2022} C.~Wetterich,
+\emph{Fermionic quantum field theories as probabilistic cellular automata},
+Phys.\ Rev.\ D \textbf{105}, 074502 (2022), arXiv:2111.06728.
+\bibitem{Wetterich2022b} C.~Wetterich,
+\emph{Fermion picture for cellular automata}, arXiv:2203.14081.
+\bibitem{Wetterich2022c} C.~Wetterich,
+\emph{Cellular automaton for spinor gravity in four dimensions},
+arXiv:2211.09002.
+\bibitem{KogutSusskind} J.~Kogut and L.~Susskind,
+\emph{Hamiltonian formulation of Wilson's lattice gauge theories},
+Phys.\ Rev.\ D \textbf{11}, 395 (1975).
+\bibitem{NielsenNinomiya} H.~B.~Nielsen and M.~Ninomiya,
+\emph{Absence of neutrinos on a lattice}, Nucl.\ Phys.\ B \textbf{185}, 20
+(1981).
+\bibitem{Kitagawa} T.~Kitagawa, M.~S.~Rudner, E.~Berg, and E.~Demler,
+\emph{Exploring topological phases with quantum walks},
+Phys.\ Rev.\ A \textbf{82}, 033429 (2010).
+\bibitem{Kac} M.~Kac,
+\emph{A stochastic model related to the telegrapher's equation},
+Rocky Mountain J.\ Math.\ \textbf{4}, 497 (1974).
+\bibitem{Wetterich2021NPB} C.~Wetterich,
+\emph{Probabilistic cellular automata for interacting fermionic quantum
+field theories}, Nucl.\ Phys.\ B \textbf{963}, 115296 (2021),
+arXiv:2007.06366.
+\bibitem{WetterichPotential} C.~Wetterich,
+\emph{Probabilistic cellular automaton for quantum particle in a
+potential}, arXiv:2211.17034.
+\bibitem{KreuzkampWetterich} A.~Kreuzkamp and C.~Wetterich,
+\emph{Quantum systems from random probabilistic automata},
+arXiv:2405.09829.
+\bibitem{Wetterich2025} C.~Wetterich,
+\emph{Complex wave functions, CPT and quantum field theory for classical
+generalized Ising models}, arXiv:2505.24392.
+\bibitem{tHooft} G.~'t~Hooft,
+\emph{The Cellular Automaton Interpretation of Quantum Mechanics},
+Fundamental Theories of Physics Vol.~185 (Springer, 2016),
+arXiv:1405.1548.
+\bibitem{BialynickiBirula} I.~Bia{\l}ynicki-Birula,
+\emph{Weyl, Dirac, and Maxwell equations on a lattice as unitary cellular
+automata}, Phys.\ Rev.\ D \textbf{49}, 6920 (1994).
+\bibitem{Meyer} D.~A.~Meyer,
+\emph{From quantum cellular automata to quantum lattice gases},
+J.\ Stat.\ Phys.\ \textbf{85}, 551 (1996).
+\bibitem{DArianoPerinotti} G.~M.~D'Ariano and P.~Perinotti,
+\emph{Derivation of the Dirac equation from principles of information
+processing}, Phys.\ Rev.\ A \textbf{90}, 062106 (2014).
+\bibitem{BisioDAriano} A.~Bisio, G.~M.~D'Ariano, and P.~Perinotti,
+\emph{Simple derivation of the Weyl and Dirac quantum cellular automata},
+Phys.\ Rev.\ A \textbf{95}, 062344 (2017).
+\bibitem{Arrighi} P.~Arrighi,
+\emph{An overview of quantum cellular automata},
+Nat.\ Comput.\ \textbf{18}, 885 (2019).
+\bibitem{Farrelly} T.~Farrelly,
+\emph{A review of quantum cellular automata},
+Quantum \textbf{4}, 368 (2020).
+\bibitem{MlodinowBrunNoGo} L.~Mlodinow and T.~A.~Brun,
+\emph{Quantum field theory from a quantum cellular automaton in one
+spatial dimension and a no-go theorem in higher dimensions},
+Phys.\ Rev.\ A \textbf{102}, 042211 (2020).
+\bibitem{BrunMlodinow2D} T.~A.~Brun and L.~Mlodinow,
+\emph{Quantum cellular automata and quantum field theory in two spatial
+dimensions}, Phys.\ Rev.\ A \textbf{102}, 062222 (2020).
+\bibitem{MlodinowBrun3D} L.~Mlodinow and T.~A.~Brun,
+\emph{Fermionic and bosonic quantum field theories from quantum cellular
+automata in three spatial dimensions},
+Phys.\ Rev.\ A \textbf{103}, 052203 (2021).
+\bibitem{Susskind} L.~Susskind,
+\emph{Lattice fermions}, Phys.\ Rev.\ D \textbf{16}, 3031 (1977).
+\bibitem{DoublingQW} C.~Gupta and A.~J.~Short,
+\emph{Fermion doubling in Dirac quantum walks},
+Phys.\ Rev.\ A \textbf{114}, 012208 (2026), arXiv:2601.15885.
+\bibitem{Bergholtz} E.~J.~Bergholtz, J.~C.~Budich, and F.~K.~Kunst,
+\emph{Exceptional topology of non-Hermitian systems},
+Rev.\ Mod.\ Phys.\ \textbf{93}, 015005 (2021).
+\bibitem{repo} P.~Topa, \emph{coincube: verification code for this
+paper}, \url{https://github.com/PiotrTopa/coincube}, tag \texttt{v1.0.0}.
+\end{thebibliography}
+
+\end{document}

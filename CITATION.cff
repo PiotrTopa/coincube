@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+title: "coincube: verification code for 'Fermionic quantum field theories as probabilistic cellular automata in three dimensions'"
+message: "If you use this code, please cite the accompanying paper."
+type: software
+authors:
+  - family-names: Topa
+    given-names: Piotr
+year: 2026
+repository-code: "https://github.com/PiotrTopa/coincube"
+license: MIT
+preferred-citation:
+  type: article
+  title: "Fermionic quantum field theories as probabilistic cellular automata in three dimensions"
+  authors:
+    - family-names: Topa
+      given-names: Piotr
+  year: 2026
+  notes: "Manuscript; see paper/main.pdf in this repository."
