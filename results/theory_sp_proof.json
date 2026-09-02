@@ -1,0 +1,67 @@
+{
+ "seed": 20260902,
+ "lemma": {
+  "sigma_found": true,
+  "sigma": -1,
+  "inversions_mod2": 0,
+  "even_commutes_with_offblock_majoranas": 0.0,
+  "factorization_identity_dev": 0.0,
+  "odd_mutation_violates": 11.500910471534073
+ },
+ "conversion": {
+  "stored_rule_equals_givens_product": 0.0,
+  "parity_even_dev": 0.0,
+  "block_commutator_with_P4": 0.0,
+  "pairs_same_site": true
+ },
+ "conversion_controlled": {
+  "signed_permutation_dev": 0.0,
+  "parity_even_dev": 0.0,
+  "block_commutator_with_P_carrier": 0.0
+ },
+ "translation": {
+  "conjugation_law_dev": 0.0,
+  "both_parities_exercised": true,
+  "shift_parity_by_L": {
+   "2": [
+    0,
+    0,
+    0
+   ],
+   "3": [
+    0,
+    0,
+    0
+   ],
+   "4": [
+    0,
+    0,
+    0
+   ],
+   "5": [
+    0,
+    0,
+    0
+   ]
+  },
+  "formula_even_all_L_2_to_64": true,
+  "constructed_matches_formula": true
+ },
+ "env_imprint": {
+  "env_swap_parity_even": 0.0,
+  "env_swap_commutes_with_P_carrier": 0.0,
+  "imprint": {
+   "perm": {
+    "parity_even": 0.0,
+    "commutes_with_P_carrier": 0.0,
+    "projector_form": 0.0
+   },
+   "givens": {
+    "parity_even": 0.0,
+    "commutes_with_P_carrier": 0.0,
+    "projector_form": 0.0
+   }
+  },
+  "odd_mutation_fails": 2.0
+ }
+}

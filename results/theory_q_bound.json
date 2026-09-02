@@ -4,6 +4,9 @@
   "chord_max": 2.266180070913596,
   "chord_argmax_p": 0.49999999999999994,
   "kappa_exact": 2.266180070913597,
+  "naive_ratio_at_midpoint": 2.266180070913596,
+  "naive_ratio_near_endpoint": 1570795.3268188115,
+  "naive_diverges": true,
   "hull_scan_max": 2.2321648318273497,
   "kappa_of_ell": {
    "4": 2.266180070913596,
@@ -18,14 +21,14 @@
    "32": 0.9983920678314547
   }
  },
- "chord_seconds": 0.5,
+ "chord_seconds": 0.8,
  "products": {
   "span_residual": 4.440892098500626e-16,
   "hull_max_l1": 0.9555353106169497,
   "max_dist_over_Gamma": 1.520057299600651,
   "kappa": 2.266180070913597
  },
- "products_seconds": 0.9,
+ "products_seconds": 1.4,
  "boundary_S3": {
   "rows": [
    {
@@ -50,6 +53,23 @@
   "kappa": 2.266180070913597
  },
  "boundary_S3_seconds": 0.0,
+ "scope_k": {
+  "q": 0.02,
+  "k": [
+   0.4,
+   0.0,
+   0.0
+  ],
+  "min_mode_ratio": 6.063629480782286,
+  "all_ratios": [
+   6.063629480782286,
+   6.063629480782365,
+   6.337786199831754,
+   6.337786199831758
+  ],
+  "kappa": 2.266180070913597
+ },
+ "scope_k_seconds": 0.0,
  "family": {
   "rows": [
    {
@@ -71,8 +91,11 @@
  },
  "family_seconds": 0.0,
  "count": {
-  "window_law_verified": true,
+  "unitary_iff_deterministic_count": true,
+  "bernoulli_window_factor_dev": 1.1102230246251565e-16,
+  "bernoulli_min_unitarity_gap": 0.09499999999999997,
   "deterministic_count_configs": {
+   "6": 4,
    "8": 4,
    "10": 4,
    "7": 2
@@ -80,7 +103,7 @@
  },
  "count_seconds": 0.0,
  "crystal": {
-  "unitary_dev": 2.2240996070374893e-16,
+  "unitary_dev": 4.440910891194927e-16,
   "U0_is_minus_I_dev": 0.0,
   "fan_100_pattern_dev": 1.333377852574813e-12,
   "fan_111_max": 3.4641016151354456,
@@ -109,9 +132,9 @@
  "idealized": {
   "U0_minus_I_dev": 0.0,
   "Gamma_over_khalf2": [
-   1.000158766752381,
-   1.000635605256364,
-   1.002551077783083
+   1.0001987490321331,
+   1.000795872332629,
+   1.0031976025787628
   ],
   "fan_111": [
    -0.5773502691892409,
@@ -121,6 +144,49 @@
   ]
  },
  "idealized_seconds": 0.0,
+ "media3d": {
+  "per_line_counts_deterministic": true,
+  "family_closed_under_translations": true,
+  "family_closed_under_streaming": true,
+  "crystal_members_per_axis": 2,
+  "noncrystal_members_per_axis": 14,
+  "ensemble_rows": [
+   {
+    "r": 0.5,
+    "top_mod_eig": 0.125,
+    "e_cubed": 0.125,
+    "Gamma_per_cycle": 2.0794415416798357
+   },
+   {
+    "r": 0.3,
+    "top_mod_eig": 0.19511200000000006,
+    "e_cubed": 0.19511199999999995,
+    "Gamma_per_cycle": 1.6341815263250163
+   }
+  ],
+  "quenched_exhaustive": {
+   "n_media": 4096,
+   "unitary_dev": 0.0,
+   "n_scalar_at_corner": 72,
+   "n_band_groups": 11864,
+   "n_groups_excluded": 11864,
+   "n_groups_isotropy_candidate": 0,
+   "scope_note": "folded corner momentum only (= Gamma + all 8 physical BZ corners); interior supercell momenta not exhaustively excluded"
+  },
+  "line_factorized_sample": {
+   "n_media": 400,
+   "unitary_dev": 0.0,
+   "n_band_groups": 1284,
+   "n_groups_excluded": 1284,
+   "n_groups_isotropy_candidate": 0
+  },
+  "witness_teeth_arc": {
+   "n_groups": 2,
+   "excluded": 0,
+   "candidates": 2
+  }
+ },
+ "media3d_seconds": 31.0,
  "arc": {
   "symbolic_isotropy_general_alpha_beta": true,
   "arc_rows": [
@@ -130,8 +196,8 @@
     "mult": 2,
     "omega0": 0.3672682753737218,
     "cf_dev": 2.2887833992611187e-16,
-    "v": 1.1834628610237015,
-    "aniso": 8.881784197001252e-16
+    "v": 1.183462861023702,
+    "aniso": 1.1102230246251565e-15
    },
    {
     "s": 0.2,
@@ -148,8 +214,8 @@
     "mult": 2,
     "omega0": 1.5920107678835207,
     "cf_dev": 1.457167719820518e-16,
-    "v": 1.2071016023620587,
-    "aniso": 1.3322676295501878e-15
+    "v": 1.2071016023620589,
+    "aniso": 1.1102230246251565e-15
    },
    {
     "s": 0.5,
@@ -158,7 +224,7 @@
     "omega0": 2.1229464508939198,
     "cf_dev": 1.1102230246251565e-16,
     "v": 1.2033363933155437,
-    "aniso": 6.661338147750939e-16
+    "aniso": 4.440892098500626e-16
    },
    {
     "s": 0.6,
@@ -166,12 +232,12 @@
     "mult": 2,
     "omega0": 2.6115470193763812,
     "cf_dev": 1.1102230246251565e-16,
-    "v": 1.1909503481647234,
+    "v": 1.190950348164724,
     "aniso": 6.661338147750939e-16
    }
   ],
-  "max_aniso": 1.3322676295501878e-15,
+  "max_aniso": 1.1102230246251565e-15,
   "max_unitary_dev": 8.881784197001252e-16
  },
- "arc_seconds": 2.5
+ "arc_seconds": 3.4
 }

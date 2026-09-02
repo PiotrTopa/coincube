@@ -19,12 +19,20 @@ Checks (all exact, integer signs):
      P = Majorana string over the 4L^3 carrier modes (segregated gauge);
      P^2 = +1 (M = 32, 108: M(M-1)/2 even);
      [S, P] = 0 verified on the sector pairs the physical construction uses:
-       0p <-> Mp   (sigma_full = +1 = sigma_vac),
-       1p <-> (M-1)p = 1h   (per LAYER and for the full cycle; L = 2 and 3),
-       2p <-> (M-2)p = 2h   (full cycle; L = 2).
+       0p <-> Mp   (sigma_full = +1 = sigma_vac; also at L = 4),
+       1p <-> (M-1)p = 1h   (per LAYER and for the full cycle; L = 2, 3, 4),
+       2p <-> (M-2)p = 2h   (full cycle; L = 2 and 3).
      The eta = sign(N_c - M/2) grading argument is size- and dimension-
      independent (every layer conserves carrier number) — restated in the
      note; these checks make (K, I) explicit in 3D on the checked sectors.
+  3. ALL-sector, ALL-size coverage is not inferred from these samples: it is
+     PROVEN per layer, block-locally, in scripts/theory_sp_proof.py (string-
+     factorization lemma + finite block checks + the translation sign
+     formula).  The sector runs here are the independent belt-and-braces:
+     0/1/2/3-carrier sectors and PH duals at L = 2, 3 and 1p/2p/1h at L = 4,
+     with >= 4 env draws at each of q = 0.15 and q = 0.3 for the extended
+     checks (bitmask engine, cross-validated against the tuple engine and
+     the instrument before use).
 
 Run:  PYTHONPATH=src .venv/bin/python scripts/theory_3d_certs.py
 """
@@ -340,6 +348,251 @@ def check_lattice(lat, rng, ntrial, do_2h):
     return res
 
 
+# ----------------------------------------------------------------------------
+# fast bitmask sector engine (extended coverage; cross-validated against the
+# tuple engine and the instrument below before use)
+# ----------------------------------------------------------------------------
+
+def conv_ops_of(lat, env_a, a):
+    """precompute the env=1 signed-pair-swap ops of one conversion layer:
+    (m1, m2, sgn_if_src_m1, sgn_if_src_m2, between-bits mask)"""
+    ops = []
+    for s in range(lat.NS):
+        if not env_a[s]:
+            continue
+        for (c1, c2) in PAIRS[a]:
+            m1, m2 = lat.mode(s, c1), lat.mode(s, c2)
+            btwm = ((1 << m2) - 1) & ~((1 << (m1 + 1)) - 1)
+            ops.append((m1, m2, int(SGN[a][c1]), int(SGN[a][c2]), btwm))
+    return ops
+
+
+def conv_mask(occ, sign, ops):
+    """L2 on an occupancy bitmask: identical rule to conv_state."""
+    for (m1, m2, s1_, s2_, btwm) in ops:
+        o1 = (occ >> m1) & 1
+        if o1 == ((occ >> m2) & 1):
+            continue
+        b = bin(occ & btwm).count("1")
+        sign *= (s1_ if o1 else s2_) * (-1 if b & 1 else 1)
+        occ ^= (1 << m1) | (1 << m2)
+    return occ, sign
+
+
+def shift_mask(smap, occ, sign, M):
+    """L1 on an occupancy bitmask: identical rule to shift_state."""
+    img = [int(smap[m]) for m in range(M) if (occ >> m) & 1]
+    n = len(img)
+    if n > 24:               # hole sectors: O(n log n) parity via argsort
+        arr = np.array(img)
+        order = np.argsort(arr, kind="stable")
+        par = 0
+        seen = np.zeros(n, dtype=bool)
+        for i in range(n):
+            if seen[i]:
+                continue
+            j, ln = i, 0
+            while not seen[j]:
+                seen[j] = True
+                j = int(order[j])
+                ln += 1
+            par ^= (ln - 1) & 1
+        inv = par
+    else:
+        inv = 0
+        for i in range(n):
+            vi = img[i]
+            for j in range(i + 1, n):
+                if vi > img[j]:
+                    inv += 1
+        inv &= 1
+    occ2 = 0
+    for m in img:
+        occ2 |= 1 << m
+    return occ2, sign * (-1 if inv else 1)
+
+
+def mask_layer_seq(lat, env0, smaps):
+    seq = []
+    env_run = [f.copy() for f in env0]
+    for a in range(3):
+        for sub in range(2):
+            seq.append(("conv", conv_ops_of(lat, env_run[a], a)))
+            seq.append(("shift", smaps[a]))
+            env_run[a] = stream_env(lat, env_run[a], (a + 1) % 3,
+                                    (2 * a + sub) % 2)
+    return seq
+
+
+def mask_cycle_one(lat, seq, occ0):
+    occ, sg = occ0, 1
+    M = lat.M
+    for kind, arg in seq:
+        if kind == "conv":
+            occ, sg = conv_mask(occ, sg, arg)
+        else:
+            occ, sg = shift_mask(arg, occ, sg, M)
+    return occ, sg
+
+
+def majorana_sign_mask(occ, M):
+    """majorana_sign for a bitmask state (same convention)."""
+    sg = 1
+    state = occ
+    for i in range(M):
+        if bin(state & ((1 << i) - 1)).count("1") & 1:
+            sg = -sg
+        state ^= (1 << i)
+    return sg
+
+
+def smaps_of(lat):
+    return [np.array([lat.shift_mode(m, a) for m in range(lat.M)])
+            for a in range(3)]
+
+
+def wedge_predict(modes, p1, s1):
+    """Lambda^n prediction: image modes, product sign x inversion parity."""
+    img = [int(p1[m]) for m in modes]
+    sg = 1
+    for m in modes:
+        sg *= int(s1[m])
+    inv = sum(1 for i in range(len(img)) for j in range(i + 1, len(img))
+              if img[i] > img[j])
+    return tuple(sorted(img)), sg * (-1 if inv % 2 else 1)
+
+
+def check_extended(rng, ndraw=4, qs=(0.15, 0.3)):
+    """Extended coverage (belt and braces on top of the per-layer proof of
+    scripts/theory_sp_proof.py): 3-carrier sectors at L = 2 and 3; the
+    M-2 sector at L = 3 via PH duality to 2 holes; 1p/2p (+ 1h duality and
+    sigma_full) at L = 4; ndraw env draws at each q in qs."""
+    res = {}
+
+    # engine cross-validation at L = 2, one draw: bitmask engine == tuple
+    # engine on 1p and 2p (perm and sign, state by state)
+    lat = Lattice(2)
+    env0 = [(rng.random(lat.NS) < 0.3).astype(np.int8) for _ in range(3)]
+    smaps = smaps_of(lat)
+    seq = mask_layer_seq(lat, env0, smaps)
+    states_1p = [(m,) for m in range(lat.M)]
+    states_2p = list(itertools.combinations(range(lat.M), 2))
+    p1, s1, _ = cycle_sector(lat, states_1p, env0)
+    p2, s2, _ = cycle_sector(lat, states_2p, env0)
+    dev = 0
+    for m in range(lat.M):
+        occ, sg = mask_cycle_one(lat, seq, 1 << m)
+        if occ != (1 << int(p1[m])) or sg != int(s1[m]):
+            dev += 1
+    for idx, (i, j) in enumerate(states_2p):
+        occ, sg = mask_cycle_one(lat, seq, (1 << i) | (1 << j))
+        st = states_2p[int(p2[idx])]
+        if occ != ((1 << st[0]) | (1 << st[1])) or sg != int(s2[idx]):
+            dev += 1
+    # majorana_sign_mask == majorana_sign
+    for st in states_2p[:50]:
+        if majorana_sign_mask((1 << st[0]) | (1 << st[1]), lat.M) != \
+                majorana_sign(st, lat.M):
+            dev += 1
+    res["engine_crossval_mismatches"] = int(dev)
+
+    for L in (2, 3, 4):
+        lat = Lattice(L)
+        M = lat.M
+        smaps = smaps_of(lat)
+        entry = {"M": M, "draws_per_q": ndraw, "qs": list(qs)}
+        n3_mis = n2_mis = n1_mis = dual1_mis = dual2_mis = 0
+        sig_full = []
+        n3_states = n2_states = 0
+        for q in qs:
+            for _ in range(ndraw):
+                env0 = [(rng.random(lat.NS) < q).astype(np.int8)
+                        for _ in range(3)]
+                seq = mask_layer_seq(lat, env0, smaps)
+                # 1p: bitmask engine vs the instrument (exact reference)
+                ip, isg = instrument_1p(lat, env0)
+                p1v = np.empty(M, dtype=np.int64)
+                s1v = np.empty(M, dtype=np.int64)
+                for m in range(M):
+                    occ, sg = mask_cycle_one(lat, seq, 1 << m)
+                    p1v[m] = occ.bit_length() - 1
+                    s1v[m] = sg
+                n1_mis += int((p1v != ip).sum() + (s1v != isg).sum())
+
+                if L <= 3:
+                    # 3p wedge certificate: full sector
+                    for st in itertools.combinations(range(M), 3):
+                        occ0 = (1 << st[0]) | (1 << st[1]) | (1 << st[2])
+                        occ, sg = mask_cycle_one(lat, seq, occ0)
+                        pmodes, psg = wedge_predict(st, p1v, s1v)
+                        pocc = 0
+                        for m in pmodes:
+                            pocc |= 1 << m
+                        if occ != pocc or sg != psg:
+                            n3_mis += 1
+                        n3_states += 1
+                if L >= 3:
+                    # 2p wedge certificate (needed for the 2h duality too)
+                    st2 = list(itertools.combinations(range(M), 2))
+                    p2v = {}
+                    s2v = {}
+                    for st in st2:
+                        occ0 = (1 << st[0]) | (1 << st[1])
+                        occ, sg = mask_cycle_one(lat, seq, occ0)
+                        pmodes, psg = wedge_predict(st, p1v, s1v)
+                        pocc = (1 << pmodes[0]) | (1 << pmodes[1])
+                        if occ != pocc or sg != psg:
+                            n2_mis += 1
+                        n2_states += 1
+                        p2v[st] = pmodes
+                        s2v[st] = sg
+                    if L == 3:
+                        # M-2 sector via PH duality to 2 holes:
+                        # S(complement of st) must be complement of S(st)
+                        # with the P-sign relation
+                        full = (1 << M) - 1
+                        for st in st2:
+                            occ0 = full ^ ((1 << st[0]) | (1 << st[1]))
+                            occ, sg = mask_cycle_one(lat, seq, occ0)
+                            img = p2v[st]
+                            pocc = full ^ ((1 << img[0]) | (1 << img[1]))
+                            sP_in = majorana_sign_mask(
+                                (1 << st[0]) | (1 << st[1]), M)
+                            sP_out = majorana_sign_mask(
+                                (1 << img[0]) | (1 << img[1]), M)
+                            if occ != pocc or sg * sP_in != sP_out * s2v[st]:
+                                dual2_mis += 1
+                if L == 4:
+                    # 1h duality + sigma_full
+                    full = (1 << M) - 1
+                    for m in range(M):
+                        occ0 = full ^ (1 << m)
+                        occ, sg = mask_cycle_one(lat, seq, occ0)
+                        mp = int(p1v[m])
+                        pocc = full ^ (1 << mp)
+                        sP_in = majorana_sign_mask(1 << m, M)
+                        sP_out = majorana_sign_mask(1 << mp, M)
+                        if occ != pocc or sg * sP_in != sP_out * int(s1v[m]):
+                            dual1_mis += 1
+                    occ, sg = mask_cycle_one(lat, seq, full)
+                    assert occ == full
+                    sig_full.append(int(sg))
+        entry["n_1p_mismatch_vs_instrument"] = int(n1_mis)
+        if L <= 3:
+            entry["n_3p_mismatch_vs_wedge"] = int(n3_mis)
+            entry["n_3p_states_checked"] = int(n3_states)
+        if L >= 3:
+            entry["n_2p_mismatch_vs_wedge"] = int(n2_mis)
+            entry["n_2p_states_checked"] = int(n2_states)
+        if L == 3:
+            entry["n_Mminus2_duality_mismatch"] = int(dual2_mis)
+        if L == 4:
+            entry["n_1h_duality_mismatch"] = int(dual1_mis)
+            entry["sigma_full"] = sig_full
+        res[f"L{L}"] = entry
+    return res
+
+
 def mutation_controls(rng):
     """the checks must FAIL under wrong sign conventions (teeth check):
     (a) dropping the conversion spectator string (L = 2);
@@ -402,6 +655,9 @@ def main():
     print(f"[{time.time() - t0:6.1f}s] L = 3 done")
     out["mutation_controls"] = mutation_controls(rng)
     print(f"[{time.time() - t0:6.1f}s] mutation controls done")
+    out["extended"] = check_extended(rng, ndraw=4, qs=(0.15, 0.3))
+    print(f"[{time.time() - t0:6.1f}s] extended coverage done "
+          "(3p at L=2,3; M-2 at L=3; 1p/2p/1h at L=4)")
 
 
     for key in ("L2", "L3"):
@@ -415,6 +671,18 @@ def main():
     # the checks must have teeth: wrong conventions fail
     assert out["mutation_controls"]["no_string"]["mismatches"] > 0
     assert out["mutation_controls"]["no_shift_parity"]["mismatches"] > 0
+    # extended coverage (4 draws at each of q = 0.15, 0.3 per check)
+    ext = out["extended"]
+    assert ext["engine_crossval_mismatches"] == 0
+    for L in (2, 3, 4):
+        assert ext[f"L{L}"]["n_1p_mismatch_vs_instrument"] == 0
+    assert ext["L2"]["n_3p_mismatch_vs_wedge"] == 0
+    assert ext["L3"]["n_3p_mismatch_vs_wedge"] == 0
+    assert ext["L3"]["n_2p_mismatch_vs_wedge"] == 0
+    assert ext["L3"]["n_Mminus2_duality_mismatch"] == 0
+    assert ext["L4"]["n_2p_mismatch_vs_wedge"] == 0
+    assert ext["L4"]["n_1h_duality_mismatch"] == 0
+    assert all(s == 1 for s in ext["L4"]["sigma_full"])
     print("all headline assertions passed")
     RESULTS.parent.mkdir(exist_ok=True)
     RESULTS.write_text(json.dumps(out, indent=1))

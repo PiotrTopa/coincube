@@ -16,7 +16,7 @@
    "distinct": true
   }
  },
- "identities_seconds": 0.5,
+ "identities_seconds": 0.6,
  "clifford": {
   "per_q": [
    {
@@ -146,8 +146,24 @@
    "k_02": 0.037634591410337884,
    "k_04": 0.12335385550534665
   },
-  "min_pairwise_gap_off_spectator_loci": 6.630052796039075e-05,
-  "argmin_second_distance_to_special": 0.3141592653589793,
+  "surviving_diagonal_node": {
+   "k_over_pi": [
+    0.2729121894824682,
+    0.27293020675056257,
+    0.2729261910458273
+   ],
+   "gap": 1.1150912609939193e-16,
+   "seed_dist": 0.00042183467167343253
+  },
+  "surviving_mirror_curve_point": {
+   "k_over_pi": [
+    0.6071841295816796,
+    0.5000000000000001,
+    0.711939450449943
+   ],
+   "gap": 5.551115123125783e-17,
+   "ky_minus_half_pi": 2.220446049250313e-16
+  },
   "min_freq_gap_near_Gamma": 0.10546112124167983,
   "scale_2m": 0.10516612322188344,
   "scale_2m_rho6": 0.04348552151821324,
@@ -163,5 +179,5 @@
   },
   "pointwise_chi_net_zero": true
  },
- "census_seconds": 0.1
+ "census_seconds": 1.1
 }

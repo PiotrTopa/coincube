@@ -4,7 +4,8 @@ message: "If you use this code, please cite the accompanying paper."
 type: software
 authors:
   - family-names: Topa
-    given-names: Piotr
+    given-names: "Piotr Stanisław"
+    orcid: "https://orcid.org/0009-0005-2870-2463"
 year: 2026
 repository-code: "https://github.com/PiotrTopa/coincube"
 license: MIT
@@ -13,6 +14,7 @@ preferred-citation:
   title: "Fermionic quantum field theories as probabilistic cellular automata in three dimensions"
   authors:
     - family-names: Topa
-      given-names: Piotr
+      given-names: "Piotr Stanisław"
+      orcid: "https://orcid.org/0009-0005-2870-2463"
   year: 2026
   notes: "Manuscript; see paper/main.pdf in this repository."

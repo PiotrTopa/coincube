@@ -1,0 +1,9 @@
+{
+ "d8_is_d4_tensor_diag1m1": true,
+ "c8_is_c4_tensor_id": true,
+ "mass_is_id_tensor_XZ": true,
+ "conversion_bm_blindness_dev": 0.0,
+ "identity_I_vector_k_symbolic": true,
+ "identity_II_k0_symbolic": true,
+ "production_operator_dev": 1.2412670766236366e-16
+}

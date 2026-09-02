@@ -1,12 +1,16 @@
 #!/usr/bin/env python
-"""M8 pull check: the measured quenched massive dispersion against the EXACT
-operator branches (not the leading-order sqrt(m^2 + v^2 k^2) form), from the
-committed instrument output results/m8_corner.json.
+"""M8 pull check: the measured massive dispersion against the EXACT operator
+branches (not the leading-order sqrt(m^2 + v^2 k^2) form), from the committed
+instrument output results/m8_corner.json.
 
 The exact upper branch is computed from annealed_u8 at the same momenta; the
 center convention matches the figure (exact-operator multiplet center at the
-corner). Asserts every (family, delta) point lies within PULL_MAX jackknife
-errors of the exact branch.
+corner). BOTH instrument rows are reported: the annealed (gate) row's pulls
+expose the estimator's own bias with its smaller error bars; the quenched
+row is the physics claim. PULL_MAX is a catastrophe gate in the sense of the
+paper's gate policy (it does not certify accuracy), and the nine points per
+row share media blocks and the center estimate, so they are correlated --
+the worst pull is reported, not a chi^2.
 """
 import json
 import sys
@@ -29,22 +33,31 @@ def upper_and_center(kvec):
 
 
 data = json.load(open("results/m8_corner.json"))
-row = [r for r in data if r["mode"] == "quenched"][0]
 om_c = upper_and_center(K0)[1]
-worst = 0.0
-print(f"{'fam':>4} {'delta':>6} {'meas':>8} {'exact':>8} {'sig':>7} {'pull':>6}")
-for name, dv in (("100", (1, 0, 0)), ("110", (1, 1, 0)), ("111", (1, 1, 1))):
-    u = np.array(dv, float)
-    u /= np.linalg.norm(u)
-    for dstr, (val, sig) in sorted(row["rows"][name].items(),
-                                   key=lambda kv: float(kv[0])):
-        d = float(dstr)
-        ex = upper_and_center(K0 + d * u)[0] - om_c
-        pull = (val - ex) / sig
-        worst = max(worst, abs(pull))
-        print(f"{name:>4} {d:>6.3f} {val:>8.4f} {ex:>8.4f} {sig:>7.4f} "
-              f"{pull:>6.2f}")
-print(f"worst |pull| = {worst:.2f}")
-assert worst < PULL_MAX, f"pull check FAILED: worst |pull| = {worst:.2f}"
-print(f"[gate PASSED] all points within {PULL_MAX} jackknife errors "
-      "of the exact branches")
+worsts = {}
+for mode in ("annealed", "quenched"):
+    row = [r for r in data if r["mode"] == mode][0]
+    worst = 0.0
+    print(f"-- {mode} row --")
+    print(f"{'fam':>4} {'delta':>6} {'meas':>8} {'exact':>8} {'sig':>7} "
+          f"{'pull':>6}")
+    for name, dv in (("100", (1, 0, 0)), ("110", (1, 1, 0)),
+                     ("111", (1, 1, 1))):
+        u = np.array(dv, float)
+        u /= np.linalg.norm(u)
+        for dstr, (val, sig) in sorted(row["rows"][name].items(),
+                                       key=lambda kv: float(kv[0])):
+            d = float(dstr)
+            ex = upper_and_center(K0 + d * u)[0] - om_c
+            pull = (val - ex) / sig
+            worst = max(worst, abs(pull))
+            print(f"{name:>4} {d:>6.3f} {val:>8.4f} {ex:>8.4f} {sig:>7.4f} "
+                  f"{pull:>6.2f}")
+    worsts[mode] = worst
+    print(f"  worst |pull| ({mode}) = {worst:.2f}")
+assert worsts["quenched"] < PULL_MAX, \
+    f"pull check FAILED: quenched worst |pull| = {worsts['quenched']:.2f}"
+assert worsts["annealed"] < PULL_MAX, \
+    f"pull check FAILED: gate-row worst |pull| = {worsts['annealed']:.2f}"
+print(f"[gate PASSED] both rows within {PULL_MAX} jackknife errors of the "
+      "exact branches (correlated points; worst-pull statistic)")

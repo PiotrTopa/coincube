@@ -1,0 +1,24 @@
+  control A (noise 0.0):
+     100 ratio 1.0000  diamond 1.0000  sig 0.0000
+     110 ratio 1.4142  diamond 1.4142  sig 0.0000
+     111 ratio 1.7321  diamond 1.7321  sig 0.0000
+      r1 ratio 1.5745  diamond 1.5745  sig 0.0000
+      r2 ratio 1.5928  diamond 1.5928  sig 0.0000
+  control A (noise 0.003):
+     100 ratio 1.0000  diamond 1.0000  sig 0.0000
+     110 ratio 1.4142  diamond 1.4142  sig 0.0172
+     111 ratio 1.7220  diamond 1.7321  sig 0.0187
+      r1 ratio 1.5600  diamond 1.5745  sig 0.0192
+      r2 ratio 1.6113  diamond 1.5928  sig 0.0241
+  [control A PASSED] estimator returns the diamond on a diamond truth
+exact pooled-pipeline prediction (broken-triple control, q=0.08):
+  100:1.0000  110:1.0008  111:1.0012  r1:0.6507  r2:1.1957
+quenched evolve done (338s, R=1200, L=48, NB=10)
+   fam  exact_r   meas_r  sig_jk   pull
+   100   1.0000   1.0000  0.0000    nan
+   110   1.0008   1.0006  0.0008  -0.16
+   111   1.0012   1.0010  0.0011  -0.19
+    r1   0.6507   0.5997  0.0670  -0.76
+    r2   1.1957   1.1686  0.0286  -0.95
+[control PASSED] estimator recovers anisotropic truth; ratios are not pinned to 1
+written: results/w3c_positive_control.json

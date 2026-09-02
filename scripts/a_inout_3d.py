@@ -11,12 +11,19 @@ of the same physical bit (tracked through the cross-streaming by an id field)
 must see the same value; inconsistent branch sets contribute nothing.
 
 Fresh-read law prediction: G_io/Z = [M_io]^t with per-sub-step transfer
-E(k)(c + sC), c = sqrt(1-q)/D, s = sqrt(q)/D. Deviations = genuine 3D
-recross corrections — expected small (cross-streaming), unlike the 1D
-substrate where re-reads dominate.
+E(k)(c + sC), c = sqrt(1-q)/D, s = sqrt(q)/D.  HEADLINE CLAIMS (asserted):
+the law is EXACT at t = 1 (every read is fresh within the first cycle);
+from t = 2 genuine 3D recross corrections appear (nonzero, asserted) and
+stay bounded (rel. deviation < 0.3 through t = 3 at q = 0.08) — smaller
+than in the 1D substrate where re-reads dominate, but not negligible.
 
 Exact, no sampling: branch tree with consistency pruning, t <= 3 cycles.
+Assertions run BEFORE the results file (results/a_inout_3d.json) is
+written.
 """
+import json
+import pathlib
+
 import numpy as np
 
 from pca3d.models.coincube import COIN_C, COIN_D, annealed_u, perm_sign
@@ -84,13 +91,6 @@ def enumerate_paths():
     return out
 
 
-def fresh_read_prediction(t):
-    """[M_io]^t at k as a real-space kernel via the annealed-form operator:
-    evaluate on a k-grid and inverse transform is overkill — instead compare
-    IN K-SPACE at a few k points."""
-    return None
-
-
 def main():
     print(f"exact coherent 3D path sum: q = {Q}, up to T = {TCYC} cycles")
     amps = enumerate_paths()
@@ -106,6 +106,7 @@ def main():
 
     ks = [np.array(v, float) for v in
           ([np.pi, 0, 0], [0.4, 0.1, 0.7], [1.1, 2.0, 0.3])]
+    rows = []
     for t in range(1, TCYC + 1):
         amp = amps[t - 1]
         for kv in ks:
@@ -117,10 +118,33 @@ def main():
             dev = np.abs(zt - pred).max()
             mod_meas = np.linalg.norm(zt)
             mod_pred = np.linalg.norm(pred)
+            rows.append(dict(t=t, k=[float(x) for x in kv],
+                             rel_dev=float(dev / mod_pred),
+                             mod_ratio=float(mod_meas / mod_pred)))
             print(f"  t={t} k={np.array2string(kv, precision=2)}: "
                   f"rel dev = {dev / mod_pred:.4f}   "
                   f"|Z| meas/pred = {mod_meas / mod_pred:.4f}")
     print(f"\n(endpoint classes at t={TCYC}: {len(amps[-1])})")
+
+    # ---- headline assertions (run BEFORE the results file is written) ----
+    # t = 1: the fresh-read law is EXACT (every read fresh in cycle 1)
+    for r in rows:
+        if r["t"] == 1:
+            assert r["rel_dev"] < 1e-10, r
+            assert abs(r["mod_ratio"] - 1) < 1e-10, r
+    # t >= 2: recross corrections are REAL (nonzero) and bounded
+    later = [r for r in rows if r["t"] >= 2]
+    assert all(r["rel_dev"] < 0.3 for r in later), later
+    assert max(r["rel_dev"] for r in later) > 0.01     # genuinely nonzero
+    assert all(0.85 < r["mod_ratio"] < 1.35 for r in later), later
+    print("all headline assertions passed (t=1 exact; t>=2 recross "
+          "corrections nonzero, bounded)")
+    out = dict(q=Q, L=L, TCYC=TCYC, rows=rows,
+               endpoint_classes_final=len(amps[-1]))
+    res = pathlib.Path(__file__).resolve().parents[1] / "results"
+    res.mkdir(exist_ok=True)
+    (res / "a_inout_3d.json").write_text(json.dumps(out, indent=1))
+    print(f"wrote {res / 'a_inout_3d.json'}")
 
 
 if __name__ == "__main__":

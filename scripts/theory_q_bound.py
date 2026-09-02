@@ -18,8 +18,19 @@ Proof: products of mixtures over a group are mixtures over the group
 (convolution), so the composite lies in the group algebra R[Q8]; in the
 quaternionic representation T = w + x C_x + y C_y + z C_z with
 |w| + l1-norm(v) <= 1; the eigenvalues are w +- i l2-norm(v), and l2 <= l1
-places them inside the convex hull of {+-1, +-i}; the chord maximization on
-the hull gives kappa exactly (midpoint of the 1 -> i chord).
+places them inside the convex hull of {+-1, +-i}; the chord maximization
+of the CORRECT quantity dist(arg lambda, (pi/2)Z)/(-ln|lambda|) -- using
+the square-hull reduction and the pi/2 symmetry -- gives kappa exactly, at
+the chord midpoint.  (The naive quantity arg lambda/(-ln|lambda|) is NOT
+maximized at the midpoint: it diverges at the chord endpoints; part A
+exhibits the divergence explicitly.)
+
+SCOPE (transport-phase boundary, checked in part scope_k): the bound governs
+momenta where the transport phases vanish -- the node.  At k != 0 the
+factors E_a(k_a) T_a are not mixtures over R.Q8 and the bound FAILS for
+the coincube operator itself (q = 0.02, k = (0.4, 0, 0): min-mode
+dist/Gamma = 6.06 > kappa; part scope_k).  The phase-advance consequence
+is therefore scoped to the node.
 
 SCOPE BOUNDARY (checked here as a REPORTED counterexample): the theorem
 fails for event sets not closed into R.Q8. Transpositions S12, S23 on >= 3
@@ -38,20 +49,41 @@ Parts (all asserted):
   C. the coincube family at every q, from the OPERATOR eigenvalues (the
      closed form is re-derived as a spectral branch, not assumed).
   D. node-unitarity characterization: the annealed node map E[C^N] is
-     unitary iff the window count N is deterministic; for adjacent-pair
-     read windows the deterministic-count translation-invariant binary
-     media are exactly {all-0, all-1, two staggered crystals} (enumerated).
+     unitary iff the window count N is a.s. constant mod 4 (the sharp law,
+     with teeth: |E[i^N]| < 1 strictly for every non-degenerate count
+     distribution); for adjacent-pair read windows the deterministic-count
+     translation-invariant binary media are, ON RINGS AND ON MEDIA THAT
+     FACTORIZE OVER AXIS LINES, exactly the per-line crystals (enumerated
+     per line).  The classification is 1D/line-factorized: general 3D
+     media are NOT classified (see part media3d below); the theorem's statement is
+     rescoped accordingly.
   E-G. deterministic media kill the cone (crystal -> diamond fan; versor
      words -> dead axes; the order-random dimer map, which would need a
      stochastic env rule, still gives the diamond); the in-out arc
      T = E(cI + sC), c^2+s^2 = 1, is unitary with the isotropic cone for
      all weights (symbolic).
+  H (part media3d). the reviewer 3D counterexample family -- staggered along the read
+     axis with an independent random phase per transverse line: (i) its
+     stated properties CONFIRMED (translation-invariant in measure,
+     deterministic per-line window counts, not one of the four global
+     crystals; closed under the model's env streaming); (ii) the theorem's
+     CONCLUSION nevertheless survives on it: the ensemble node map is
+     damped EXACTLY by e^3 per cycle, e = P(adjacent line phases equal)
+     = r^2 + (1-r)^2 < 1 (cross-streaming couples adjacent lines, so
+     per-line determinism does not give ensemble determinism), and an
+     exhaustive quenched scan of ALL 4096 members on the 2^3 supercell
+     (folded corner momentum = Gamma + all 8 physical BZ corners) finds
+     every degenerate band group fails the isotropic-pair witness.
+     Nodes at interior supercell momenta are not exhaustively excluded
+     (open, stated).
 
 Hypotheses ledger: the bound uses (i) convex probability weights and
-(ii) the R.Q8 event set; media correlations are free. The cone => Gamma > 0
+(ii) the R.Q8 event set; media correlations are free; it governs the NODE
+(transport phases zero), not general k (part scope_k). The cone => Gamma > 0
 statement additionally uses the coincube read geometry (adjacent-pair
 windows, both directions coin-reachable) and a deterministic env CA with
-randomness only in the initial measure.
+randomness only in the initial measure; its media classification input is
+proven for rings and line-factorized media only.
 
 Run:  PYTHONPATH=src .venv/bin/python scripts/theory_q_bound.py
 """
@@ -93,6 +125,13 @@ def part_chord(rng):
     res["chord_max"] = float(q.max())
     res["chord_argmax_p"] = float(ps[int(np.argmax(q))])
     res["kappa_exact"] = float(KAPPA)
+    # the NAIVE quantity arg lambda/(-ln|lambda|) (the earlier, wrong
+    # appendix phrasing) is NOT maximized at the midpoint: it diverges at
+    # the chord endpoint t -> 1 (arg -> pi/2, Gamma -> 0). Exhibited:
+    naive = np.angle(lam) / (-np.log(np.abs(lam)))
+    res["naive_ratio_at_midpoint"] = float(naive[len(ps) // 2])
+    res["naive_ratio_near_endpoint"] = float(naive[-1])
+    res["naive_diverges"] = bool(naive[-1] > 1e3 * naive[len(ps) // 2])
     # hull scan: random mixtures over {1, i, -1, -i}
     worst = 0.0
     for _ in range(20000):
@@ -162,6 +201,24 @@ def part_boundary_S3():
     return dict(rows=rows, kappa=float(KAPPA))
 
 
+def part_scope_k():
+    """the transport-phase boundary of the theorem, exhibited: at k != 0
+    the factors E_a(k_a) T_a leave the R.Q8 mixture class and the bound
+    FAILS for the coincube operator itself.  The bound therefore governs
+    the node (where transport phases vanish), not general momenta."""
+    from pca3d.models.coincube import annealed_u
+    q, kv = 0.02, np.array([0.4, 0.0, 0.0])
+    lam = np.linalg.eigvals(annealed_u(kv, q))
+    ratios = []
+    for lm in lam:
+        gam = -np.log(abs(lm))
+        d = np.abs((np.angle(lm) + np.pi / 4) % (np.pi / 2) - np.pi / 4)
+        ratios.append(float(d / gam))
+    return dict(q=q, k=[float(x) for x in kv],
+                min_mode_ratio=float(min(ratios)),
+                all_ratios=sorted(ratios), kappa=float(KAPPA))
+
+
 def part_family():
     """the coincube node at every q, from the OPERATOR (closed form
     re-derived as a spectral branch)"""
@@ -194,16 +251,38 @@ def part_family():
 
 def part_count(rng):
     res = {}
-    # exact node-window law: |E[i^N]|^2 = (p0-p2)^2 + (p1-p3)^2
-    for _ in range(5):
-        p = rng.dirichlet(np.ones(4))
-        lhs = abs(np.sum(p * np.array([1, 1j, -1, -1j])))**2
-        rhs = (p[0] - p[2])**2 + (p[1] - p[3])**2
-        assert abs(lhs - rhs) < 1e-14
-    res["window_law_verified"] = True
+    # node-window law WITH TEETH (the earlier check asserted the arithmetic
+    # identity |E[i^N]|^2 = (p0-p2)^2 + (p1-p3)^2, true for any reals --
+    # vacuous; replaced): the law that carries weight is
+    #   |E[i^N]| = 1  <=>  the count distribution is a point mass mod 4,
+    # i.e. the node map is unitary iff N is a.s. constant mod 4.
+    strict_ok = True
+    for _ in range(400):
+        p = rng.dirichlet(np.ones(4) * rng.uniform(0.05, 3.0))
+        z = abs(np.sum(p * np.array([1, 1j, -1, -1j])))
+        if (z < 1 - 1e-12) != (p.max() < 1 - 1e-12):
+            strict_ok = False
+    for hot in range(4):                       # the point masses: |z| = 1
+        p = np.zeros(4)
+        p[hot] = 1
+        if abs(abs(np.sum(p * np.array([1, 1j, -1, -1j]))) - 1) > 1e-14:
+            strict_ok = False
+    res["unitary_iff_deterministic_count"] = bool(strict_ok)
+    # Bernoulli(q) media: window N = b_i + b_{i+1} is NOT deterministic;
+    # the per-window node factor is 1 - 2q + 2iq(1-q), strictly inside the
+    # disc for all q in (0, 1): the law quantifies the damping directly.
+    dev = 0.0
+    min_gap = np.inf
+    for q in np.linspace(0.05, 0.95, 19):
+        pN = np.array([(1 - q)**2, 2 * q * (1 - q), q * q, 0.0])
+        z = np.sum(pN * np.array([1, 1j, -1, -1j]))
+        dev = max(dev, abs(z - ((1 - 2 * q) + 2j * q * (1 - q))))
+        min_gap = min(min_gap, 1 - abs(z))
+    res["bernoulli_window_factor_dev"] = float(dev)
+    res["bernoulli_min_unitarity_gap"] = float(min_gap)
     # ring enumeration: TI binary configs with constant adjacent-pair count
     counts = {}
-    for L in (8, 10, 7):
+    for L in (6, 8, 10, 7):
         good = []
         for cfg in range(1 << L):
             b = [(cfg >> i) & 1 for i in range(L)]
@@ -380,6 +459,301 @@ def part_idealized(rng):
     return res
 
 
+# --- H: the reviewer 3D counterexample family (per-line phases) --------------
+
+def _media3d_ops():
+    """exact one-cycle supercell machinery on the 2^3 torus: 32-dim
+    (site, channel) space, real conversion layers controlled by the actual
+    streamed env fields, Bloch wrap phases exp(+-2ik_a) (supercell period
+    2, so the folded k = 0 point carries Gamma AND all 8 physical BZ
+    corners)."""
+    sites = list(itertools.product((0, 1), repeat=3))
+
+    def idx(r, c):
+        return 4 * (r[0] + 2 * (r[1] + 2 * r[2])) + c
+
+    PERM = [np.argmax(np.abs(c), axis=0) for c in C4]
+    SGNv = [c[np.argmax(np.abs(c), axis=0), np.arange(4)] for c in C4]
+
+    def conv_mat(enva, a):
+        M = np.zeros((32, 32))
+        for r in sites:
+            for c in range(4):
+                if enva[r]:
+                    M[idx(r, int(PERM[a][c])), idx(r, c)] = SGNv[a][c]
+                else:
+                    M[idx(r, c), idx(r, c)] = 1
+        return M
+
+    def shift_mat(a, k):
+        M = np.zeros((32, 32), complex)
+        for r in sites:
+            for c in range(4):
+                d = int(DD[a][c])
+                r2 = list(r)
+                r2[a] += d
+                ph = 1.0
+                if r2[a] == 2:
+                    r2[a] = 0
+                    ph = np.exp(2j * k[a])
+                elif r2[a] == -1:
+                    r2[a] = 1
+                    ph = np.exp(-2j * k[a])
+                M[idx(tuple(r2), c), idx(r, c)] = ph
+        return M
+
+    def stream_env(enva, a):
+        sa = (a + 1) % 3
+        out = {}
+        for r in sites:
+            r2 = list(r)
+            r2[sa] = 1 - r2[sa]
+            out[tuple(r2)] = enva[r]
+        return out
+
+    def U_of(k, envs0):
+        envs = [dict(e) for e in envs0]
+        M = np.eye(32, dtype=complex)
+        for a in range(3):
+            S = shift_mat(a, k)
+            for o in (0, 1):
+                M = S @ conv_mat(envs[a], a) @ M
+                envs[a] = stream_env(envs[a], a)
+        return M
+
+    def staggered_medium(phis):
+        """env_a(r) = (r_a + phi_a(r_perp)) mod 2: the reviewer family"""
+        envs = []
+        for a, phi in enumerate(phis):
+            e = {}
+            for r in sites:
+                perp = tuple(r[b] for b in range(3) if b != a)
+                e[r] = (r[a] + phi[perp]) % 2
+            envs.append(e)
+        return envs
+
+    def line_medium(types):
+        """general line-factorized media: per (axis, transverse line) type
+        in {0: all-0, 1: all-1, 2: staggered phi=0, 3: staggered phi=1}"""
+        envs = []
+        for a, tp in enumerate(types):
+            e = {}
+            for r in sites:
+                perp = tuple(r[b] for b in range(3) if b != a)
+                t = tp[perp]
+                e[r] = (0 if t == 0 else 1 if t == 1
+                        else (r[a] + (t - 2)) % 2)
+            envs.append(e)
+        return envs
+
+    return sites, U_of, staggered_medium, line_medium, stream_env
+
+
+def _iso_witness(U0, Hs, dirs):
+    """for every degenerate eigenvalue group of U0: does the projected
+    first-order fan contain a direction-independent +-v pair?  Returns
+    (n_groups, n_excluded, n_candidate)."""
+    w, V = np.linalg.eig(U0)
+    used = np.zeros(len(w), bool)
+    n_grp = n_exc = n_cand = 0
+    for i in range(len(w)):
+        if used[i]:
+            continue
+        grp = np.where(np.abs(w - w[i]) < 1e-9)[0]
+        used[grp] = True
+        if len(grp) < 2:
+            continue
+        n_grp += 1
+        Q, _ = np.linalg.qr(V[:, grp])
+        specs = []
+        for n in dirs:
+            H = sum(n[a] * Hs[a] for a in range(3))
+            specs.append(np.linalg.eigvalsh(Q.conj().T @ H @ Q))
+        cand = [v for v in np.abs(specs[0]) if v > 1e-4]
+        hit = any(all(any(abs(e - v) < 1e-5 for e in s)
+                      and any(abs(e + v) < 1e-5 for e in s) for s in specs)
+                  for v in cand)
+        if hit:
+            n_cand += 1
+        else:
+            n_exc += 1
+    return n_grp, n_exc, n_cand
+
+
+def part_media3d(rng):
+    """(i) confirm the reviewer counterexample's properties; (ii) show the
+    theorem's CONCLUSION survives on the family: exact ensemble damping
+    e^3 per cycle, and an exhaustive quenched no-isotropic-node scan at
+    the folded corner momentum."""
+    res = {}
+    sites, U_of, staggered_medium, line_medium, stream_env = _media3d_ops()
+    perp2 = list(itertools.product((0, 1), repeat=2))
+    allphi = [dict(zip(perp2, bits))
+              for bits in itertools.product((0, 1), repeat=4)]
+
+    # (i.a) deterministic PER-LINE window counts: every staggered line has
+    # adjacent-pair count exactly 1 in every window, any phase, any length
+    ok_lines = True
+    for L in (4, 6, 8):
+        for phi in (0, 1):
+            line = [(x + phi) % 2 for x in range(L)]
+            counts = {line[i] + line[(i + 1) % L] for i in range(L)}
+            ok_lines &= counts == {1}
+    res["per_line_counts_deterministic"] = bool(ok_lines)
+
+    # (i.b) translation invariance in measure: the uniform measure on the
+    # per-axis phase family is permuted bijectively by every lattice
+    # translation (shift along the read axis flips all phases; transverse
+    # shifts permute the lines), and by the model's env streaming
+    members = []
+    for phx in allphi:
+        members.append(staggered_medium((phx, allphi[0], allphi[0]))[0])
+    fam_keys = {tuple(sorted(m.items())) for m in members}
+    closed_shift = closed_stream = True
+    for m in members:
+        for ax in range(3):                 # translations by 1 along ax
+            sh = {}
+            for r in sites:
+                r2 = list(r)
+                r2[ax] = (r2[ax] + 1) % 2
+                sh[tuple(r2)] = m[r]
+            if tuple(sorted(sh.items())) not in fam_keys:
+                closed_shift = False
+        st = stream_env(m, 0)               # env_x streams along y
+        if tuple(sorted(st.items())) not in fam_keys:
+            closed_stream = False
+    res["family_closed_under_translations"] = bool(closed_shift)
+    res["family_closed_under_streaming"] = bool(closed_stream)
+
+    # (i.c) not a crystal: only 2 of the 16 phase choices per axis give a
+    # globally staggered (crystal) field
+    n_crystal = sum(1 for phx in allphi
+                    if len(set(phx.values())) == 1)
+    res["crystal_members_per_axis"] = int(n_crystal)
+    res["noncrystal_members_per_axis"] = int(len(allphi) - n_crystal)
+
+    # (ii.a) ENSEMBLE: the averaged one-cycle operator at the folded
+    # corner momentum has top |eigenvalue| EXACTLY e^3 with
+    # e = r^2 + (1-r)^2 (cross-streaming reads adjacent-line phase
+    # differences; equal-phase windows give one conversion, unequal-phase
+    # windows give 0 or 2 with C^2 = -1 interference)
+    k0 = np.zeros(3)
+    rows = []
+    for r_ in (0.5, 0.3):
+        acc = np.zeros((32, 32), complex)
+        for bx in itertools.product((0, 1), repeat=4):
+            wx = np.prod([r_ if b else 1 - r_ for b in bx])
+            for by in itertools.product((0, 1), repeat=4):
+                wy = np.prod([r_ if b else 1 - r_ for b in by])
+                for bz in itertools.product((0, 1), repeat=4):
+                    wz = np.prod([r_ if b else 1 - r_ for b in bz])
+                    phis = (dict(zip(perp2, bx)), dict(zip(perp2, by)),
+                            dict(zip(perp2, bz)))
+                    acc += wx * wy * wz * U_of(k0, staggered_medium(phis))
+        top = float(np.abs(np.linalg.eigvals(acc)).max())
+        e = r_ * r_ + (1 - r_)**2
+        rows.append(dict(r=float(r_), top_mod_eig=top, e_cubed=float(e**3),
+                         Gamma_per_cycle=float(-3 * np.log(e))))
+    res["ensemble_rows"] = rows
+
+    # (ii.b) QUENCHED, exhaustive: all 4096 members; unitary; every
+    # degenerate band group at the folded corner momentum fails the
+    # isotropic-pair witness
+    eps = 1e-6
+    dirs = [np.array(v, float) / np.linalg.norm(v) for v in
+            ((1, 0, 0), (0, 1, 0), (0, 0, 1), (1, 1, 0), (1, 0, 1),
+             (0, 1, 1), (1, 1, 1), (1, -1, 1))]
+    for _ in range(3):
+        v = rng.normal(size=3)
+        dirs.append(v / np.linalg.norm(v))
+    n_media = n_scalar = n_grp = n_exc = n_cand = 0
+    udev = 0.0
+    for bx in itertools.product((0, 1), repeat=4):
+        for by in itertools.product((0, 1), repeat=4):
+            for bz in itertools.product((0, 1), repeat=4):
+                phis = (dict(zip(perp2, bx)), dict(zip(perp2, by)),
+                        dict(zip(perp2, bz)))
+                envs = staggered_medium(phis)
+                n_media += 1
+                U0 = U_of(k0, envs)
+                udev = max(udev, float(np.abs(
+                    U0 @ U0.conj().T - np.eye(32)).max()))
+                if np.abs(U0 - U0[0, 0] * np.eye(32)).max() < 1e-12:
+                    n_scalar += 1
+                Hs = []
+                for a in range(3):
+                    kp = np.zeros(3); kp[a] = eps
+                    km = np.zeros(3); km[a] = -eps
+                    dU = (U_of(kp, envs) - U_of(km, envs)) / (2 * eps)
+                    Ha = 1j * np.linalg.inv(U0) @ dU
+                    Hs.append((Ha + Ha.conj().T) / 2)
+                g, x, cnd = _iso_witness(U0, Hs, dirs)
+                n_grp += g
+                n_exc += x
+                n_cand += cnd
+    res["quenched_exhaustive"] = dict(
+        n_media=n_media, unitary_dev=udev, n_scalar_at_corner=n_scalar,
+        n_band_groups=n_grp, n_groups_excluded=n_exc,
+        n_groups_isotropy_candidate=n_cand,
+        scope_note=("folded corner momentum only (= Gamma + all 8 physical"
+                    " BZ corners); interior supercell momenta not"
+                    " exhaustively excluded"))
+
+    # (ii.c) general line-factorized media (mixed all-0/all-1/staggered
+    # per line): random sample with the same witness
+    n_media = n_grp = n_exc = n_cand = 0
+    udev = 0.0
+    for _ in range(400):
+        types = tuple({p: int(rng.integers(0, 4)) for p in perp2}
+                      for _ in range(3))
+        envs = line_medium(types)
+        n_media += 1
+        U0 = U_of(k0, envs)
+        udev = max(udev, float(np.abs(
+            U0 @ U0.conj().T - np.eye(32)).max()))
+        Hs = []
+        for a in range(3):
+            kp = np.zeros(3); kp[a] = eps
+            km = np.zeros(3); km[a] = -eps
+            dU = (U_of(kp, envs) - U_of(km, envs)) / (2 * eps)
+            Ha = 1j * np.linalg.inv(U0) @ dU
+            Hs.append((Ha + Ha.conj().T) / 2)
+        g, x, cnd = _iso_witness(U0, Hs, dirs)
+        n_grp += g
+        n_exc += x
+        n_cand += cnd
+    res["line_factorized_sample"] = dict(
+        n_media=n_media, unitary_dev=udev, n_band_groups=n_grp,
+        n_groups_excluded=n_exc, n_groups_isotropy_candidate=n_cand)
+
+    # TEETH: the witness must DETECT a genuine isotropic node -- the
+    # unitary in-out arc (part_arc) at s = 1/2 on the same supercell:
+    # constant staggered-free medium is not applicable, so run the witness
+    # on the 4-dim annealed arc operator directly
+    s = 0.5
+    c = np.sqrt(1 - s * s)
+
+    def Uarc(kv):
+        M = np.eye(4, dtype=complex)
+        for a in range(3):
+            T = np.diag(np.exp(1j * kv[a] * DD[a])) @ (
+                c * np.eye(4) + s * C4[a])
+            M = T @ T @ M
+        return M
+
+    U0 = Uarc(np.zeros(3))
+    Hs = []
+    for a in range(3):
+        kp = np.zeros(3); kp[a] = eps
+        km = np.zeros(3); km[a] = -eps
+        dU = (Uarc(kp) - Uarc(km)) / (2 * eps)
+        Ha = 1j * np.linalg.inv(U0) @ dU
+        Hs.append((Ha + Ha.conj().T) / 2)
+    g, x, cnd = _iso_witness(U0, Hs, dirs)
+    res["witness_teeth_arc"] = dict(n_groups=g, excluded=x, candidates=cnd)
+    return res
+
+
 def part_arc(rng):
     """the in-out arc T = E (c + s C): unitary, isotropic cone, closed forms;
     symbolic isotropy for GENERAL (alpha, beta)."""
@@ -461,11 +835,13 @@ def main():
     for name, fn in [("chord", lambda: part_chord(rng)),
                      ("products", lambda: part_products(rng)),
                      ("boundary_S3", part_boundary_S3),
+                     ("scope_k", part_scope_k),
                      ("family", part_family),
                      ("count", lambda: part_count(rng)),
                      ("crystal", lambda: part_crystal(rng)),
                      ("versor", part_versor),
                      ("idealized", lambda: part_idealized(rng)),
+                     ("media3d", lambda: part_media3d(rng)),
                      ("arc", lambda: part_arc(rng))]:
         t = time.time()
         out[name] = fn()
@@ -473,9 +849,13 @@ def main():
         print(f"[{time.time() - t0:6.1f}s] {name} done")
 
     ch = out["chord"]
+    # the CORRECT maximized quantity dist(arg, (pi/2)Z)/Gamma: kappa exact,
+    # at the chord midpoint; the naive arg/Gamma diverges at the endpoint
     assert abs(ch["chord_max"] - KAPPA) < 1e-6
     assert abs(ch["chord_argmax_p"] - 0.5) < 1e-3
     assert ch["hull_scan_max"] <= KAPPA + 1e-9
+    assert ch["naive_diverges"]
+    assert ch["naive_ratio_near_endpoint"] > 1e3
     pr = out["products"]
     assert pr["span_residual"] < 1e-10
     assert pr["hull_max_l1"] <= 1 + 1e-12
@@ -483,11 +863,20 @@ def main():
     bs = out["boundary_S3"]["rows"]
     assert bs[0]["ratio"] > KAPPA          # the boundary is real ...
     assert bs[1]["ratio"] > 2 * bs[0]["ratio"]   # ... and unbounded
+    # the transport-phase boundary: the bound FAILS at k != 0 (documented
+    # scope: the theorem governs the node)
+    sk = out["scope_k"]
+    assert sk["min_mode_ratio"] > 2 * KAPPA
+    assert abs(sk["min_mode_ratio"] - 6.06) < 0.05
     fam = out["family"]
     assert fam["family_max_Q_vertex"] <= KAPPA + 1e-9
     assert fam["operator_vs_closedform_dev"] < 1e-12
     cnt = out["count"]
-    assert cnt["deterministic_count_configs"] == {"8": 4, "10": 4, "7": 2}
+    assert cnt["unitary_iff_deterministic_count"]
+    assert cnt["bernoulli_window_factor_dev"] < 1e-14
+    assert cnt["bernoulli_min_unitarity_gap"] > 0.05   # q in [0.05, 0.95]
+    assert cnt["deterministic_count_configs"] == {"6": 4, "8": 4,
+                                                 "10": 4, "7": 2}
     cr = out["crystal"]
     assert cr["unitary_dev"] < 1e-12 and cr["U0_is_minus_I_dev"] < 1e-12
     assert cr["fan_100_pattern_dev"] < 1e-6
@@ -502,6 +891,24 @@ def main():
     assert idl["U0_minus_I_dev"] < 1e-12
     assert all(abs(r - 1) < 0.05 for r in idl["Gamma_over_khalf2"])
     assert abs(idl["fan_111"][-1] - np.sqrt(3)) < 1e-5              # diamond
+    md = out["media3d"]
+    assert md["per_line_counts_deterministic"]
+    assert md["family_closed_under_translations"]
+    assert md["family_closed_under_streaming"]
+    assert md["crystal_members_per_axis"] == 2                # counterexample
+    assert md["noncrystal_members_per_axis"] == 14            # ... confirmed
+    for row in md["ensemble_rows"]:
+        assert abs(row["top_mod_eig"] - row["e_cubed"]) < 1e-9   # EXACT e^3
+        assert row["Gamma_per_cycle"] > 0.5
+    qe = md["quenched_exhaustive"]
+    assert qe["n_media"] == 4096 and qe["unitary_dev"] < 1e-12
+    assert qe["n_groups_isotropy_candidate"] == 0             # no iso node
+    assert qe["n_groups_excluded"] == qe["n_band_groups"] > 4000
+    lf = md["line_factorized_sample"]
+    assert lf["unitary_dev"] < 1e-12
+    assert lf["n_groups_isotropy_candidate"] == 0
+    wt = md["witness_teeth_arc"]
+    assert wt["candidates"] > 0                               # teeth
     arc = out["arc"]
     assert arc["symbolic_isotropy_general_alpha_beta"]
     assert arc["max_aniso"] < 1e-9 and arc["max_unitary_dev"] < 1e-12

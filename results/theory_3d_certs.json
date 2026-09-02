@@ -48,5 +48,55 @@
    "mismatches": 2772,
    "n": 5778
   }
+ },
+ "extended": {
+  "engine_crossval_mismatches": 0,
+  "L2": {
+   "M": 32,
+   "draws_per_q": 4,
+   "qs": [
+    0.15,
+    0.3
+   ],
+   "n_1p_mismatch_vs_instrument": 0,
+   "n_3p_mismatch_vs_wedge": 0,
+   "n_3p_states_checked": 39680
+  },
+  "L3": {
+   "M": 108,
+   "draws_per_q": 4,
+   "qs": [
+    0.15,
+    0.3
+   ],
+   "n_1p_mismatch_vs_instrument": 0,
+   "n_3p_mismatch_vs_wedge": 0,
+   "n_3p_states_checked": 1633248,
+   "n_2p_mismatch_vs_wedge": 0,
+   "n_2p_states_checked": 46224,
+   "n_Mminus2_duality_mismatch": 0
+  },
+  "L4": {
+   "M": 256,
+   "draws_per_q": 4,
+   "qs": [
+    0.15,
+    0.3
+   ],
+   "n_1p_mismatch_vs_instrument": 0,
+   "n_2p_mismatch_vs_wedge": 0,
+   "n_2p_states_checked": 261120,
+   "n_1h_duality_mismatch": 0,
+   "sigma_full": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ]
+  }
  }
 }

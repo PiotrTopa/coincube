@@ -73,6 +73,14 @@ def fmt_action(L, M=5):
 
 
 def main():
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--write-note", action="store_true",
+                    help="append the extracted actions to the notes file "
+                         "(default: verify + assert only, no append)")
+    args = ap.parse_args()
+    hists_phys = []
+    hists_bare = []
     out = ["", "## Coincube conversion blocks (E2 applied to ADR 0012)", "",
            "*Axis-a conversion layer: one site, modes `(c0, c1, c2, c3, e)`,",
            "identity at `e = 0`, the certified double Givens at `e = 1`",
@@ -88,12 +96,20 @@ def main():
         L_phys = extract_action(perm, sign)
         L_bare = extract_action(perm, None)
 
-        def hist(L):
+        def hist_dict(L):
             h = {}
             for m in L.terms:
                 h[len(m)] = h.get(len(m), 0) + 1
+            return h
+
+        def hist(L):
+            h = hist_dict(L)
             return ", ".join(f"deg {d}: {h[d]}" for d in sorted(h))
 
+        hists_phys.append((len(L_phys.terms), tuple(sorted(
+            hist_dict(L_phys).items()))))
+        hists_bare.append((len(L_bare.terms), tuple(sorted(
+            hist_dict(L_bare).items()))))
         print(f"axis {name}: physical gauge {len(L_phys.terms)} terms "
               f"({hist(L_phys)}); bare {len(L_bare.terms)} terms "
               f"({hist(L_bare)})")
@@ -130,12 +146,31 @@ def main():
                "one coincube sub-step = conversion factor x transport factor x "
                "env factor as consecutive Grassmann layers.*")
 
-    import os
-    out_path = ("docs/notes/e2-extracted-actions.md"
-                if os.path.isdir("docs/notes") else "results/e2-actions.md")
-    with open(out_path, "a") as f:
-        f.write("\n".join(out) + "\n")
-    print(f"appended: {out_path}")
+    # ---- headline assertions (previously print-only) --------------------
+    # the PHYSICAL (Givens-lift) conversion block has EXACTLY 40 terms with
+    # histogram deg 2: 5, deg 4: 8, deg 6: 18, deg 8: 8, deg 10: 1, and the
+    # count is UNIVERSAL across the three axes (the quaternion triple's
+    # blocks are signed relabelings of one another).  The BARE (all-plus)
+    # gauge is NOT axis-universal (49/42/51 terms): discarding the lift
+    # signs breaks the relabeling equivalence — a gauge artifact, asserted
+    # as such.
+    assert all(h == hists_phys[0] for h in hists_phys), hists_phys
+    assert hists_phys[0] == (40, ((2, 5), (4, 8), (6, 18), (8, 8),
+                                  (10, 1))), hists_phys[0]
+    assert [h[0] for h in hists_bare] == [49, 42, 51], hists_bare
+    # env transport control block: the streaming action (3 terms)
+    assert len(L_sw.terms) == 3, len(L_sw.terms)
+    print("all headline assertions passed (physical gauge: 40 terms, "
+          "axis-universal; bare gauge axis-dependent 49/42/51 — gauge "
+          "artifact; env swap block 3 terms)")
+
+    if args.write_note:
+        import os
+        out_path = ("docs/notes/e2-extracted-actions.md"
+                    if os.path.isdir("docs/notes") else "results/e2-actions.md")
+        with open(out_path, "a") as f:
+            f.write("\n".join(out) + "\n")
+        print(f"appended: {out_path}")
 
 
 if __name__ == "__main__":

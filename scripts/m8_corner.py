@@ -37,9 +37,12 @@ def zk(G, kvec):
     return np.einsum("btcxyz,x,y,z->btc", G, px, py, pz, optimize=True)
 
 
+T0 = 1                    # post-launch fit window (launch transient excluded)
+
+
 def u_fit(Gmat):
-    A = np.concatenate([Gmat[t] for t in range(Gmat.shape[0] - 1)], axis=1)
-    B = np.concatenate([Gmat[t] for t in range(1, Gmat.shape[0])], axis=1)
+    A = np.concatenate([Gmat[t] for t in range(T0, Gmat.shape[0] - 1)], axis=1)
+    B = np.concatenate([Gmat[t] for t in range(T0 + 1, Gmat.shape[0])], axis=1)
     return B @ np.linalg.pinv(A, rcond=1e-8)
 
 

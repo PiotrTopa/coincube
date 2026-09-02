@@ -36,9 +36,18 @@ Theory summary being checked:
      T (x) conj T with r = 0 contact correlation; L4 factor (1-2gq(1-q))^2 off
      the diagonal, exemption at r = 0; trace mode exactly 1; classical sector
      exactly g-independent; amplitude branch damped by (1-2gq(1-q))^2.
+  A2. Closed annealed law of the production (permutation) lift, exact
+     symbolic: U_g(k) = (1 - 2 g q^2) U(k) (sign-average over the
+     measure-preserving pair swap; one-line expectation over iota).
   D. Two-carrier parity blocking: coincident carriers never imprint ->
      positive contact contribution to C2, magnitude ~ 2gq(1-q) per
      coincidence-cycle (kinematically suppressed: no two channels co-move).
+  F. Point symmetry of the interacting ensemble is A4, not merely C3:
+     cyclic axis rotation (channel relabeling W) plus double axis
+     reversals (commutant relabeling V + bond-center reflections), checked
+     QUENCHED including L4.  A4-invariant rank-<=2 tensors are scalar =>
+     the node's velocity and damping tensors are isotropic at ALL orders
+     in g; C3 alone would not force this (checked).
 
 Run:  PYTHONPATH=src .venv/bin/python scripts/theory_interaction.py
       (--quick shrinks the MC ensembles ~4x)
@@ -131,6 +140,274 @@ def part_A():
     fired = float(np.abs(w1 - car[0].T @ (Ey.T @ v)).max())  # -> env_y (sign +-1)
     res["W_fires_on_one_carrier"] = bool(
         abs(abs(np.vdot(car[0].T @ (Ey.T @ v), w1)) - 1) < 1e-12)
+    return res
+
+
+# ----------------------------------------------------------------------------
+# Part A2: the closed annealed amplitude law of the PRODUCTION (permutation)
+# lift, exact-rational: U_g(k) = (1 - 2 g q^2) U(k)
+# ----------------------------------------------------------------------------
+
+def part_A2():
+    """Derivation, machine-checked symbolically.
+
+    Per cycle the imprint layer acts once.  In the 1-particle sector the
+    carrier's site always has odd parity, so the layer fires there iff
+    iota != 0 (probability g, the three pair values g/3 each).  With the
+    permutation lift the fired env pair swap has sign table
+    |00> -> +|00>, |01> -> +|10>, |10> -> +|01>, |11> -> -|11>; the swap
+    itself is measure-preserving on the Bernoulli(q) x Bernoulli(q) pair
+    (bits exchangeable), so at annealed (fresh-read) order the per-event
+    coherent factor is the plain sign average
+        E[s(b_A, b_B)] = (1-q)^2 + 2 q (1-q) - q^2 = 1 - 2 q^2,
+    identical for each of the three pairs.  One-line expectation:
+        U_g = (1-g) U + g (1 - 2 q^2) U = (1 - 2 g q^2) U,
+    exact in g at annealed order.  (The Givens lift's table |01> -> -|10>,
+    |11> -> +|11> gives 1 - 2 q (1-q) instead: lift-gauge dependence.)"""
+    import sympy as sp
+    res = {}
+    q, g = sp.symbols('q g', nonnegative=True)
+
+    def wpair(bA, bB):
+        return (q if bA else 1 - q) * (q if bB else 1 - q)
+
+    sign_perm = {(0, 0): 1, (0, 1): 1, (1, 0): 1, (1, 1): -1}
+    sign_giv = {(0, 0): 1, (0, 1): -1, (1, 0): 1, (1, 1): 1}
+    # NOTE Givens coherent factor uses the vacuum-bra average of the moved
+    # amplitude (part_A): off-diagonal moves do not contribute; reproduce
+    # both factors from the tables the certified operators define:
+    fac_perm = sum(wpair(*b) * sign_perm[b] for b in sign_perm)
+    fac_giv = sum(wpair(*b) * sign_giv[b] * (1 if b[0] == b[1] else 0)
+                  for b in sign_giv)
+    res["perm_factor_is_1_minus_2q2"] = bool(
+        sp.simplify(fac_perm - (1 - 2 * q**2)) == 0)
+    res["givens_factor_is_1_minus_2q_1mq"] = bool(
+        sp.simplify(fac_giv - (1 - 2 * q * (1 - q))) == 0)
+
+    # full iota average over the 4-valued field and all three env species
+    # bits: the annealed 1p imprint map is scalar, (1 - 2 g q^2) exactly
+    tot = 0
+    for b in itertools.product((0, 1), repeat=3):
+        w = 1
+        for bit in b:
+            w *= (q if bit else 1 - q)
+        # iota = 0 (prob 1-g): factor +1
+        tot += (1 - g) * w
+        for p, (A, B) in enumerate(((0, 1), (1, 2), (2, 0))):
+            s = -1 if (b[A] and b[B]) else 1
+            tot += (g / 3) * w * s
+    res["annealed_cycle_factor_is_1_minus_2gq2"] = bool(
+        sp.simplify(sp.expand(tot) - (1 - 2 * g * q**2)) == 0)
+
+    # the permutation-lift sign table IS the canonical fermionic lift of
+    # the transposition of two adjacent env modes (inversion-parity rule)
+    tab = {}
+    for (nA, nB) in itertools.product((0, 1), repeat=2):
+        occ = [m for m, n in ((0, nA), (1, nB)) if n]
+        img = sorted({0: 1, 1: 0}[m] for m in occ)
+        inv = 1 if occ == [0, 1] else 0        # both occupied: one inversion
+        tab[(nA, nB)] = ((-1) ** inv)
+    res["perm_table_is_canonical_lift"] = all(
+        tab[b] == sign_perm[b] for b in tab)
+    return res
+
+
+# ----------------------------------------------------------------------------
+# Part F: the full point symmetry of the interacting ensemble is A4 (not
+# just C3) -- protection of the node's rank-<=2 tensors at ALL orders in g
+# ----------------------------------------------------------------------------
+
+def part_F(rng):
+    """THEOREM (machine-checked generators).  The interacting quenched
+    ensemble (env fields iid Bernoulli(q); iota 4-valued iid with the
+    rotating pair measure g/3; the layered dynamics with cross-streaming
+    and L4) is exactly covariant under a group of signed axis relabelings
+    whose action on momentum space is the rotation group A4 of the
+    channel-direction tetrahedron, generated by
+      R:      cyclic axis rotation (x,y,z) -> (y,z,x) with the channel
+              relabeling W (W C_a W^-1 = C_{a+1}, W d_a W^-1 = d_{a+1});
+              the cycle's layer-order shift is a similarity (cyclic
+              rotation of an ordered product), so spectra and node tensors
+              transform covariantly: k -> (k_z, k_x, k_y);
+      T_xy:   double axis reversal (k_x, k_y) -> (-k_x, -k_y) with the
+              commutant channel relabeling V ([V, C_a] = 0,
+              V d_{x,y} V^-1 = -d_{x,y}, V d_z V^-1 = +d_z) and the
+              bond-center reflections of the x and y coordinates (which
+              preserve the pair-swap streaming partitions); checked
+              QUENCHED, per mode, INCLUDING the L4 back-reaction (the iota
+              pair labels are orientation-blind, so the iota measure is
+              invariant).
+    Single-axis reversals are NOT symmetries (they map the channel
+    tetrahedron to its complement) -- consistent with the sweep's
+    handedness.  A4-invariant symmetric rank-2 tensors are scalar and A4
+    has no invariant vector, so EVERY order in g of the node's velocity
+    and damping tensors (rank <= 2 in delta-k) is isotropic; C3 alone
+    would NOT suffice (sum_{a != b} k_a k_b survives C3 -- the reviewer's
+    tensor -- and is killed by T_xy).  Anisotropy can enter only at
+    rank >= 4 in delta-k, as already at g = 0."""
+    res = {}
+    Dm = [np.diag(d.astype(float)) for d in DD]
+
+    # (a) existence of V and W among the 384 signed channel permutations
+    sps = []
+    for perm in itertools.permutations(range(4)):
+        for signs in itertools.product((1, -1), repeat=4):
+            M = np.zeros((4, 4))
+            for j, (i, s) in enumerate(zip(perm, signs)):
+                M[i, j] = s
+            sps.append(M)
+    Vs = [M for M in sps if
+          all(np.allclose(M @ C4[a] @ M.T, C4[a]) for a in range(3))
+          and np.allclose(M @ Dm[0] @ M.T, -Dm[0])
+          and np.allclose(M @ Dm[1] @ M.T, -Dm[1])
+          and np.allclose(M @ Dm[2] @ M.T, Dm[2])]
+    Ws = [M for M in sps if
+          all(np.allclose(M @ C4[a] @ M.T, C4[(a + 1) % 3])
+              for a in range(3))
+          and all(np.allclose(M @ Dm[a] @ M.T, Dm[(a + 1) % 3])
+                  for a in range(3))]
+    res["n_V_solutions"] = len(Vs)
+    res["n_W_solutions"] = len(Ws)
+    V, W = Vs[0], Ws[0]
+
+    # single-axis reversal: NO signed permutation flips d_x alone while
+    # fixing the conversion triple (tetrahedron -> complement)
+    res["n_single_flip_solutions"] = len(
+        [M for M in sps if
+         all(np.allclose(M @ C4[a] @ M.T, C4[a]) for a in range(3))
+         and np.allclose(M @ Dm[0] @ M.T, -Dm[0])
+         and np.allclose(M @ Dm[1] @ M.T, Dm[1])
+         and np.allclose(M @ Dm[2] @ M.T, Dm[2])])
+
+    # (b) annealed operator identities (any k, q), 1e-12
+    def Tm(a, kk, q):
+        E = np.diag(np.exp(1j * kk * DD[a]))
+        return E @ ((1 - q) * np.eye(4) + q * C4[a])
+
+    def U(k, q):
+        M = np.eye(4, dtype=complex)
+        for a in range(3):
+            M = Tm(a, k[a], q) @ Tm(a, k[a], q) @ M
+        return M
+
+    devV = devW = 0.0
+    for _ in range(10):
+        k = rng.uniform(-np.pi, np.pi, 3)
+        q = rng.uniform(0.05, 0.7)
+        devV = max(devV, np.abs(
+            V @ U(k, q) @ V.T - U([-k[0], -k[1], k[2]], q)).max())
+        A = Tm(0, k[2], q) @ Tm(0, k[2], q)
+        kp = [k[2], k[0], k[1]]
+        devW = max(devW, np.abs(
+            W @ U(k, q) @ W.T - A @ U(kp, q) @ np.linalg.inv(A)).max())
+    res["annealed_V_identity_dev"] = float(devV)
+    res["annealed_W_identity_dev"] = float(devW)
+
+    # (c) QUENCHED covariance of T_xy including L4, exact per mode:
+    # theta(t) = (1 - t) mod L on the flipped axes (bond-center reflection
+    # preserves the streaming pair partition); medium maps env'_a(theta r)
+    # = env_a(r), iota'(theta r) = iota(r) (pair labels unchanged)
+    L, T = 4, 2
+    q3, g3 = 0.3, 0.4
+    vperm = np.argmax(np.abs(V), axis=0)
+    vsgn = V[vperm, np.arange(4)]
+    PAIRS_L4 = ((0, 1), (1, 2), (2, 0))
+
+    def stream(f, ax, o):
+        m = np.moveaxis(f, ax, -1)
+        if o:
+            m = np.roll(m, -1, axis=-1)
+        m = m.copy()
+        m0 = m[..., 0::2].copy()
+        m[..., 0::2] = m[..., 1::2]
+        m[..., 1::2] = m0
+        if o:
+            m = np.roll(m, 1, axis=-1)
+        return np.moveaxis(m, -1, ax)
+
+    def evolve_mode(x0, c0, env0, iota0):
+        env = [e.copy() for e in env0]
+        iota = iota0.copy()
+        x = list(x0)
+        c = c0
+        s = 1.0
+        for t in range(T):
+            for a in range(3):
+                for o in (0, 1):
+                    if env[a][tuple(x)]:
+                        s *= SGN[a][c]
+                        c = int(PERM[a][c])
+                    x[a] = (x[a] + int(DD[a][c])) % L
+                    env[a] = stream(env[a], (a + 1) % 3, o)
+            v = iota[tuple(x)]
+            if v > 0:
+                A, B = PAIRS_L4[v - 1]
+                bA, bB = env[A][tuple(x)], env[B][tuple(x)]
+                if bA == 1 and bB == 1:
+                    s *= -1.0
+                env[A][tuple(x)], env[B][tuple(x)] = bB, bA
+            iota = stream(iota, t % 3, t % 2)
+        return tuple(x), c, s
+
+    def theta(r, flips):
+        return tuple((1 - r[a]) % L if flips[a] else r[a] for a in range(3))
+
+    n_mismatch = 0
+    for flips in ((1, 1, 0), (0, 1, 1)):        # T_xy and T_yz = R T_xy R^-1
+        Vf = V if flips == (1, 1, 0) else W @ V @ W.T
+        vp = np.argmax(np.abs(Vf), axis=0)
+        vs = Vf[vp, np.arange(4)]
+        env0 = [(rng.random((L, L, L)) < q3).astype(np.int8)
+                for _ in range(3)]
+        u = rng.random((L, L, L))
+        iota0 = np.zeros((L, L, L), np.int64)
+        for p in range(1, 4):
+            iota0[(u >= (p - 1) * g3 / 3) & (u < p * g3 / 3)] = p
+        envp = [np.zeros((L, L, L), np.int8) for _ in range(3)]
+        iotap = np.zeros((L, L, L), np.int64)
+        for r in itertools.product(range(L), repeat=3):
+            rr = theta(r, flips)
+            for a in range(3):
+                envp[a][rr] = env0[a][r]
+            iotap[rr] = iota0[r]
+        for x0 in itertools.product(range(L), repeat=3):
+            for c0 in range(4):
+                x1, c1, sg = evolve_mode(x0, c0, env0, iota0)
+                x1p, c1p, sgp = evolve_mode(theta(x0, flips), int(vp[c0]),
+                                            envp, iotap)
+                if (x1p != theta(x1, flips) or c1p != int(vp[c1])
+                        or abs(sgp * vs[c0] - vs[c1] * sg) > 1e-12):
+                    n_mismatch += 1
+    res["quenched_double_flip_mismatches"] = int(n_mismatch)
+    res["quenched_modes_checked"] = 2 * 4 * L**3
+
+    # (d) representation theory: the k-space actions generate A4; the
+    # A4-average of any symmetric tensor is scalar; the C3-average is NOT
+    Rc = np.array([[0, 0, 1], [1, 0, 0], [0, 1, 0.]])
+    F = np.diag([-1, -1, 1.])
+    els = [np.eye(3)]
+    changed = True
+    while changed:
+        changed = False
+        for gm in list(els):
+            for h in (Rc, F):
+                n = gm @ h
+                if not any(np.allclose(n, e) for e in els):
+                    els.append(n)
+                    changed = True
+    res["group_order"] = len(els)
+    S = rng.normal(size=(3, 3))
+    S = S + S.T
+    avg = sum(gm @ S @ gm.T for gm in els) / len(els)
+    res["A4_average_isotropy_dev"] = float(np.abs(
+        avg - np.trace(avg) / 3 * np.eye(3)).max())
+    els3 = [np.linalg.matrix_power(Rc, i) for i in range(3)]
+    avg3 = sum(gm @ S @ gm.T for gm in els3) / 3
+    res["C3_average_residual_anisotropy"] = float(np.abs(
+        avg3 - np.trace(avg3) / 3 * np.eye(3)).max())
+    vec = rng.normal(size=3)
+    res["A4_vector_average_norm"] = float(np.linalg.norm(
+        sum(gm @ vec for gm in els) / len(els)))
     return res
 
 
@@ -680,10 +957,13 @@ def main():
     args = ap.parse_args()
     out = {"seed": SEED, "quick": args.quick}
     t0 = time.time()
-    for name, fn in [("A", part_A), ("B", lambda: part_B(args.quick)),
+    rngF = np.random.default_rng(SEED + 5)
+    for name, fn in [("A", part_A), ("A2", part_A2),
+                     ("B", lambda: part_B(args.quick)),
                      ("B2", lambda: part_B2(args.quick)), ("C", part_C),
                      ("D", lambda: part_D(args.quick)),
-                     ("E", lambda: part_E(args.quick))]:
+                     ("E", lambda: part_E(args.quick)),
+                     ("F", lambda: part_F(rngF))]:
         t = time.time()
         out[name] = fn()
         out[name + "_seconds"] = round(time.time() - t, 1)
@@ -694,6 +974,11 @@ def main():
     assert abs(A["factor_overlap"] - A["factor_theory"]) < 1e-14
     assert A["W_signed_permutation"] and A["W_parity_even"] < 1e-12
     assert A["W_identity_on_even_parity"] < 1e-12 and A["W_fires_on_one_carrier"]
+    A2 = out["A2"]
+    assert A2["perm_factor_is_1_minus_2q2"]              # U_g = (1-2gq^2) U
+    assert A2["givens_factor_is_1_minus_2q_1mq"]
+    assert A2["annealed_cycle_factor_is_1_minus_2gq2"]   # exact, symbolic
+    assert A2["perm_table_is_canonical_lift"]
     B = out["B"]
     for name in ("fixed", "rotating"):
         assert abs(B[name]["t1_residual"]) < 0.015          # law to 1.5 %
@@ -738,6 +1023,16 @@ def main():
     # 3D walker: each lift matches its own pristine-pair law to < 0.006
     for lift in ("givens", "perm"):
         assert abs(Ee["walker_3d_rotating"][lift]["t1_residual"]) < 0.006
+    Ff = out["F"]
+    assert Ff["n_V_solutions"] > 0 and Ff["n_W_solutions"] > 0
+    assert Ff["n_single_flip_solutions"] == 0     # single flips impossible
+    assert Ff["annealed_V_identity_dev"] < 1e-12
+    assert Ff["annealed_W_identity_dev"] < 1e-12
+    assert Ff["quenched_double_flip_mismatches"] == 0
+    assert Ff["group_order"] == 12                # A4
+    assert Ff["A4_average_isotropy_dev"] < 1e-12  # rank-2 forced scalar
+    assert Ff["A4_vector_average_norm"] < 1e-12   # no invariant vector
+    assert Ff["C3_average_residual_anisotropy"] > 0.1   # C3 NOT enough
     print("all headline assertions passed")
     RESULTS.parent.mkdir(exist_ok=True)
     RESULTS.write_text(json.dumps(out, indent=1))

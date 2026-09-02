@@ -10,3 +10,5 @@ exact coherent 3D path sum: q = 0.08, up to T = 3 cycles
   t=3 k=[1.1 2.  0.3]: rel dev = 0.1437   |Z| meas/pred = 0.9332
 
 (endpoint classes at t=3: 1008)
+all headline assertions passed (t=1 exact; t>=2 recross corrections nonzero, bounded)
+wrote /home/piotr/pca3d/results/a_inout_3d.json

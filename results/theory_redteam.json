@@ -1,12 +1,12 @@
 {
  "seed": 20260901,
- "quick": true,
+ "quick": false,
  "P1": {
   "conformal_unitarity_dev": 4.440892098500626e-16,
   "isotropy_all_alpha_beta": true,
   "boundary_map_s_eq_sqrtq_iff_unbiased": true
  },
- "P1_seconds": 2.5,
+ "P1_seconds": 2.8,
  "P2": {
   "span_residual": 5.551115123125783e-16,
   "hull_max_l1": 0.952826698548025,
@@ -15,7 +15,7 @@
   "family_operator_vs_closedform_dev": 4.460365043975677e-16,
   "family_max_dist_over_Gamma": 0.7620497604985108
  },
- "P2_seconds": 1.2,
+ "P2_seconds": 1.6,
  "P3_lemma": {
   "additive_rot": "1 - 2*p",
   "additive_refl": "p**2 + (p - 1)**2",
@@ -25,7 +25,7 @@
   "multiplicative_diag": "1 - 2*p",
   "lemma_verified": true
  },
- "P3_lemma_seconds": 0.1,
+ "P3_lemma_seconds": 0.2,
  "P3_deadaxis": {
   "E_is_scalar_dev": 0.0
  },
@@ -40,7 +40,7 @@
   "arc_node_is_minus_I_dev": 3.510833468576701e-16,
   "arc_unitary_dev": 6.661338147750939e-16
  },
- "P3_counterexample_seconds": 0.2,
+ "P3_counterexample_seconds": 0.3,
  "P3_tuned": {
   "a": {
    "p_star": 0.3300000000000002,
@@ -55,7 +55,9 @@
     0.9159892845403692
    ],
    "mod_lam0": 0.17355436055199994,
-   "omega0_over_pi": 1.0
+   "omega0_over_pi": 1.0,
+   "chirality": -1,
+   "det_B_imag_over_real": 3.6728233333473173e-10
   },
   "m": {
    "p_star": 0.3204000000000002,
@@ -70,178 +72,252 @@
     0.0931946821940679
    ],
    "mod_lam0": 0.17989548906488512,
-   "omega0_over_pi": -1.0
+   "omega0_over_pi": -1.0,
+   "chirality": 1,
+   "det_B_imag_over_real": 3.6843271915658975e-10
   }
  },
- "P3_tuned_seconds": 4.0,
+ "P3_tuned_seconds": 5.9,
  "P3_sweep": {
   "a_m1_p0.15": {
-   "scalar_points": 768,
-   "min_aniso": 3.371073117500818,
+   "scalar_points": 1792,
+   "min_aniso": 3.3710729269460407,
    "designs_with_scalar": 128,
+   "designs_degenerate_only": 0,
+   "designs_no_scalar": 384,
+   "no_scalar_min_resid": 0.1049999999999283,
+   "n_designs_total": 512,
    "best_k0_over_pi": [
-    -0.33048631422767494,
     0.6695136857723261,
-    -0.33048631422767494
+    -0.3304863142276727,
+    0.6695136857723238
    ]
   },
   "a_m1_p0.25": {
-   "scalar_points": 768,
-   "min_aniso": 2.9024794375964484,
+   "scalar_points": 1792,
+   "min_aniso": 2.902479287503296,
    "designs_with_scalar": 128,
+   "designs_degenerate_only": 0,
+   "designs_no_scalar": 384,
+   "no_scalar_min_resid": 0.12499999999999502,
+   "n_designs_total": 512,
    "best_k0_over_pi": [
-    -0.3232994443367859,
-    0.6767005556632135,
-    -0.3232994443367859
+    -0.3232994443367819,
+    0.6767005556632102,
+    0.6767005556632146
    ]
   },
   "a_m1_p0.35": {
-   "scalar_points": 768,
-   "min_aniso": 2.1894506392823847,
+   "scalar_points": 1792,
+   "min_aniso": 2.189450641832069,
    "designs_with_scalar": 128,
+   "designs_degenerate_only": 0,
+   "designs_no_scalar": 384,
+   "no_scalar_min_resid": 0.10499999999999975,
+   "n_designs_total": 512,
    "best_k0_over_pi": [
-    0.6922353954550349,
-    0.692235395455028,
-    0.6922353954550349
+    -0.30776460454496624,
+    -0.307764604544973,
+    0.6922353954550304
    ]
   },
   "a_m1_p0.5": {
-   "scalar_points": 384,
-   "min_aniso": 0.7320505960883497,
+   "scalar_points": 896,
+   "min_aniso": 0.7320505982664018,
    "designs_with_scalar": 64,
+   "designs_degenerate_only": 256,
+   "designs_no_scalar": 192,
+   "no_scalar_min_resid": 0.17700571730714673,
+   "n_designs_total": 512,
    "best_k0_over_pi": [
-    0.7500000000000009,
-    0.7499999999999987,
-    0.2500000000000002
+    -0.25000000000000144,
+    -0.249999999999998,
+    0.25000000000000244
    ]
   },
   "a_m2_p0.15": {
-   "scalar_points": 2332,
-   "min_aniso": 2.387067990538478,
-   "designs_with_scalar": 511,
+   "scalar_points": 5416,
+   "min_aniso": 2.3770725382143394,
+   "designs_with_scalar": 512,
+   "designs_degenerate_only": 0,
+   "designs_no_scalar": 0,
+   "no_scalar_min_resid": null,
+   "n_designs_total": 512,
    "best_k0_over_pi": [
     0.5,
-    0.12000330172022688,
-    -0.12000330172022677
+    0.8432989326263278,
+    0.15670106737367218
    ]
   },
   "a_m2_p0.25": {
-   "scalar_points": 2370,
-   "min_aniso": 0.9720263182965412,
-   "designs_with_scalar": 511,
+   "scalar_points": 5474,
+   "min_aniso": 0.972026317789008,
+   "designs_with_scalar": 512,
+   "designs_degenerate_only": 0,
+   "designs_no_scalar": 0,
+   "no_scalar_min_resid": null,
+   "n_designs_total": 512,
    "best_k0_over_pi": [
-    0.866139763599385,
-    0.866139763599385,
-    0.13386023640061495
+    -0.13386023640061495,
+    -0.13386023640061495,
+    -0.8661397635993847
    ]
   },
   "a_m2_p0.35": {
-   "scalar_points": 2492,
-   "min_aniso": 0.2916449970629029,
-   "designs_with_scalar": 511,
+   "scalar_points": 5797,
+   "min_aniso": 0.2916449983217404,
+   "designs_with_scalar": 512,
+   "designs_degenerate_only": 0,
+   "designs_no_scalar": 0,
+   "no_scalar_min_resid": null,
+   "n_designs_total": 512,
    "best_k0_over_pi": [
-    -0.9422605842045024,
-    -0.9422605842045092,
-    0.9422605842045046
+    0.05773941579549291,
+    0.05773941579549291,
+    -0.0577394157954928
    ]
   },
   "a_m2_p0.5": {
-   "scalar_points": 384,
-   "min_aniso": 0.7320499021385025,
+   "scalar_points": 896,
+   "min_aniso": 0.7320499071380457,
    "designs_with_scalar": 64,
+   "designs_degenerate_only": 448,
+   "designs_no_scalar": 0,
+   "no_scalar_min_resid": null,
+   "n_designs_total": 512,
    "best_k0_over_pi": [
-    0.4999999999999971,
-    -2.3582005237443582e-08,
-    2.3582009900380285e-08
+    -0.49999999999999944,
+    -2.2255734921650117e-08,
+    2.2255734810627814e-08
    ]
   },
   "m_m1_p0.15": {
-   "scalar_points": 768,
-   "min_aniso": 2.85390981114613,
+   "scalar_points": 1792,
+   "min_aniso": 2.853909892573087,
    "designs_with_scalar": 128,
+   "designs_degenerate_only": 0,
+   "designs_no_scalar": 384,
+   "no_scalar_min_resid": 0.07426988793920553,
+   "n_designs_total": 512,
    "best_k0_over_pi": [
-    0.8304863142276755,
-    0.3304863142276704,
-    -0.16951368577232329
+    0.33048631422767505,
+    -0.16951368577232562,
+    -0.16951368577232506
    ]
   },
   "m_m1_p0.25": {
-   "scalar_points": 768,
-   "min_aniso": 1.8792781519645874,
+   "scalar_points": 1792,
+   "min_aniso": 1.879278221462044,
    "designs_with_scalar": 128,
+   "designs_degenerate_only": 0,
+   "designs_no_scalar": 384,
+   "no_scalar_min_resid": 0.0884536824380437,
+   "n_designs_total": 512,
    "best_k0_over_pi": [
-    -0.1767005556632073,
+    -0.17670055566321408,
     0.3232994443367865,
-    -0.17670055566321863
+    0.8232994443367869
    ]
   },
   "m_m1_p0.35": {
-   "scalar_points": 768,
-   "min_aniso": 0.8571428464588939,
+   "scalar_points": 1792,
+   "min_aniso": 0.8571428491321813,
    "designs_with_scalar": 128,
+   "designs_degenerate_only": 0,
+   "designs_no_scalar": 384,
+   "no_scalar_min_resid": 0.07430579393442091,
+   "n_designs_total": 512,
    "best_k0_over_pi": [
-    0.6922353954550327,
-    0.1922353954550342,
-    0.8077646045449713
+    -0.8077646045449669,
+    0.19223539545502977,
+    0.30776460454496846
    ]
   },
   "m_m1_p0.5": {
-   "scalar_points": 384,
-   "min_aniso": 3.7210216330407775e-07,
+   "scalar_points": 896,
+   "min_aniso": 3.6991384955165074e-07,
    "designs_with_scalar": 64,
+   "designs_degenerate_only": 256,
+   "designs_no_scalar": 192,
+   "no_scalar_min_resid": 0.1768080110260899,
+   "n_designs_total": 512,
    "best_k0_over_pi": [
-    -0.7500000000000031,
+    -0.25,
     -0.2500000000000093,
-    -0.25000000000000033
+    -0.7500000000000077
    ]
   },
   "m_m2_p0.15": {
-   "scalar_points": 2370,
-   "min_aniso": 2.130600407152889,
-   "designs_with_scalar": 510,
+   "scalar_points": 5488,
+   "min_aniso": 2.1306004054035217,
+   "designs_with_scalar": 512,
+   "designs_degenerate_only": 0,
+   "designs_no_scalar": 0,
+   "no_scalar_min_resid": null,
+   "n_designs_total": 512,
    "best_k0_over_pi": [
-    0.5000000024484677,
-    -0.9999999975515323,
-    -4.601147352012447e-09
+    0.4999999979768772,
+    -2.0231228914369126e-09,
+    3.801841508277448e-09
    ]
   },
   "m_m2_p0.25": {
-   "scalar_points": 2281,
-   "min_aniso": 0.7320506247930099,
-   "designs_with_scalar": 511,
+   "scalar_points": 5351,
+   "min_aniso": 0.7320506244733442,
+   "designs_with_scalar": 512,
+   "designs_degenerate_only": 0,
+   "designs_no_scalar": 0,
+   "no_scalar_min_resid": null,
+   "n_designs_total": 512,
    "best_k0_over_pi": [
-    0.866139763599385,
-    -0.13386023640061495,
-    0.13386023640061495
+    0.8661397635993848,
+    -0.13386023640061473,
+    -0.8661397635993847
    ]
   },
   "m_m2_p0.35": {
-   "scalar_points": 2212,
-   "min_aniso": 0.3698886197552207,
-   "designs_with_scalar": 510,
+   "scalar_points": 5252,
+   "min_aniso": 0.3698886200381204,
+   "designs_with_scalar": 512,
+   "designs_degenerate_only": 0,
+   "designs_no_scalar": 0,
+   "no_scalar_min_resid": null,
+   "n_designs_total": 512,
    "best_k0_over_pi": [
-    0.05773941579549291,
-    0.05773941579549291,
-    0.9422605842045069
+    -0.9422605842045073,
+    -0.942260584204507,
+    -0.05773941579549291
    ]
   },
   "m_m2_p0.5": {
-   "scalar_points": 384,
-   "min_aniso": 0.7320503990023863,
+   "scalar_points": 896,
+   "min_aniso": 0.7320503698783025,
    "designs_with_scalar": 64,
+   "designs_degenerate_only": 448,
+   "designs_no_scalar": 0,
+   "no_scalar_min_resid": null,
+   "n_designs_total": 512,
    "best_k0_over_pi": [
-    0.75,
-    -0.75,
-    -0.25
+    0.249999999999998,
+    -0.7499999999999987,
+    0.2500000000000049
    ]
   },
-  "n_designs": 2048
+  "n_designs": 2048,
+  "resid_floor": 0.01,
+  "p_grid": [
+   0.15,
+   0.25,
+   0.35,
+   0.5
+  ],
+  "floor_scope_note": "anisotropy floors are claimed at the listed grid p values only; the m=2 floors dip toward zero as p approaches the isolated tuned p* ~ 0.330 (additive) / 0.320 (multiplicative) of P3_tuned; momentum solving is multistart-heuristic (tables exhaustive)"
  },
- "P3_sweep_seconds": 537.4,
+ "P3_sweep_seconds": 1826.5,
  "P4": {
   "Phi_intertwines_i_vs_I": 0.0,
   "Phi_intertwines_dynamics": 0.0,
-  "hermitian_form_matches": 2.7012892057857038e-15,
+  "hermitian_form_matches": 3.972054645195637e-15,
   "spec_conjugation_closed": true
  },
  "P4_seconds": 0.0,

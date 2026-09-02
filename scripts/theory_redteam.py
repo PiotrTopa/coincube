@@ -20,8 +20,11 @@ P3  No-two-component theorem at ANY momentum: linear splitting => scalar
     (or any reflection/diagonal coin in the load-bearing slots) no isotropic
     node exists at any k [PROVEN for single-engagement cycles]; the
     surviving p = 1/2 family and the double-engagement (squared) cycles are
-    excluded by an exhaustive design sweep with continuous multistart
-    scalar-point solving.  [machine-checked]
+    excluded by a design sweep that is exhaustive in the coin/direction
+    tables and multistart-heuristic in momentum; every design is covered by
+    an explicit certificate (anisotropy floor, degeneracy, or a no-scalar
+    residual floor), with floors claimed at the sampled p grid only.
+    [machine-checked]
 P4  The I-spectrum bridge: Phi(u + i v) = u (+) (-P v) is a canonical
     complex-linear isomorphism ((V_1)_C, i) -> (V_1 (+) V_{M-1}, I) that
     intertwines the dynamics iff [S, P] = 0; hence the Fourier-i spectral
@@ -297,24 +300,57 @@ def part_P3_tuned(rng):
         pstar, astar, kstar = min(trace, key=lambda r: r[1])
         lam0 = np.trace(Uf(kstar, pstar)) / 2
         ends = (trace[0][1], trace[-1][1])
+        # chirality of the tuned node: the SAME local-frame determinant
+        # recipe as part_P3_counterexample (h_a = -i dU/dk_a / lam0 made
+        # traceless, B[a, :] = tr(h_a sigma)/2, chi = sign(Re det B))
+        sigma = [np.array([[0, 1], [1, 0]], complex),
+                 np.array([[0, -1j], [1j, 0]]),
+                 np.array([[1, 0], [0, -1]], complex)]
+        eps = 1e-7
+        B = np.zeros((3, 3), complex)
+        for a in range(3):
+            kp = kstar.copy(); kp[a] += eps
+            km = kstar.copy(); km[a] -= eps
+            h = (-1j) * (Uf(kp, pstar) - Uf(km, pstar)) / (2 * eps) / lam0
+            h = h - np.trace(h) / 2 * np.eye(2)
+            B[a, :] = [np.trace(h @ sg) / 2 for sg in sigma]
+        detB = np.linalg.det(B)
         res[place] = dict(
             p_star=float(pstar), min_aniso_extrapolated=float(astar),
             trace_endpoint_anisos=[float(x) for x in ends],
             k0_over_pi=[float(x) for x in
                         np.mod(kstar + np.pi, 2 * np.pi) / np.pi - 1],
             mod_lam0=float(abs(lam0)),
-            omega0_over_pi=float(np.angle(lam0) / np.pi))
+            omega0_over_pi=float(np.angle(lam0) / np.pi),
+            chirality=int(np.sign(detB.real)),
+            det_B_imag_over_real=float(abs(detB.imag) / abs(detB.real)))
     return res
 
 
 def part_P3_sweep(rng, quick):
     """sector-resolved exhaustive design sweep: all antidiagonal-coin sign
     tables x traceless direction tables per axis, both placements, single
-    (m=1) and blocked (m=2) engagement, p in {1/4, 1/2}; continuous
-    multistart scalar-point solving. Reports the minimum splitting
-    anisotropy PER SECTOR: the multiplicative m=1 p=1/2 sector contains the
-    exact Weyl counterexample (min ~ 0); every other sector has a strictly
-    positive anisotropy floor."""
+    (m=1) and blocked (m=2) engagement, p on the grid {0.15, 0.25, 0.35,
+    0.5}; continuous multistart scalar-point solving.  EVERY design in every
+    sector is classified into exactly one of three certified bins:
+      (1) scalar point found and a candidate node survives the filters ->
+          contributes to the sector's splitting-anisotropy floor;
+      (2) scalar points found but all candidates degenerate (|lam0| ~ 0,
+          i.e. the scalar composite is ~nilpotent, or no linear splitting
+          at all) -> excluded as non-nodes, counted separately;
+      (3) NO scalar point found by the multistart search -> the STRONGER
+          exclusion (no candidate node exists at all); certified by the
+          minimum scalar-residual the search achieved, asserted to exceed
+          RESID_FLOOR (measured gap: >= 0.074 vs <= 1e-9 for solvable
+          designs).  The search over momentum is multistart-heuristic, not
+          exhaustive: the tables are exhaustive, the momentum solving is
+          heuristic (stated in the paper text).
+    The multiplicative m=1 p=1/2 sector contains the exact Weyl
+    counterexample (min ~ 0); every other GRID sector has a strictly
+    positive anisotropy floor.  Floors are claimed at the grid p values
+    only: the m=2 floors provably dip toward 0 as p approaches the tuned
+    p* ~ 0.33 located in part_P3_tuned."""
+    RESID_FLOOR = 1e-2
     coins = [s * ROT for s in (1, -1)] + [s * REFL for s in (1, -1)]
     dsets = [np.array([1, -1.]), np.array([-1, 1.])]
     dirs = [np.array(v, float) / np.linalg.norm(v) for v in
@@ -350,8 +386,11 @@ def part_P3_sweep(rng, quick):
         for m in (1, 2):
             for p in PGRID:
                 key = f"{place}_m{m}_p{p}"
-                sectors[key] = dict(scalar_points=0, min_aniso=np.inf,
-                                    designs_with_scalar=0)
+                sectors[key] = dict(
+                    scalar_points=0, min_aniso=np.inf,
+                    designs_with_scalar=0, designs_degenerate_only=0,
+                    designs_no_scalar=0, no_scalar_min_resid=np.inf,
+                    n_designs_total=0)
     ndesign = 0
     for place in ("a", "m"):
         for m in (1, 2):
@@ -359,19 +398,26 @@ def part_P3_sweep(rng, quick):
                     itertools.product(dsets, coins), repeat=3):
                 design = list(combo)
                 ndesign += 1
-                design_hit = set()
-                for _ in range(nstart):
-                    x0 = rng.uniform(-np.pi, np.pi, 3)
-                    for p in PGRID:
-                        key = f"{place}_m{m}_p{p}"
+                starts = [rng.uniform(-np.pi, np.pi, 3)
+                          for _ in range(nstart)]
+                for p in PGRID:
+                    key = f"{place}_m{m}_p{p}"
+                    sec = sectors[key]
+                    sec["n_designs_total"] += 1
+                    best_resid = np.inf
+                    found_node = found_degenerate = False
+                    for x0 in starts:
                         r = least_squares(
                             lambda kk: sdev(kk, design, p, place, m), x0,
                             xtol=3e-14, ftol=3e-14, method="lm")
+                        best_resid = min(best_resid,
+                                         float(np.abs(r.fun).max()))
                         if np.abs(r.fun).max() > 1e-9:
                             continue
                         k0 = r.x
                         lam0 = np.trace(Uf(k0, design, p, place, m)) / 2
                         if abs(lam0) < 1e-8:
+                            found_degenerate = True
                             continue
                         eps = 1e-6
                         sl = np.array([
@@ -379,24 +425,35 @@ def part_P3_sweep(rng, quick):
                                 Uf(k0 + eps * n, design, p, place, m)))[0])
                             / eps for n in dirs])
                         if sl.max() < 1e-6:
+                            found_degenerate = True
                             continue
-                        sec = sectors[key]
+                        found_node = True
                         sec["scalar_points"] += 1
-                        if key not in design_hit:
-                            design_hit.add(key)
-                            sec["designs_with_scalar"] += 1
                         aniso = float(sl.max() / max(sl.min(), 1e-30) - 1)
                         if aniso < sec["min_aniso"]:
                             sec["min_aniso"] = aniso
                             sec["best_k0_over_pi"] = [float(x) for x in
                                                      np.mod(k0 + np.pi, 2 * np.pi)
                                                      / np.pi - 1]
+                    if found_node:
+                        sec["designs_with_scalar"] += 1
+                    elif found_degenerate:
+                        sec["designs_degenerate_only"] += 1
+                    else:
+                        sec["designs_no_scalar"] += 1
+                        sec["no_scalar_min_resid"] = min(
+                            sec["no_scalar_min_resid"], best_resid)
     for sec in sectors.values():
-        if sec["min_aniso"] is np.inf:
-            sec["min_aniso"] = None
-        else:
-            sec["min_aniso"] = float(sec["min_aniso"])
+        for fld in ("min_aniso", "no_scalar_min_resid"):
+            sec[fld] = None if sec[fld] is np.inf else float(sec[fld])
     sectors["n_designs"] = ndesign
+    sectors["resid_floor"] = RESID_FLOOR
+    sectors["p_grid"] = list(PGRID)
+    sectors["floor_scope_note"] = (
+        "anisotropy floors are claimed at the listed grid p values only; "
+        "the m=2 floors dip toward zero as p approaches the isolated tuned "
+        "p* ~ 0.330 (additive) / 0.320 (multiplicative) of P3_tuned; "
+        "momentum solving is multistart-heuristic (tables exhaustive)")
     return sectors
 
 
@@ -656,18 +713,40 @@ def main():
         assert min(tn[place]["trace_endpoint_anisos"]) > \
             5 * max(tn[place]["min_aniso_extrapolated"], 1e-4)
         assert abs(abs(tn[place]["omega0_over_pi"]) - 1) < 1e-6  # omega0 = pi
+        # chirality is COMPUTED (local-frame determinant), not assumed;
+        # det B is real to ~4e-10, so the unit chirality is well-defined.
+        # The located representatives: chi = -1 (additive), chi = +1
+        # (multiplicative); the sign labels the representative node of the
+        # +-chirality pair the continuation converged to.
+        assert tn[place]["det_B_imag_over_real"] < 1e-6
+        assert abs(tn[place]["chirality"]) == 1
+    assert tn["a"]["chirality"] == -1
+    assert tn["m"]["chirality"] == +1
     sw = out["P3_sweep"]
     # the m=1 multiplicative p=1/2 sector contains the symbolic counterexample
     assert sw["m_m1_p0.5"]["min_aniso"] < 1e-4
-    # generic-p sectors on the grid have positive anisotropy floors (isotropic
-    # nodes occur only at the isolated tuned points located in P3_tuned;
-    # grid floors dip near the tuned p* -- e.g. 0.29 at p = 0.35 -- but stay
-    # bounded away from zero AT the grid values)
-    for key in ("a_m1_p0.15", "a_m1_p0.25", "a_m1_p0.35", "a_m1_p0.5",
-                "a_m2_p0.15", "a_m2_p0.25", "a_m2_p0.35", "a_m2_p0.5",
-                "m_m1_p0.15", "m_m1_p0.25", "m_m1_p0.35",
-                "m_m2_p0.15", "m_m2_p0.25", "m_m2_p0.35", "m_m2_p0.5"):
+    # EVERY design in EVERY sector is covered by an explicit certificate:
+    # (1) node candidates found -> the sector anisotropy floor applies;
+    # (2) degenerate-only scalar points -> counted, excluded as non-nodes;
+    # (3) no scalar point found -> the minimum scalar-residual the
+    #     multistart search achieved must exceed RESID_FLOOR (the stronger,
+    #     no-candidate-node exclusion, stated explicitly).
+    # Floors are claimed AT THE GRID p VALUES ONLY (the m=2 floors dip
+    # toward 0 near the tuned p* ~ 0.33 between grid points).
+    # the floors are claimed ONLY at these grid values (explicit scope):
+    assert sw["p_grid"] == [0.15, 0.25, 0.35, 0.5]
+    assert "grid p values" in sw["floor_scope_note"]
+    grid_keys = [f"{pl}_m{m}_p{p}" for pl in ("a", "m") for m in (1, 2)
+                 for p in sw["p_grid"]]
+    for key in grid_keys:
         sec = sw[key]
+        assert (sec["designs_with_scalar"] + sec["designs_degenerate_only"]
+                + sec["designs_no_scalar"]) == sec["n_designs_total"], key
+        assert sec["n_designs_total"] == 512, key
+        if sec["designs_no_scalar"] > 0:
+            assert sec["no_scalar_min_resid"] > sw["resid_floor"], key
+        if key == "m_m1_p0.5":
+            continue                     # the exact Weyl counterexample
         if sec["min_aniso"] is not None:
             assert sec["min_aniso"] > 0.05, key
     P4 = out["P4"]

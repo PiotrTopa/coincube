@@ -28,7 +28,14 @@
   "W_identity_on_even_parity": 0.0,
   "W_fires_on_one_carrier": true
  },
- "A_seconds": 0.1,
+ "A_seconds": 0.2,
+ "A2": {
+  "perm_factor_is_1_minus_2q2": true,
+  "givens_factor_is_1_minus_2q_1mq": true,
+  "annealed_cycle_factor_is_1_minus_2gq2": true,
+  "perm_table_is_canonical_lift": true
+ },
+ "A2_seconds": 0.7,
  "B": {
   "factor_theory": 0.9235,
   "fixed": {
@@ -80,7 +87,7 @@
    "drift_t3_minus_t1": 0.006478521892750111
   }
  },
- "B_seconds": 56.6,
+ "B_seconds": 93.3,
  "B2": {
   "kmag": 0.35,
   "fixed": {
@@ -136,7 +143,7 @@
    "aniso_yz_sigmas": 2.006865845984036
   }
  },
- "B2_seconds": 75.8,
+ "B2_seconds": 158.1,
  "C": {
   "gate_factorization_dev": 1.8319725852007955e-15,
   "trace_mode_dev": 2.220446049250313e-16,
@@ -162,7 +169,7 @@
    "f2": 0.85285225
   }
  },
- "C_seconds": 4.0,
+ "C_seconds": 31.8,
  "D": {
   "blocked_events_mean": 0.006033333333333333,
   "blocked_events_err": 0.0004477772056792595,
@@ -178,7 +185,7 @@
    "sep5": 0.6068
   }
  },
- "D_seconds": 10.3,
+ "D_seconds": 17.8,
  "E": {
   "perm": {
    "0.1": {
@@ -332,5 +339,19 @@
    }
   }
  },
- "E_seconds": 62.2
+ "E_seconds": 116.5,
+ "F": {
+  "n_V_solutions": 2,
+  "n_W_solutions": 2,
+  "n_single_flip_solutions": 0,
+  "annealed_V_identity_dev": 1.6653345369377348e-16,
+  "annealed_W_identity_dev": 1.6711069443220836e-16,
+  "quenched_double_flip_mismatches": 0,
+  "quenched_modes_checked": 512,
+  "group_order": 12,
+  "A4_average_isotropy_dev": 3.700743415417188e-17,
+  "C3_average_residual_anisotropy": 1.797185872954101,
+  "A4_vector_average_norm": 0.0
+ },
+ "F_seconds": 0.8
 }

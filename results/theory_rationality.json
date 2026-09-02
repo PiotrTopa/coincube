@@ -1,0 +1,2387 @@
+{
+  "n_rules": 32,
+  "census": {
+    "3": {
+      "autonomous": false,
+      "env_kind": null,
+      "vacuum_kind": "identity",
+      "S10": [
+        0,
+        1,
+        3
+      ],
+      "S01": [
+        0,
+        2,
+        3
+      ],
+      "blind": false
+    },
+    "5": {
+      "autonomous": true,
+      "env_kind": "identity",
+      "vacuum_kind": "identity",
+      "S10": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "S01": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "blind": true
+    },
+    "17": {
+      "autonomous": false,
+      "env_kind": null,
+      "vacuum_kind": "identity",
+      "S10": [
+        0,
+        2,
+        3
+      ],
+      "S01": [
+        0,
+        1,
+        3
+      ],
+      "blind": false
+    },
+    "23": {
+      "autonomous": true,
+      "env_kind": "identity",
+      "vacuum_kind": "identity",
+      "S10": [
+        0,
+        3
+      ],
+      "S01": [
+        0,
+        3
+      ],
+      "blind": true
+    },
+    "25": {
+      "autonomous": false,
+      "env_kind": null,
+      "vacuum_kind": "identity",
+      "S10": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "S01": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "blind": true
+    },
+    "31": {
+      "autonomous": false,
+      "env_kind": null,
+      "vacuum_kind": "identity",
+      "S10": [
+        0,
+        1,
+        3
+      ],
+      "S01": [
+        0,
+        2,
+        3
+      ],
+      "blind": false
+    },
+    "43": {
+      "autonomous": false,
+      "env_kind": null,
+      "vacuum_kind": "identity",
+      "S10": [
+        0,
+        3
+      ],
+      "S01": [
+        0,
+        3
+      ],
+      "blind": true
+    },
+    "45": {
+      "autonomous": false,
+      "env_kind": null,
+      "vacuum_kind": "identity",
+      "S10": [
+        0,
+        2,
+        3
+      ],
+      "S01": [
+        0,
+        1,
+        3
+      ],
+      "blind": false
+    },
+    "107": {
+      "autonomous": false,
+      "env_kind": null,
+      "vacuum_kind": "identity",
+      "S10": [
+        1
+      ],
+      "S01": [
+        2
+      ],
+      "blind": false
+    },
+    "109": {
+      "autonomous": true,
+      "env_kind": "identity",
+      "vacuum_kind": "identity",
+      "S10": [
+        1,
+        2
+      ],
+      "S01": [
+        1,
+        2
+      ],
+      "blind": true
+    },
+    "115": {
+      "autonomous": false,
+      "env_kind": null,
+      "vacuum_kind": "identity",
+      "S10": [
+        2
+      ],
+      "S01": [
+        1
+      ],
+      "blind": false
+    },
+    "117": {
+      "autonomous": true,
+      "env_kind": "identity",
+      "vacuum_kind": "identity",
+      "S10": [],
+      "S01": [],
+      "blind": true
+    },
+    "123": {
+      "autonomous": false,
+      "env_kind": null,
+      "vacuum_kind": "identity",
+      "S10": [
+        1,
+        2
+      ],
+      "S01": [
+        1,
+        2
+      ],
+      "blind": true
+    },
+    "125": {
+      "autonomous": false,
+      "env_kind": null,
+      "vacuum_kind": "identity",
+      "S10": [
+        1
+      ],
+      "S01": [
+        2
+      ],
+      "blind": false
+    },
+    "131": {
+      "autonomous": false,
+      "env_kind": null,
+      "vacuum_kind": "identity",
+      "S10": [],
+      "S01": [],
+      "blind": true
+    },
+    "133": {
+      "autonomous": false,
+      "env_kind": null,
+      "vacuum_kind": "identity",
+      "S10": [
+        2
+      ],
+      "S01": [
+        1
+      ],
+      "blind": false
+    },
+    "771": {
+      "autonomous": false,
+      "env_kind": null,
+      "vacuum_kind": "swap",
+      "S10": [
+        0,
+        1,
+        3
+      ],
+      "S01": [
+        0,
+        2,
+        3
+      ],
+      "blind": false
+    },
+    "773": {
+      "autonomous": false,
+      "env_kind": null,
+      "vacuum_kind": "swap",
+      "S10": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "S01": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "blind": true
+    },
+    "785": {
+      "autonomous": false,
+      "env_kind": null,
+      "vacuum_kind": "swap",
+      "S10": [
+        0,
+        2,
+        3
+      ],
+      "S01": [
+        0,
+        1,
+        3
+      ],
+      "blind": false
+    },
+    "791": {
+      "autonomous": false,
+      "env_kind": null,
+      "vacuum_kind": "swap",
+      "S10": [
+        0,
+        3
+      ],
+      "S01": [
+        0,
+        3
+      ],
+      "blind": true
+    },
+    "793": {
+      "autonomous": true,
+      "env_kind": "swap",
+      "vacuum_kind": "swap",
+      "S10": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "S01": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "blind": true
+    },
+    "799": {
+      "autonomous": false,
+      "env_kind": null,
+      "vacuum_kind": "swap",
+      "S10": [
+        0,
+        1,
+        3
+      ],
+      "S01": [
+        0,
+        2,
+        3
+      ],
+      "blind": false
+    },
+    "811": {
+      "autonomous": true,
+      "env_kind": "swap",
+      "vacuum_kind": "swap",
+      "S10": [
+        0,
+        3
+      ],
+      "S01": [
+        0,
+        3
+      ],
+      "blind": true
+    },
+    "813": {
+      "autonomous": false,
+      "env_kind": null,
+      "vacuum_kind": "swap",
+      "S10": [
+        0,
+        2,
+        3
+      ],
+      "S01": [
+        0,
+        1,
+        3
+      ],
+      "blind": false
+    },
+    "875": {
+      "autonomous": false,
+      "env_kind": null,
+      "vacuum_kind": "swap",
+      "S10": [
+        1
+      ],
+      "S01": [
+        2
+      ],
+      "blind": false
+    },
+    "877": {
+      "autonomous": false,
+      "env_kind": null,
+      "vacuum_kind": "swap",
+      "S10": [
+        1,
+        2
+      ],
+      "S01": [
+        1,
+        2
+      ],
+      "blind": true
+    },
+    "883": {
+      "autonomous": false,
+      "env_kind": null,
+      "vacuum_kind": "swap",
+      "S10": [
+        2
+      ],
+      "S01": [
+        1
+      ],
+      "blind": false
+    },
+    "885": {
+      "autonomous": false,
+      "env_kind": null,
+      "vacuum_kind": "swap",
+      "S10": [],
+      "S01": [],
+      "blind": true
+    },
+    "891": {
+      "autonomous": true,
+      "env_kind": "swap",
+      "vacuum_kind": "swap",
+      "S10": [
+        1,
+        2
+      ],
+      "S01": [
+        1,
+        2
+      ],
+      "blind": true
+    },
+    "893": {
+      "autonomous": false,
+      "env_kind": null,
+      "vacuum_kind": "swap",
+      "S10": [
+        1
+      ],
+      "S01": [
+        2
+      ],
+      "blind": false
+    },
+    "899": {
+      "autonomous": true,
+      "env_kind": "swap",
+      "vacuum_kind": "swap",
+      "S10": [],
+      "S01": [],
+      "blind": true
+    },
+    "901": {
+      "autonomous": false,
+      "env_kind": null,
+      "vacuum_kind": "swap",
+      "S10": [
+        2
+      ],
+      "S01": [
+        1
+      ],
+      "blind": false
+    }
+  },
+  "autonomous_swap": {
+    "793": {
+      "tier": 1,
+      "S10": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "S01": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "blind": true,
+      "trajectory_check": true,
+      "classes": [
+        {
+          "states": [
+            "(R,0)",
+            "(R,1)",
+            "(L,0)",
+            "(L,1)"
+          ],
+          "v_cycle_num": [
+            "0"
+          ],
+          "v_cycle_den": [
+            "1"
+          ],
+          "weight_num": [
+            "1"
+          ],
+          "weight_den": [
+            "1"
+          ],
+          "v_cycle_at_half": "0",
+          "weight_at_half": "1"
+        }
+      ],
+      "measured_check": [
+        {
+          "q": 0.1,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.0,
+          "alpha": NaN
+        },
+        {
+          "q": 0.2,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.0,
+          "alpha": NaN
+        },
+        {
+          "q": 0.3,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.0,
+          "alpha": NaN
+        },
+        {
+          "q": 0.4,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.0,
+          "alpha": NaN
+        },
+        {
+          "q": 0.5,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.0,
+          "alpha": NaN
+        },
+        {
+          "q": 0.6,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.0,
+          "alpha": NaN
+        },
+        {
+          "q": 0.7,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.0,
+          "alpha": NaN
+        },
+        {
+          "q": 0.8,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.0,
+          "alpha": NaN
+        },
+        {
+          "q": 0.9,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.0,
+          "alpha": NaN
+        }
+      ]
+    },
+    "811": {
+      "tier": 1,
+      "S10": [
+        0,
+        3
+      ],
+      "S01": [
+        0,
+        3
+      ],
+      "blind": true,
+      "trajectory_check": true,
+      "classes": [
+        {
+          "states": [
+            "(R,0)",
+            "(L,0)"
+          ],
+          "v_cycle_num": [
+            "0"
+          ],
+          "v_cycle_den": [
+            "1"
+          ],
+          "weight_num": [
+            "1",
+            "-1"
+          ],
+          "weight_den": [
+            "1"
+          ],
+          "v_cycle_at_half": "0",
+          "weight_at_half": "1/2"
+        },
+        {
+          "states": [
+            "(R,1)",
+            "(L,1)"
+          ],
+          "v_cycle_num": [
+            "0"
+          ],
+          "v_cycle_den": [
+            "1"
+          ],
+          "weight_num": [
+            "0",
+            "1"
+          ],
+          "weight_den": [
+            "1"
+          ],
+          "v_cycle_at_half": "0",
+          "weight_at_half": "1/2"
+        }
+      ],
+      "measured_check": [
+        {
+          "q": 0.1,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.03250703744125688,
+          "alpha": 0.6208476323840441
+        },
+        {
+          "q": 0.2,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.05104764964854932,
+          "alpha": 0.5291201622914186
+        },
+        {
+          "q": 0.3,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.06899408595536405,
+          "alpha": 0.4677563688789015
+        },
+        {
+          "q": 0.4,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.08727572916270349,
+          "alpha": 0.4799478744491165
+        },
+        {
+          "q": 0.5,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.09293115027989968,
+          "alpha": 0.47184026927843226
+        },
+        {
+          "q": 0.6,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.08816434663632965,
+          "alpha": 0.47279885360084045
+        },
+        {
+          "q": 0.7,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.07239721824433247,
+          "alpha": 0.487670291324281
+        },
+        {
+          "q": 0.8,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.05251220099259466,
+          "alpha": 0.5406106596600401
+        },
+        {
+          "q": 0.9,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.031733272456525415,
+          "alpha": 0.6155235576140777
+        }
+      ]
+    },
+    "891": {
+      "tier": 1,
+      "S10": [
+        1,
+        2
+      ],
+      "S01": [
+        1,
+        2
+      ],
+      "blind": true,
+      "trajectory_check": true,
+      "classes": [
+        {
+          "states": [
+            "(R,0)",
+            "(L,1)"
+          ],
+          "v_cycle_num": [
+            "2",
+            "-4"
+          ],
+          "v_cycle_den": [
+            "1"
+          ],
+          "weight_num": [
+            "1",
+            "-1"
+          ],
+          "weight_den": [
+            "1"
+          ],
+          "v_cycle_at_half": "0",
+          "weight_at_half": "1/2"
+        },
+        {
+          "states": [
+            "(R,1)",
+            "(L,0)"
+          ],
+          "v_cycle_num": [
+            "-2",
+            "4"
+          ],
+          "v_cycle_den": [
+            "1"
+          ],
+          "weight_num": [
+            "0",
+            "1"
+          ],
+          "weight_den": [
+            "1"
+          ],
+          "v_cycle_at_half": "0",
+          "weight_at_half": "1/2"
+        }
+      ],
+      "measured_check": [
+        {
+          "q": 0.1,
+          "pred_dominant_v": 1.6,
+          "pred_fastest_v": 1.6,
+          "measured_v": 1.6071801056707595,
+          "alpha": 0.9989264229263933
+        },
+        {
+          "q": 0.2,
+          "pred_dominant_v": 1.2,
+          "pred_fastest_v": 1.2,
+          "measured_v": 1.193578801174085,
+          "alpha": 0.9976194403659592
+        },
+        {
+          "q": 0.3,
+          "pred_dominant_v": 0.8,
+          "pred_fastest_v": 0.8,
+          "measured_v": 0.7928010084835355,
+          "alpha": 0.9951936910736429
+        },
+        {
+          "q": 0.4,
+          "pred_dominant_v": 0.4,
+          "pred_fastest_v": 0.4,
+          "measured_v": 0.39318547533184844,
+          "alpha": 0.9492233438577454
+        },
+        {
+          "q": 0.5,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.09153733280825516,
+          "alpha": 0.4628083684401138
+        },
+        {
+          "q": 0.6,
+          "pred_dominant_v": 0.4,
+          "pred_fastest_v": 0.4,
+          "measured_v": 0.40201881699790815,
+          "alpha": 0.9556873620696678
+        },
+        {
+          "q": 0.7,
+          "pred_dominant_v": 0.8,
+          "pred_fastest_v": 0.8,
+          "measured_v": 0.8020608211172043,
+          "alpha": 0.9992931097523581
+        },
+        {
+          "q": 0.8,
+          "pred_dominant_v": 1.2,
+          "pred_fastest_v": 1.2,
+          "measured_v": 1.197493572898723,
+          "alpha": 0.9955224559715865
+        },
+        {
+          "q": 0.9,
+          "pred_dominant_v": 1.6,
+          "pred_fastest_v": 1.6,
+          "measured_v": 1.59663437707358,
+          "alpha": 0.9941521664804044
+        }
+      ]
+    },
+    "899": {
+      "tier": 1,
+      "S10": [],
+      "S01": [],
+      "blind": true,
+      "trajectory_check": true,
+      "classes": [
+        {
+          "states": [
+            "(R,0)"
+          ],
+          "v_cycle_num": [
+            "2"
+          ],
+          "v_cycle_den": [
+            "1"
+          ],
+          "weight_num": [
+            "1",
+            "-1"
+          ],
+          "weight_den": [
+            "1"
+          ],
+          "v_cycle_at_half": "2",
+          "weight_at_half": "1/2"
+        },
+        {
+          "states": [
+            "(R,1)"
+          ],
+          "v_cycle_num": [
+            "2"
+          ],
+          "v_cycle_den": [
+            "1"
+          ],
+          "weight_num": [
+            "0",
+            "1"
+          ],
+          "weight_den": [
+            "1"
+          ],
+          "v_cycle_at_half": "2",
+          "weight_at_half": "1/2"
+        },
+        {
+          "states": [
+            "(L,0)"
+          ],
+          "v_cycle_num": [
+            "-2"
+          ],
+          "v_cycle_den": [
+            "1"
+          ],
+          "weight_num": [
+            "0"
+          ],
+          "weight_den": [
+            "1"
+          ],
+          "v_cycle_at_half": "-2",
+          "weight_at_half": "0"
+        },
+        {
+          "states": [
+            "(L,1)"
+          ],
+          "v_cycle_num": [
+            "-2"
+          ],
+          "v_cycle_den": [
+            "1"
+          ],
+          "weight_num": [
+            "0"
+          ],
+          "weight_den": [
+            "1"
+          ],
+          "v_cycle_at_half": "-2",
+          "weight_at_half": "0"
+        }
+      ],
+      "measured_check": [
+        {
+          "q": 0.1,
+          "pred_dominant_v": 2.0,
+          "pred_fastest_v": 2.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        },
+        {
+          "q": 0.2,
+          "pred_dominant_v": 2.0,
+          "pred_fastest_v": 2.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        },
+        {
+          "q": 0.3,
+          "pred_dominant_v": 2.0,
+          "pred_fastest_v": 2.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        },
+        {
+          "q": 0.4,
+          "pred_dominant_v": 2.0,
+          "pred_fastest_v": 2.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        },
+        {
+          "q": 0.5,
+          "pred_dominant_v": 2.0,
+          "pred_fastest_v": 2.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        },
+        {
+          "q": 0.6,
+          "pred_dominant_v": 2.0,
+          "pred_fastest_v": 2.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        },
+        {
+          "q": 0.7,
+          "pred_dominant_v": 2.0,
+          "pred_fastest_v": 2.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        },
+        {
+          "q": 0.8,
+          "pred_dominant_v": 2.0,
+          "pred_fastest_v": 2.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        },
+        {
+          "q": 0.9,
+          "pred_dominant_v": 2.0,
+          "pred_fastest_v": 2.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        }
+      ]
+    },
+    "771": {
+      "tier": 2,
+      "S10": [
+        0,
+        1,
+        3
+      ],
+      "S01": [
+        0,
+        2,
+        3
+      ],
+      "blind": false,
+      "trajectory_check": true,
+      "classes": [
+        {
+          "states": [
+            "(R,0)",
+            "(L,0)"
+          ],
+          "v_cycle_num": [
+            "0"
+          ],
+          "v_cycle_den": [
+            "1"
+          ],
+          "weight_num": [
+            "1",
+            "-1"
+          ],
+          "weight_den": [
+            "1"
+          ],
+          "v_cycle_at_half": "0",
+          "weight_at_half": "1/2"
+        },
+        {
+          "states": [
+            "(R,1)",
+            "(L,1)"
+          ],
+          "v_cycle_num": [
+            "0"
+          ],
+          "v_cycle_den": [
+            "1"
+          ],
+          "weight_num": [
+            "0",
+            "1"
+          ],
+          "weight_den": [
+            "1"
+          ],
+          "v_cycle_at_half": "0",
+          "weight_at_half": "1/2"
+        }
+      ],
+      "measured_check": [
+        {
+          "q": 0.1,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.0016457819044660886,
+          "alpha": -0.02732753913524795
+        },
+        {
+          "q": 0.2,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.0016725732966654978,
+          "alpha": -0.014277103481473928
+        },
+        {
+          "q": 0.3,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.0016877636998766628,
+          "alpha": -0.00424191916202109
+        },
+        {
+          "q": 0.4,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.0016870398596708729,
+          "alpha": -0.0006312428006387093
+        },
+        {
+          "q": 0.5,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.0016696168313031976,
+          "alpha": -4.3488798678086646e-05
+        },
+        {
+          "q": 0.6,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.0016717374208017133,
+          "alpha": 0.0002226839490674234
+        },
+        {
+          "q": 0.7,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.001671355032681738,
+          "alpha": -0.004131278376739834
+        },
+        {
+          "q": 0.8,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.0016585840348399747,
+          "alpha": -0.01674182960013439
+        },
+        {
+          "q": 0.9,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.0016045592754543845,
+          "alpha": -0.028823412598196915
+        }
+      ]
+    },
+    "773": {
+      "tier": 2,
+      "S10": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "S01": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "blind": true,
+      "trajectory_check": true,
+      "classes": [
+        {
+          "states": [
+            "(R,0)",
+            "(L,0)"
+          ],
+          "v_cycle_num": [
+            "0"
+          ],
+          "v_cycle_den": [
+            "1"
+          ],
+          "weight_num": [
+            "1",
+            "-1"
+          ],
+          "weight_den": [
+            "1"
+          ],
+          "v_cycle_at_half": "0",
+          "weight_at_half": "1/2"
+        },
+        {
+          "states": [
+            "(R,1)",
+            "(L,1)"
+          ],
+          "v_cycle_num": [
+            "0"
+          ],
+          "v_cycle_den": [
+            "1"
+          ],
+          "weight_num": [
+            "0",
+            "1"
+          ],
+          "weight_den": [
+            "1"
+          ],
+          "v_cycle_at_half": "0",
+          "weight_at_half": "1/2"
+        }
+      ],
+      "measured_check": [
+        {
+          "q": 0.1,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.0,
+          "alpha": NaN
+        },
+        {
+          "q": 0.2,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.0,
+          "alpha": NaN
+        },
+        {
+          "q": 0.3,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.0,
+          "alpha": NaN
+        },
+        {
+          "q": 0.4,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.0,
+          "alpha": NaN
+        },
+        {
+          "q": 0.5,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.0,
+          "alpha": NaN
+        },
+        {
+          "q": 0.6,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.0,
+          "alpha": NaN
+        },
+        {
+          "q": 0.7,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.0,
+          "alpha": NaN
+        },
+        {
+          "q": 0.8,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.0,
+          "alpha": NaN
+        },
+        {
+          "q": 0.9,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.0,
+          "alpha": NaN
+        }
+      ]
+    },
+    "785": {
+      "tier": 2,
+      "S10": [
+        0,
+        2,
+        3
+      ],
+      "S01": [
+        0,
+        1,
+        3
+      ],
+      "blind": false,
+      "trajectory_check": true,
+      "classes": [
+        {
+          "states": [
+            "(R,0)",
+            "(R,1)",
+            "(L,0)",
+            "(L,1)"
+          ],
+          "v_cycle_num": [
+            "0"
+          ],
+          "v_cycle_den": [
+            "1"
+          ],
+          "weight_num": [
+            "1"
+          ],
+          "weight_den": [
+            "1"
+          ],
+          "v_cycle_at_half": "0",
+          "weight_at_half": "1"
+        }
+      ],
+      "measured_check": [
+        {
+          "q": 0.1,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.03285423888911267,
+          "alpha": 0.6388534225650023
+        },
+        {
+          "q": 0.2,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.060904144582376564,
+          "alpha": 0.5572657490669763
+        },
+        {
+          "q": 0.3,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.07040674982344702,
+          "alpha": 0.5116724668395215
+        },
+        {
+          "q": 0.4,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.07752233153678131,
+          "alpha": 0.532804458599198
+        },
+        {
+          "q": 0.5,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.07820706092719987,
+          "alpha": 0.5241271640569826
+        },
+        {
+          "q": 0.6,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.07677185500179647,
+          "alpha": 0.5287308402933327
+        },
+        {
+          "q": 0.7,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.07273056917037664,
+          "alpha": 0.5406173296898992
+        },
+        {
+          "q": 0.8,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.059654120102329476,
+          "alpha": 0.5492286947478441
+        },
+        {
+          "q": 0.9,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.033514226190699825,
+          "alpha": 0.6506188824937339
+        }
+      ]
+    },
+    "791": {
+      "tier": 2,
+      "S10": [
+        0,
+        3
+      ],
+      "S01": [
+        0,
+        3
+      ],
+      "blind": true,
+      "trajectory_check": true,
+      "classes": [
+        {
+          "states": [
+            "(R,0)",
+            "(R,1)",
+            "(L,0)",
+            "(L,1)"
+          ],
+          "v_cycle_num": [
+            "0"
+          ],
+          "v_cycle_den": [
+            "1"
+          ],
+          "weight_num": [
+            "1"
+          ],
+          "weight_den": [
+            "1"
+          ],
+          "v_cycle_at_half": "0",
+          "weight_at_half": "1"
+        }
+      ],
+      "measured_check": [
+        {
+          "q": 0.1,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.0021865893586956483,
+          "alpha": 0.4965859432159257
+        },
+        {
+          "q": 0.2,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.012516195930185004,
+          "alpha": -0.044251580157132216
+        },
+        {
+          "q": 0.3,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.05826904192385921,
+          "alpha": 0.07595613415750065
+        },
+        {
+          "q": 0.4,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.0896614540914281,
+          "alpha": 0.27617233821804077
+        },
+        {
+          "q": 0.5,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.10151294745168572,
+          "alpha": 0.35973539201073784
+        },
+        {
+          "q": 0.6,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.09964321825849788,
+          "alpha": 0.35217425203077113
+        },
+        {
+          "q": 0.7,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.05640557763800822,
+          "alpha": 0.0737958977707029
+        },
+        {
+          "q": 0.8,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.01525233348423142,
+          "alpha": -0.09120259184822106
+        },
+        {
+          "q": 0.9,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.0010272511089433635,
+          "alpha": 4.1027048104729527e-20
+        }
+      ]
+    },
+    "799": {
+      "tier": 2,
+      "S10": [
+        0,
+        1,
+        3
+      ],
+      "S01": [
+        0,
+        2,
+        3
+      ],
+      "blind": false,
+      "trajectory_check": true,
+      "classes": [
+        {
+          "states": [
+            "(R,0)",
+            "(R,1)",
+            "(L,0)",
+            "(L,1)"
+          ],
+          "v_cycle_num": [
+            "0"
+          ],
+          "v_cycle_den": [
+            "1"
+          ],
+          "weight_num": [
+            "1"
+          ],
+          "weight_den": [
+            "1"
+          ],
+          "v_cycle_at_half": "0",
+          "weight_at_half": "1"
+        }
+      ],
+      "measured_check": [
+        {
+          "q": 0.1,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.032496236201879136,
+          "alpha": 0.6532953803332787
+        },
+        {
+          "q": 0.2,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.059004996144693046,
+          "alpha": 0.5509879264861849
+        },
+        {
+          "q": 0.3,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.07209714055903688,
+          "alpha": 0.5232288799477361
+        },
+        {
+          "q": 0.4,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.07569621402238895,
+          "alpha": 0.5087068466172604
+        },
+        {
+          "q": 0.5,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.07823554375467152,
+          "alpha": 0.5128708723010242
+        },
+        {
+          "q": 0.6,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.07677450664007829,
+          "alpha": 0.5255324908438989
+        },
+        {
+          "q": 0.7,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.07115845338698902,
+          "alpha": 0.5339859347441459
+        },
+        {
+          "q": 0.8,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.06001746790439071,
+          "alpha": 0.5565714216655454
+        },
+        {
+          "q": 0.9,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.03293519840613596,
+          "alpha": 0.6483490916506375
+        }
+      ]
+    },
+    "813": {
+      "tier": 2,
+      "S10": [
+        0,
+        2,
+        3
+      ],
+      "S01": [
+        0,
+        1,
+        3
+      ],
+      "blind": false,
+      "trajectory_check": true,
+      "classes": [
+        {
+          "states": [
+            "(R,0)",
+            "(L,0)"
+          ],
+          "v_cycle_num": [
+            "0"
+          ],
+          "v_cycle_den": [
+            "1"
+          ],
+          "weight_num": [
+            "1",
+            "-1"
+          ],
+          "weight_den": [
+            "1"
+          ],
+          "v_cycle_at_half": "0",
+          "weight_at_half": "1/2"
+        },
+        {
+          "states": [
+            "(R,1)",
+            "(L,1)"
+          ],
+          "v_cycle_num": [
+            "0"
+          ],
+          "v_cycle_den": [
+            "1"
+          ],
+          "weight_num": [
+            "0",
+            "1"
+          ],
+          "weight_den": [
+            "1"
+          ],
+          "v_cycle_at_half": "0",
+          "weight_at_half": "1/2"
+        }
+      ],
+      "measured_check": [
+        {
+          "q": 0.1,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.0016632638455129094,
+          "alpha": -0.028522315742911242
+        },
+        {
+          "q": 0.2,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.0016801045838558352,
+          "alpha": -0.017194309563058563
+        },
+        {
+          "q": 0.3,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.0017019600331522188,
+          "alpha": -0.00591813404952464
+        },
+        {
+          "q": 0.4,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.0017018539726285805,
+          "alpha": -0.0008029295965642598
+        },
+        {
+          "q": 0.5,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.0017058966186648402,
+          "alpha": 0.00046321957200225194
+        },
+        {
+          "q": 0.6,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.0017102459285045352,
+          "alpha": 0.0009657847152172953
+        },
+        {
+          "q": 0.7,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.0016961472942885224,
+          "alpha": -0.004317513058319652
+        },
+        {
+          "q": 0.8,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.0016851303911105842,
+          "alpha": -0.014765468684100265
+        },
+        {
+          "q": 0.9,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.0016459068773264113,
+          "alpha": -0.027155760624120784
+        }
+      ]
+    },
+    "875": {
+      "tier": 2,
+      "S10": [
+        1
+      ],
+      "S01": [
+        2
+      ],
+      "blind": false,
+      "trajectory_check": true,
+      "classes": [
+        {
+          "states": [
+            "(R,0)"
+          ],
+          "v_cycle_num": [
+            "2"
+          ],
+          "v_cycle_den": [
+            "1"
+          ],
+          "weight_num": [
+            "1",
+            "-1"
+          ],
+          "weight_den": [
+            "1"
+          ],
+          "v_cycle_at_half": "2",
+          "weight_at_half": "1/2"
+        },
+        {
+          "states": [
+            "(R,1)",
+            "(L,1)"
+          ],
+          "v_cycle_num": [
+            "0"
+          ],
+          "v_cycle_den": [
+            "1"
+          ],
+          "weight_num": [
+            "0",
+            "1"
+          ],
+          "weight_den": [
+            "1"
+          ],
+          "v_cycle_at_half": "0",
+          "weight_at_half": "1/2"
+        },
+        {
+          "states": [
+            "(L,0)"
+          ],
+          "v_cycle_num": [
+            "-2"
+          ],
+          "v_cycle_den": [
+            "1"
+          ],
+          "weight_num": [
+            "0"
+          ],
+          "weight_den": [
+            "1"
+          ],
+          "v_cycle_at_half": "-2",
+          "weight_at_half": "0"
+        }
+      ],
+      "measured_check": [
+        {
+          "q": 0.1,
+          "pred_dominant_v": 2.0,
+          "pred_fastest_v": 2.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        },
+        {
+          "q": 0.2,
+          "pred_dominant_v": 2.0,
+          "pred_fastest_v": 2.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        },
+        {
+          "q": 0.3,
+          "pred_dominant_v": 2.0,
+          "pred_fastest_v": 2.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        },
+        {
+          "q": 0.4,
+          "pred_dominant_v": 2.0,
+          "pred_fastest_v": 2.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        },
+        {
+          "q": 0.5,
+          "pred_dominant_v": 2.0,
+          "pred_fastest_v": 2.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        },
+        {
+          "q": 0.6,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 2.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        },
+        {
+          "q": 0.7,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 2.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        },
+        {
+          "q": 0.8,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 2.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        },
+        {
+          "q": 0.9,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 2.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        }
+      ]
+    },
+    "877": {
+      "tier": 2,
+      "S10": [
+        1,
+        2
+      ],
+      "S01": [
+        1,
+        2
+      ],
+      "blind": true,
+      "trajectory_check": true,
+      "classes": [
+        {
+          "states": [
+            "(R,0)",
+            "(L,0)"
+          ],
+          "v_cycle_num": [
+            "0"
+          ],
+          "v_cycle_den": [
+            "1"
+          ],
+          "weight_num": [
+            "1",
+            "-1"
+          ],
+          "weight_den": [
+            "1"
+          ],
+          "v_cycle_at_half": "0",
+          "weight_at_half": "1/2"
+        },
+        {
+          "states": [
+            "(R,1)",
+            "(L,1)"
+          ],
+          "v_cycle_num": [
+            "0"
+          ],
+          "v_cycle_den": [
+            "1"
+          ],
+          "weight_num": [
+            "0",
+            "1"
+          ],
+          "weight_den": [
+            "1"
+          ],
+          "v_cycle_at_half": "0",
+          "weight_at_half": "1/2"
+        }
+      ],
+      "measured_check": [
+        {
+          "q": 0.1,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        },
+        {
+          "q": 0.2,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        },
+        {
+          "q": 0.3,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 1.9998151099438655,
+          "alpha": 1.1510978939284886
+        },
+        {
+          "q": 0.4,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.11584944860951361,
+          "alpha": 0.4766797086975168
+        },
+        {
+          "q": 0.5,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.09090301394627909,
+          "alpha": 0.44219472452965025
+        },
+        {
+          "q": 0.6,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.10542658511734053,
+          "alpha": 0.47951203151005856
+        },
+        {
+          "q": 0.7,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 1.9997631885129568,
+          "alpha": 1.1768801435158485
+        },
+        {
+          "q": 0.8,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        },
+        {
+          "q": 0.9,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        }
+      ]
+    },
+    "883": {
+      "tier": 2,
+      "S10": [
+        2
+      ],
+      "S01": [
+        1
+      ],
+      "blind": false,
+      "trajectory_check": true,
+      "classes": [
+        {
+          "states": [
+            "(R,0)",
+            "(R,1)",
+            "(L,0)",
+            "(L,1)"
+          ],
+          "v_cycle_num": [
+            "0"
+          ],
+          "v_cycle_den": [
+            "1"
+          ],
+          "weight_num": [
+            "1"
+          ],
+          "weight_den": [
+            "1"
+          ],
+          "v_cycle_at_half": "0",
+          "weight_at_half": "1"
+        }
+      ],
+      "measured_check": [
+        {
+          "q": 0.1,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 1.6283075576388555,
+          "alpha": 0.9851882270398411
+        },
+        {
+          "q": 0.2,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 1.248380500338525,
+          "alpha": 0.9738362919567488
+        },
+        {
+          "q": 0.3,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.893203148909273,
+          "alpha": 0.9576802316938627
+        },
+        {
+          "q": 0.4,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.6053136595254892,
+          "alpha": 0.8537570677928996
+        },
+        {
+          "q": 0.5,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.37373871275923604,
+          "alpha": 0.4979408869109972
+        },
+        {
+          "q": 0.6,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.6071279247325315,
+          "alpha": 0.8488084552296694
+        },
+        {
+          "q": 0.7,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.9365377644245637,
+          "alpha": 0.9651721512969726
+        },
+        {
+          "q": 0.8,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 1.2469167941089367,
+          "alpha": 0.9714837112484217
+        },
+        {
+          "q": 0.9,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 1.6246069856636514,
+          "alpha": 0.9863955803201497
+        }
+      ]
+    },
+    "885": {
+      "tier": 2,
+      "S10": [],
+      "S01": [],
+      "blind": true,
+      "trajectory_check": true,
+      "classes": [
+        {
+          "states": [
+            "(R,0)",
+            "(R,1)"
+          ],
+          "v_cycle_num": [
+            "2"
+          ],
+          "v_cycle_den": [
+            "1"
+          ],
+          "weight_num": [
+            "1"
+          ],
+          "weight_den": [
+            "1"
+          ],
+          "v_cycle_at_half": "2",
+          "weight_at_half": "1"
+        },
+        {
+          "states": [
+            "(L,0)",
+            "(L,1)"
+          ],
+          "v_cycle_num": [
+            "-2"
+          ],
+          "v_cycle_den": [
+            "1"
+          ],
+          "weight_num": [
+            "0"
+          ],
+          "weight_den": [
+            "1"
+          ],
+          "v_cycle_at_half": "-2",
+          "weight_at_half": "0"
+        }
+      ],
+      "measured_check": [
+        {
+          "q": 0.1,
+          "pred_dominant_v": 2.0,
+          "pred_fastest_v": 2.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        },
+        {
+          "q": 0.2,
+          "pred_dominant_v": 2.0,
+          "pred_fastest_v": 2.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        },
+        {
+          "q": 0.3,
+          "pred_dominant_v": 2.0,
+          "pred_fastest_v": 2.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        },
+        {
+          "q": 0.4,
+          "pred_dominant_v": 2.0,
+          "pred_fastest_v": 2.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        },
+        {
+          "q": 0.5,
+          "pred_dominant_v": 2.0,
+          "pred_fastest_v": 2.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        },
+        {
+          "q": 0.6,
+          "pred_dominant_v": 2.0,
+          "pred_fastest_v": 2.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        },
+        {
+          "q": 0.7,
+          "pred_dominant_v": 2.0,
+          "pred_fastest_v": 2.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        },
+        {
+          "q": 0.8,
+          "pred_dominant_v": 2.0,
+          "pred_fastest_v": 2.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        },
+        {
+          "q": 0.9,
+          "pred_dominant_v": 2.0,
+          "pred_fastest_v": 2.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        }
+      ]
+    },
+    "893": {
+      "tier": 2,
+      "S10": [
+        1
+      ],
+      "S01": [
+        2
+      ],
+      "blind": false,
+      "trajectory_check": true,
+      "classes": [
+        {
+          "states": [
+            "(R,0)",
+            "(R,1)",
+            "(L,0)",
+            "(L,1)"
+          ],
+          "v_cycle_num": [
+            "0"
+          ],
+          "v_cycle_den": [
+            "1"
+          ],
+          "weight_num": [
+            "1"
+          ],
+          "weight_den": [
+            "1"
+          ],
+          "v_cycle_at_half": "0",
+          "weight_at_half": "1"
+        }
+      ],
+      "measured_check": [
+        {
+          "q": 0.1,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 1.6281909727643837,
+          "alpha": 0.9868617746463147
+        },
+        {
+          "q": 0.2,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 1.2479900091370613,
+          "alpha": 0.9724082195845191
+        },
+        {
+          "q": 0.3,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.8868069295005001,
+          "alpha": 0.9508856967476919
+        },
+        {
+          "q": 0.4,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.5942405376477958,
+          "alpha": 0.8337901269655722
+        },
+        {
+          "q": 0.5,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.37559431154618433,
+          "alpha": 0.5053160380071916
+        },
+        {
+          "q": 0.6,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.6341731139485867,
+          "alpha": 0.8590525907748227
+        },
+        {
+          "q": 0.7,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 0.8884895916832701,
+          "alpha": 0.9563462835381125
+        },
+        {
+          "q": 0.8,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 1.2501166351514417,
+          "alpha": 0.973641169585388
+        },
+        {
+          "q": 0.9,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 0.0,
+          "measured_v": 1.6297140169269906,
+          "alpha": 0.9860324463711655
+        }
+      ]
+    },
+    "901": {
+      "tier": 2,
+      "S10": [
+        2
+      ],
+      "S01": [
+        1
+      ],
+      "blind": false,
+      "trajectory_check": true,
+      "classes": [
+        {
+          "states": [
+            "(R,0)",
+            "(L,0)"
+          ],
+          "v_cycle_num": [
+            "0"
+          ],
+          "v_cycle_den": [
+            "1"
+          ],
+          "weight_num": [
+            "1",
+            "-1"
+          ],
+          "weight_den": [
+            "1"
+          ],
+          "v_cycle_at_half": "0",
+          "weight_at_half": "1/2"
+        },
+        {
+          "states": [
+            "(R,1)"
+          ],
+          "v_cycle_num": [
+            "2"
+          ],
+          "v_cycle_den": [
+            "1"
+          ],
+          "weight_num": [
+            "0",
+            "1"
+          ],
+          "weight_den": [
+            "1"
+          ],
+          "v_cycle_at_half": "2",
+          "weight_at_half": "1/2"
+        },
+        {
+          "states": [
+            "(L,1)"
+          ],
+          "v_cycle_num": [
+            "-2"
+          ],
+          "v_cycle_den": [
+            "1"
+          ],
+          "weight_num": [
+            "0"
+          ],
+          "weight_den": [
+            "1"
+          ],
+          "v_cycle_at_half": "-2",
+          "weight_at_half": "0"
+        }
+      ],
+      "measured_check": [
+        {
+          "q": 0.1,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 2.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        },
+        {
+          "q": 0.2,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 2.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        },
+        {
+          "q": 0.3,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 2.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        },
+        {
+          "q": 0.4,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 2.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        },
+        {
+          "q": 0.5,
+          "pred_dominant_v": 0.0,
+          "pred_fastest_v": 2.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        },
+        {
+          "q": 0.6,
+          "pred_dominant_v": 2.0,
+          "pred_fastest_v": 2.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        },
+        {
+          "q": 0.7,
+          "pred_dominant_v": 2.0,
+          "pred_fastest_v": 2.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        },
+        {
+          "q": 0.8,
+          "pred_dominant_v": 2.0,
+          "pred_fastest_v": 2.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        },
+        {
+          "q": 0.9,
+          "pred_dominant_v": 2.0,
+          "pred_fastest_v": 2.0,
+          "measured_v": 2.0,
+          "alpha": 0.9999999999999999
+        }
+      ]
+    }
+  },
+  "groups": {
+    "autonomous-swap": [
+      793,
+      811,
+      891,
+      899
+    ],
+    "streaming-vacuum": [
+      771,
+      773,
+      785,
+      791,
+      799,
+      813,
+      875,
+      877,
+      883,
+      885,
+      893,
+      901
+    ],
+    "frozen-vacuum": [
+      3,
+      5,
+      17,
+      23,
+      25,
+      31,
+      43,
+      45,
+      107,
+      109,
+      115,
+      117,
+      123,
+      125,
+      131,
+      133
+    ]
+  }
+}

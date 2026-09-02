@@ -1,0 +1,46 @@
+{
+ "model": "coins (C_x, C_y, identity), q=0.08, chord weights",
+ "L": 48,
+ "R": 1200,
+ "TCYC": 8,
+ "NB": 10,
+ "T0": 1,
+ "rows": {
+  "100": {
+   "exact_ratio": 1.0,
+   "ratio": 1.0,
+   "sig_ratio": 0.0,
+   "pull": NaN,
+   "n_jk": 10
+  },
+  "110": {
+   "exact_ratio": 1.0007797784707009,
+   "ratio": 1.0006477466908945,
+   "sig_ratio": 0.0008372508593628782,
+   "pull": -0.1576967981935965,
+   "n_jk": 10
+  },
+  "111": {
+   "exact_ratio": 1.001234882608285,
+   "ratio": 1.0010160656122877,
+   "sig_ratio": 0.0011319182126146338,
+   "pull": -0.1933152003022394,
+   "n_jk": 10
+  },
+  "r1": {
+   "exact_ratio": 0.6506805897019495,
+   "ratio": 0.5997409853633368,
+   "sig_ratio": 0.06702522830412913,
+   "pull": -0.7600064278404646,
+   "n_jk": 10
+  },
+  "r2": {
+   "exact_ratio": 1.1956633189985657,
+   "ratio": 1.1686313207682941,
+   "sig_ratio": 0.02858868817427395,
+   "pull": -0.9455487452060433,
+   "n_jk": 10
+  }
+ },
+ "note_factorized_walk": "coinless diagonal-transport walk has no usable doublet (all X-point eigenvalues at angle 0 mod pi); the diamond row of w3c_corner is a transport-level prediction"
+}

@@ -25,14 +25,15 @@ plt.rcParams.update({"font.size": 9, "figure.dpi": 200})
 def fig_cone():
     """Quenched slope ratios vs the diamond prediction, from the committed
     gated-run output (jackknife + gate systematic errors)."""
-    data = json.load(open("results/w3c_corner.json"))
+    # q = 0.15 rows are committed but excluded from evidence (linear-range
+    # rule violation; see the paper) -- the figure shows the q = 0.08 rows
+    data = [r for r in json.load(open("results/w3c_corner.json"))
+            if r["q"] == 0.08]
     labels = {("annealed", 0.08): "annealed gate\n$p=0.08$",
-              ("quenched", 0.08): "quenched\n$q=0.08$",
-              ("annealed", 0.15): "annealed gate\n$p=0.15$",
-              ("quenched", 0.15): "quenched\n$q=0.15$"}
+              ("quenched", 0.08): "quenched\n$q=0.08$"}
     chans = ["110", "111", "r1", "r2"]
     marks = ["o", "s", "^", "v"]
-    fig, ax = plt.subplots(figsize=(4.2, 2.6))
+    fig, ax = plt.subplots(figsize=(3.4, 2.6))
     gate_syst = {}
     for row in data:
         if row["mode"] == "annealed":

@@ -19,6 +19,13 @@ Central exact identities (all machine-checked to ~1e-16):
   The same factorization holds at every k with all components in {0, pi/2}
   (mod pi), because there -k == k (mod pi) and U is pi-periodic.
 
+COMPLETENESS.  This script does NOT certify the absence of further gapless
+features: the massive model retains exactly ungapped degeneracies beyond
+the spectator loci (an isolated diagonal Weyl node and degeneracy curves in
+the {k_a = pi/2} mirror planes), asserted below and charted completely by
+scripts/census_sweep.py.  The 2m mass gap holds at the four principal
+nodes; it is a local gap at those nodes, not a global one.
+
 Run:  PYTHONPATH=src .venv/bin/python scripts/theory_mass.py
 """
 
@@ -369,30 +376,39 @@ def part_census(rng):
         k_04=float(min_gap_p(0.4 * np.array([0.37, 0.65, 0.93])
                              / np.linalg.norm([0.37, 0.65, 0.93]))))
 
-    # no new gapless points, two-part statement:
-    # (a) no exact degeneracies off the known loci: the minimum pairwise +Im
-    #     gap over the grid (excluding points with >= 2 components in
-    #     {0, pi/2}) is nonzero, and its argmin sits adjacent to a known
-    #     exact-degeneracy edge (the doubling splitting -> 0 continuously
-    #     approaching the edges -- within-band, not a mass-gap closing);
-    grid = np.linspace(0, np.pi, 10, endpoint=False)
-    floor_intra, argmin = 1e9, None
-    for kx in grid:
-        for ky in grid:
-            for kz in grid:
-                kv = np.array([kx, ky, kz])
-                nspecial = np.sum((np.abs(kv - np.pi / 2) < 1e-9)
-                                  | (np.abs(kv) < 1e-9))
-                if nspecial >= 2:
-                    continue
-                g = min_gap_p(kv)
-                if g < floor_intra:
-                    floor_intra, argmin = g, kv
-    dist_edge = sorted(min(abs(x), abs(x - np.pi / 2), abs(x - np.pi))
-                       for x in argmin)[1]      # 2nd-smallest comp. distance
-    res["min_pairwise_gap_off_spectator_loci"] = float(floor_intra)
-    res["argmin_second_distance_to_special"] = float(dist_edge)
-    # (b) the mass gap does not close near the (gapped) nodes: min frequency
+    # EXACTLY SURVIVING gapless features beyond the spectator loci.  An
+    # earlier version of this script asserted "no new gapless points" from a
+    # 10^3 grid floor plus an argmin-hugs-an-edge heuristic; that certificate
+    # was WRONG: refining its own argmin reaches an exact degeneracy.  The
+    # complete massive census (dense sweep, classification, charges) is in
+    # scripts/census_sweep.py; here we assert the two representative
+    # survivors so this script can no longer over-claim:
+    # (a) an isolated Weyl node on the zone diagonal survives the mass layer
+    #     EXACTLY ungapped near (0.273, 0.273, 0.273) pi;
+    # (b) a degeneracy CURVE lies in the k_y = pi/2 mirror plane, e.g. near
+    #     (0.605, 0.5, 0.708) pi (mass coupling between the inversion
+    #     sectors vanishes on sector-crossing curves in the mirror planes).
+
+    def full_min_gap(kv):
+        w = np.linalg.eigvals(U8(np.asarray(kv, float), q, qm))
+        return min(abs(a - b) for a, b in itertools.combinations(w, 2))
+
+    from scipy.optimize import minimize
+    r_diag = minimize(full_min_gap, np.array([0.273] * 3) * np.pi,
+                      method="Nelder-Mead",
+                      options=dict(xatol=1e-14, fatol=1e-18, maxfev=3000))
+    r_curve = minimize(full_min_gap, np.array([0.605, 0.5, 0.704]) * np.pi,
+                       method="Nelder-Mead",
+                       options=dict(xatol=1e-14, fatol=1e-18, maxfev=3000))
+    res["surviving_diagonal_node"] = dict(
+        k_over_pi=[float(x / np.pi) for x in r_diag.x],
+        gap=float(r_diag.fun),
+        seed_dist=float(np.linalg.norm(r_diag.x - np.array([0.273] * 3) * np.pi)))
+    res["surviving_mirror_curve_point"] = dict(
+        k_over_pi=[float(x / np.pi) for x in r_curve.x],
+        gap=float(r_curve.fun),
+        ky_minus_half_pi=float(abs(r_curve.x[1] - np.pi / 2)))
+    # the mass gap does not close near the (gapped) nodes: min frequency
     #     gap between the two split bands over |k| <= 0.3 around Gamma is 2m
     #     (attained at k = 0, sqrt law)
     wmin = 1e9
@@ -482,8 +498,12 @@ def main():
     assert cen["R_point"]["dev"] < 1e-12
     assert cen["line_mult_pattern"] == [2, 2, 2, 2]
     assert cen["doubling_exact_on_edges"] < 1e-12
-    assert cen["min_pairwise_gap_off_spectator_loci"] > 1e-8   # no new exact degeneracies
-    assert cen["argmin_second_distance_to_special"] < 0.35     # argmin hugs a known edge
+    # honest replacement of the refuted "no new gapless" certificate:
+    # extra gapless features DO survive the mass layer exactly
+    assert cen["surviving_diagonal_node"]["gap"] < 1e-12
+    assert cen["surviving_diagonal_node"]["seed_dist"] < 0.01
+    assert cen["surviving_mirror_curve_point"]["gap"] < 1e-12
+    assert cen["surviving_mirror_curve_point"]["ky_minus_half_pi"] < 1e-3
     assert cen["min_freq_gap_near_Gamma"] >= cen["scale_2m"] - 1e-9
     assert cen["pointwise_chi_net_zero"]
     print("all headline assertions passed")

@@ -1,5 +1,20 @@
 #!/usr/bin/env python
-"""Full gapless census of the coincube Bloch walks + exact structural facts.
+"""Structural gapless loci of the coincube Bloch walks + exact algebraic facts.
+
+SCOPE.  This script verifies the STRUCTURAL degeneracy loci fixed by the
+operator algebra -- the corner node, the three half-point nodes, the three
+axis nodal lines, and the R point -- together with the scalar-unitary
+factorization and the mass-anticommutant facts.  It does NOT claim that
+this list is complete, and its "chirality" values at the corner and
+half-points come from a local slope/orientation recipe (sign of det of the
+linearized Bloch family), not from an integrated Berry flux.  The complete
+gapless census of the reduced zone -- a dense sweep with Nelder-Mead
+refinement, sphere-probe classification, and Fukui-Hatsugai Chern numbers
+for every isolated node on both quasienergy branches -- is performed by
+scripts/census_sweep.py, which finds additional Weyl-point orbits beyond
+the structural loci listed here (40 extra points at every weight tested)
+and computes the honest charge accounting.  The "point_charge_sum" recorded
+below is the local-recipe sum over the four principal nodes only.
 
 Self-contained machine checks (assertions run BEFORE the results file is
 written; results -> results/spectrum_census.json):
@@ -20,19 +35,21 @@ written; results -> results/spectrum_census.json):
      pi-periodicity  U(k + pi e_a) = U(k)   (E_a(pi) = -I since d = +-1, and
      the sign cancels in T_a^2), and  |lam|^2 = [(1-q)^2+q^2]^6 for EVERY
      eigenvalue at EVERY k (immediate from the factorization).
-  3. GAPLESS CENSUS over the reduced zone [0, pi)^3, both walks, q in
-     {0.08, 0.15}:
-       - corner node k = 0: two-fold, isotropic (50 directions), chirality
-         chi = -1;
+  3. STRUCTURAL gapless loci over the reduced zone [0, pi)^3, both walks,
+     q in {0.08, 0.15} (NOT a completeness claim; see SCOPE above):
+       - corner node k = 0: two-fold, isotropic (50 directions),
+         local-recipe chirality chi = -1;
        - three HALF-POINT Weyl nodes at (pi/2,0,0) & permutations: two-fold,
-         chirality chi = +1, anisotropic (axis slopes and full-direction
-         spread reported), at a different quasienergy (arc walk: ~3pi/4);
+         local-recipe chirality chi = +1, anisotropic (axis slopes and
+         full-direction spread reported), at a different quasienergy
+         (arc walk: ~3pi/4);
        - three exact NODAL LINES along (t, pi/2, pi/2) & permutations
          (degenerate for all t);
        - the point (pi/2,pi/2,pi/2): U = -rho^6 I exactly (arc: U = -I).
-     Point-charge sum on the +omega branch: -1 + 3(+1) = +2, compensated on
-     the nodal-line network; the +-omega conjugate branches double the
-     census with opposite chiralities (particle/antiparticle pairing).
+     The recorded "point_charge_sum_plus_omega" = -1 + 3(+1) = +2 is the
+     local-recipe sum over these four principal nodes only; the full
+     integrated charge accounting (which finds additional Weyl orbits and a
+     different per-branch total) is in scripts/census_sweep.py.
   4. MASSIVE MODEL (8-channel inversion-doubled walk, mass layer
      M = (1-q_m) + q_m (1 (x) XZ)): the corner AND all three half-point
      nodes gap by exactly 2 arctan[q_m/(1-q_m)]; the nodal lines split only

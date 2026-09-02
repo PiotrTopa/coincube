@@ -2,6 +2,7 @@
 \usepackage{amsmath,amssymb,bm}
 \usepackage{graphicx}
 \usepackage{hyperref}
+\usepackage{orcidlink}
 \usepackage{booktabs}
 
 \newtheorem{theorem}{Theorem}
@@ -17,7 +18,7 @@
 \title{Fermionic quantum field theories as probabilistic cellular automata
 in three dimensions}
 
-\author{Piotr Topa}
+\author{Piotr S. Topa\,\orcidlink{0009-0005-2870-2463}}
 \affiliation{Independent researcher}
 
 \date{\today}
@@ -39,25 +40,31 @@ autonomous binary environment fields. We exhibit an explicit complex structure w
 operator is exactly unitary, prove that the standard spectral analysis is
 its faithful complexification via an explicit intertwiner, extract the
 local Grassmann action mechanically in exact arithmetic, and verify the
-fermionic lift including all sign coherences. The single-carrier
+fermionic lift including all sign coherences. By gated measurement on the quenched automaton, the single-carrier
 excitation on a clustering product vacuum is an isotropic Weyl fermion:
 slope ratios equal $1$ within errors, a factorized dispersion is excluded
 in every measured channel (weakest channel $9.7$ error-bar widths), and
-the residues are helicity projectors of chirality $-1$; the
-complete gapless spectrum is mapped, with the lattice partner species
-displaced in momentum and quasienergy rather than absent. Doubling by spatial inversion yields a Dirac fermion whose
-gap is exactly $2\arctan[q_m/(1-q_m)]$ in the density $q_m$ of a fourth
-environment field. A media-mediated interaction with a continuous coupling
+the residues are helicity projectors of chirality $-1$. The gapless
+spectrum is charted by a dense-sweep census with computed Floquet--Weyl
+charges: 44 Weyl points in five tetrahedral orbits plus three
+unquantized-Berry-phase nodal lines, per-branch charges summing to
+$-10/+10$ with the two-branch total vanishing by conjugation pairing
+(no Floquet gap exists, so no zero-sum rule applies). Doubling by spatial inversion yields a Dirac fermion whose
+annealed-operator gap is exactly $2\arctan[q_m/(1-q_m)]$ in the density
+$q_m$ of a fourth environment field, confirmed by gated measurement;
+the gap opens for the resonant principal quartet, while the
+off-resonant spectator species survive exactly massless. A media-mediated interaction with a continuous coupling
 is constructed and certified, with the free spectrum surviving to leading
 order. Finally we show that the annealed damping is an exactly mode-blind
-visibility decay---the step operator factorizes as a scalar times a
-unitary---prove that within the quaternionic event class an isotropic cone
-forces this decay to be nonzero, with the exact bound
-$\kappa=\pi/(2\ln 2)$ on phase advance per unit visibility decay (and
-exhibit the boundary of that class, where the bound fails), and show
-that the two-boundary (in--out) propagators form a one-parameter unitary
-family with the cone intact, within which the square-root weights are
-selected uniquely as the only medium-blind boundary.
+visibility decay---the annealed step operator factorizes as a scalar
+times a unitary---prove that within the quaternionic event class an
+isotropic cone forces this decay to be nonzero, with the exact bound
+$\kappa=\pi/(2\ln 2)$ on the node's phase advance per unit visibility
+decay (and exhibit the boundary of that class, where the bound fails),
+and show that at the fresh-read level the two-boundary (in--out)
+propagators form a one-parameter unitary family with the cone intact,
+within which the square-root weights are selected uniquely as the only
+medium-blind boundary.
 \end{abstract}
 
 \maketitle
@@ -76,7 +83,9 @@ approximation. The equivalence rests on three pillars: occupation bits map
 to fermions through a Grassmann functional integral; the step operator is a
 signed permutation, hence orthogonal; and a compatible complex structure
 turns orthogonal into unitary evolution. The construction in three or four
-spatial dimensions was left open; the known four-dimensional
+spatial dimensions was left open---in Wetterich's own assessment such
+generalizations ``do not seem to encounter problems of principle'' but
+were ``not yet achieved''~\cite{Wetterich2022}; the known four-dimensional
 route~\cite{Wetterich2022c} transports Lorentz-invariant four-fermion
 composites rather than single fermions.
 
@@ -95,9 +104,11 @@ must emerge from classical statistics---the program of
 Refs.~\cite{Wetterich2021NPB,Wetterich2022,Wetterich2022b,WetterichPotential,
 KreuzkampWetterich,Wetterich2025}, with conceptual roots in 't~Hooft's
 cellular-automaton interpretation~\cite{tHooft}. The obstructions proven
-below (finite rays, Q-pinning) are properties of this probabilistic class
-and have no analogue in the unitary setting, which is precisely why the
-construction requires the dressing and coin mechanisms developed here.
+below (finite rays, Q-pinning) are properties of this probabilistic
+class; in the unitary setting, where complex amplitudes are postulated,
+the corresponding constraints do not arise in this form, which is
+precisely why the construction requires the dressing and coin mechanisms
+developed here.
 
 This paper solves the three-dimensional problem for the free sector under
 the strictest contract: the propagating carrier is a single-fermion
@@ -131,9 +142,11 @@ isotropic Weyl cone; the automaton realizing it (the \emph{coincube}) is a
 composition of three manifestly legal layers whose fermionic lift is
 verified including all sign coherences; the step operator is exactly
 unitary with respect to an explicit complex structure; the local Grassmann
-action is extracted in exact rational arithmetic; spatial-inversion
-doubling yields a Dirac fermion with an exact, continuously tunable mass;
-and a media-mediated interaction with a continuous coupling is certified,
+action is extracted in exact rational arithmetic; a dense-sweep census
+with computed topological charges charts the full gapless spectrum;
+spatial-inversion doubling yields a Dirac fermion with an exact,
+continuously tunable mass for the resonant node quartet; and a
+media-mediated interaction with a continuous coupling is certified,
 with the free spectrum surviving.
 
 Finally, Sec.~\ref{sec:damping} addresses the one systematic cost of the
@@ -142,9 +155,9 @@ observable is damped, and this is not a technical deficiency. The damping
 is exactly mode blind---the annealed step operator factorizes as a scalar
 times a unitary (Proposition~\ref{prop:factor})---and we prove that within
 the quaternionic event class an isotropic cone \emph{forces} it to be
-nonzero, with the exact bound $\kappa=\pi/(2\ln2)$ on phase advance per
-unit visibility decay, correlated media included; outside that class the
-bound provably fails, and we exhibit the boundary. The two-boundary
+nonzero, with the exact bound $\kappa=\pi/(2\ln2)$ on the node's phase
+advance per unit visibility decay, correlated media included; outside
+that class the bound provably fails, and we exhibit the boundary. The two-boundary
 (in--out) propagators---legitimate objects in the same transfer-matrix
 formalism---form a one-parameter unitary family with the cone intact, and
 the square-root boundary is proven to be its unique medium-blind member.
@@ -189,8 +202,9 @@ parameter $q$ that is the central dial of the construction.
 
 \begin{theorem}[Finite rays]\label{thm:finiteray}
 For any legal rule with finitely many species per site that conserves
-particle number in the one-particle sector, the one-particle Bloch
-operator is a monomial matrix for every momentum $k$. Consequently every dispersion branch is exactly linear in
+particle number in the one-particle sector---the sector with exactly one
+occupied bit across all species on an otherwise empty lattice---the
+one-particle Bloch operator is a monomial matrix for every momentum $k$. Consequently every dispersion branch is exactly linear in
 $k$, the set of group velocities is finite, and no three-dimensional cone
 $\omega=v|k|$ is possible ballistically. \evP{}
 \end{theorem}
@@ -202,8 +216,15 @@ scale invariant, so no continuum limit removes it, and periodic cycles of
 rotated rules do not evade it because products of unique-jump operators are
 unique-jump. In one spatial dimension the light cone genuinely consists of
 two rays, which is why the $1+1$-dimensional construction exists. An
-adversarial test suite (19 attempted evasions) accompanies the theorem in
-the repository.
+adversarial test suite (seven evasion strategies with re-seeded variants,
+plus reconstruction tests that fit the Bloch operator from real-space
+propagation rather than constructing it) accompanies the theorem in the
+repository. The same suite verifies how the construction of this paper
+relates to the theorem: at fixed media the coincube cycle is a signed
+permutation of the (site, channel) basis---the hypothesis holds per
+realization---while the measured, media-averaged operator is not
+monomial. The construction evades the theorem's hypothesis, not its
+conclusion.
 
 Two further results fix the strategy. First, on the symmetric
 (density-$\tfrac12$) vacuum the transport speeds of the
@@ -245,7 +266,8 @@ chord midpoint---the maximally damped point of
 Theorem~\ref{thm:qbound}) \evP{}; and the blocked two-origin cycles at
 numerically located tuned weights ($p^*=0.3300$ additive,
 $p^*=0.3204$ multiplicative), both likewise locked at $\omega_0=\pi$
-with $\chi=-1$ and heavily damped \evM{}. (c)~At generic $p$ the class
+and heavily damped, with computed chiralities $\chi=-1$ and $\chi=+1$
+respectively \evM{}. (c)~At generic $p$ the class
 has strictly positive anisotropy floors, established by an exhaustive
 sign/direction-table sweep \evM{}.
 \end{theorem}
@@ -325,10 +347,15 @@ at $L\ge3$.
 
 \subsection{Annealed closed forms}
 
-With independent environment reads the one-particle transfer per sub-step
-is $T_a(k)=E_a(k_a)\,[(1-q)\openone+qC_a]$ with
+With independent environment reads---the \emph{annealed}
+idealization---the one-particle transfer per sub-step is
+$T_a(k)=E_a(k_a)\,[(1-q)\openone+qC_a]$ with
 $E_a=\mathrm{diag}(e^{ik_ad_a})$, and the cycle operator is
-$U(k)=\prod_a T_a(k_a)^2$.
+$U(k)=\prod_a T_a(k_a)^2$. Every exact spectral statement in this paper
+is about this annealed operator; the link to the streaming automaton is
+the gated measurement of Sec.~\ref{sec:quenchedcone}, and the measured
+quenched node shifts quoted there quantify the difference between the
+two.
 
 \begin{proposition}[Scalar--unitary factorization]\label{prop:factor}
 Each conversion block $C_a$ is real, antisymmetric and orthogonal, so
@@ -359,28 +386,89 @@ extrapolation \evM{}.
 \subsection{The gapless census}
 \label{sec:census}
 
-The corner node is not alone, and we state the complete census rather
-than a single cancellation argument. Over the reduced zone $[0,\pi)^3$
-(by $\pi$-periodicity) the $+\omega$ branch carries: (i)~the \emph{corner
-node} at $k=0$---two-fold, isotropic, chirality $-1$; (ii)~three
-\emph{Weyl partners} at the axis half-points $(\pi/2,0,0)$,
-$(0,\pi/2,0)$, $(0,0,\pi/2)$---two-fold, chirality $+1$, strongly
-anisotropic (axis split rates $(1.53,1.41,0.42)$ at $q=0.08$), at the
-distinct quasienergy $0.749\pi$ (two-boundary weights; $0.922\pi$
-in-state); (iii)~three \emph{exact nodal lines} along $(t,\pi/2,\pi/2)$
-and permutations (degeneracy below $10^{-12}$ for all $t$); and (iv)~the
-point $(\pi/2,\pi/2,\pi/2)$, where $U=-\rho^6\openone$ exactly. The
-point charges on the $+\omega$ branch sum to $-1+3(+1)=+2$, compensated
-on the nodal-line network; the $-\omega$ branch mirrors the census with
-opposite chiralities, closing the
-Nielsen--Ninomiya~\cite{NielsenNinomiya} balance in conjugate
-particle/antiparticle pairs (in the two-boundary complexification of
-Sec.~\ref{sec:damping} the $-\omega_0$ doublet is the conjugate branch).
-All items are asserted in the census script \evM{}. The corner-local
-measurements below are insensitive to the spectators (momentum distance
-$\ge\pi/2$, distinct quasienergies), but the walk is not doubler-free:
-it is a lattice fermion whose additional species are displaced in
-momentum and quasienergy rather than absent~\cite{DoublingQW}.
+The gapless set of the unitary factor $V(k)=U(k)/\rho^6$ is charted by
+a dense sweep of the reduced zone $[0,\pi)^3$: minimum pairwise
+eigenvalue distances on a $64^3$ grid, Nelder--Mead refinement of every
+local minimum below $0.15$ to machine precision, sphere-probe
+classification of each refined degeneracy (an isolated point keeps a
+finite gap in all directions; a line member has an antipodal zero
+pair), and orbit grouping under the spectral symmetry group. That group
+is determined empirically: of the 48 signed coordinate permutations,
+exactly the 12 proper rotations of the chiral tetrahedral group
+$T\cong A_4$ preserve the spectrum, and the 12 complementary operations
+(including $k\to-k$) map it to its conjugate---no odd permutation
+appears, reflecting the cyclic $x\to y\to z$ layer ordering. For every
+isolated node the chirality is \emph{computed} as a Chern number: the
+Fukui--Hatsugai lattice Berry flux of the upper doublet member over an
+enclosing sphere, built from the spectral projectors of $V$ (well
+defined by Proposition~\ref{prop:factor}) and calibrated on
+$\exp(+ik\cdot\sigma)$; every quoted charge is an exact integer, stable
+under two sphere radii and two angular grids \evM{}.
+
+\begin{table}[!htb]
+\caption{The gapless census of the coincube walk (chord weights,
+$q=0.08$): five point orbits (44 isolated Weyl points), three nodal
+lines, and their triple junction. Quasienergies are $+$Im-branch values;
+charges are computed Chern numbers per node.}
+\label{tab:census}
+\begin{ruledtabular}
+\footnotesize
+\begin{tabular}{lcccc}
+orbit & rep.\ $k/\pi$ & $\omega/\pi$ & mult. & $\chi_{+}/\chi_{-}$\\
+\colrule
+corner & $(0,0,0)$ & $0.1006$ & $1$ & $-1$ / $+1$\\
+half-points & $(\tfrac12,0,0)$+perms & $0.9221$ & $3$ & $+1$ / $-1$\\
+$\langle111\rangle$ octet A & $(0.265,0.265,0.735)$ & $0.5142$ & $8$ & $-1$ / $+1$\\
+$\langle111\rangle$ octet B & $(0.243,0.243,0.757)$ & $0.5652$ & $8$ & $+1$ / $-1$\\
+generic orbit & $(0.028,0.401,0.902)$ & $0.9479$ & $24$ & $-1$ / $+1$\\
+nodal lines & $(t,\tfrac12,\tfrac12)$+perms & $t$-dep. & $3$ & ---\\
+$R$ junction & $(\tfrac12,\tfrac12,\tfrac12)$ & $1$ & $1$ & $U=-\rho^6\openone$
+\end{tabular}
+\end{ruledtabular}
+\end{table}
+
+Table~\ref{tab:census} is the census. Beyond the corner and the
+half-points the zone carries 40 further Weyl points: two
+$\langle111\rangle$ octets with members $(\pm t,\pm t,\pm t)$ mod $\pi$
+and a fully generic 24-point orbit. Point charges
+on the $+$Im branch sum to $S_+=-1+3+4-4-12=-10$ (and $S_-=+10$).
+Every other local minimum of the grid-basin search refines to a
+nonzero gap (smallest avoided crossing $0.019$ at $q=0.08$): to that
+resolution the list is complete. The same five-orbit topology with
+identical charges holds at chord $q=0.15$ and at the two-boundary
+(arc) weights at $q=0.08$---the extra species are not artifacts of the
+damping factorization---but it is not permanent in $q$: the generic
+orbit annihilates pairwise on the $\{k_a=0\}$ planes at
+$q_c\in(0.292,0.294)$, leaving a 20-point census with $S_+=+2$ at
+$q=0.30$ \evM{}.
+
+Two facts govern the charge balance. First, the eigenphases of $V(k)$
+cover the entire circle---a 360-bin histogram over the zone has no
+empty bin---so $V$ has no Floquet quasienergy gap anywhere and no
+Nielsen--Ninomiya~\cite{NielsenNinomiya} zero-sum rule applies to any
+branch or quasienergy window: $S_+=-10$ violates nothing. The one
+exact global constraint is conjugation pairing: all layers are real,
+so $U(-k)=U(k)^*$ pairs every event $(k,\omega,\chi)$ with
+$(-k,-\omega,-\chi)$---verified event by event---and the two-branch
+total vanishes identically. Second, the nodal lines carry no
+compensating charge: the loop Berry phase around a line is close to
+$\pi$ but \emph{not} quantized ($0.954\pi$--$0.998\pi$ along the line;
+no protecting symmetry was identified), its winding along the full
+line vanishes within discretization accuracy, and a closed Gauss
+surface enclosing one line while avoiding the gapless set does not
+exist, since the three lines intersect at the $R$ point \evM{}.
+
+All corner-local measurements below probe the doublet at $k=0$,
+$\omega_0=0.1006\pi$. The nearest other gapless feature of any kind
+lies at torus distance $0.4134\pi$ from the corner (a generic-orbit
+member; the octets follow at $0.4216\pi$ and $0.4590\pi$, the
+half-points at $\pi/2$, the nodal lines at $0.7071\pi$), and the
+nearest spectator point node in quasienergy is $0.414\pi$ away, so
+corner-local fits at $|k|\lesssim0.15$ are separated from every
+spectator by more than two decades in momentum. But the walk is a
+lattice fermion with a larger spectator census than a corner count
+suggests: its additional species are displaced, not
+absent~\cite{DoublingQW}.
 
 \subsection{Quenched measurement}
 \label{sec:quenchedcone}
@@ -399,10 +487,10 @@ $\sqrt{\text{noise}}$), which this design removes.
 
 \begin{figure}[!htb]
 \includegraphics[width=\columnwidth]{figs/cone_ratios.pdf}
-\caption{Slope ratios at the node, gate and quenched rows at each $q$,
+\caption{Slope ratios at the node, gate and quenched rows at $q=0.08$,
 against the factorized-transport (diamond) prediction. Error bars are
 leave-one-block-out jackknives over ten independent medium blocks with
-the same-$q$ gate-row systematic added in quadrature. \evX{}}
+the gate-row systematic added in quadrature. \evX{}}
 \label{fig:cone}
 \end{figure}
 
@@ -419,16 +507,12 @@ factorized-transport prediction is excluded in every channel: the weakest
 exclusion---by construction the off-symmetry channel with the fewest
 orbit members---sits $9.7$ of its error bars from the diamond value
 ($9.7\sigma$ under a Gaussian reading), and the cubic channels sit more
-than $200$ error-bar widths away. The $q=0.15$ row is a consistency
-check, not a second headline: its ratios ($r_{110}=1.000\pm0.004$,
-$r_{111}=1.000\pm0.006$, $r_{\mathrm a}=1.007\pm0.053$,
-$r_{\mathrm b}=1.012\pm0.076$; errors dominated by the $q=0.15$ gate
-row's own systematics) exclude the diamond with weakest channel at
-$7.7$ widths. Absolute speeds carry the full medium-ensemble
-uncertainty, $v(0.08)=1.03\pm0.18$, consistent with the exact $1.18$; at
-$q=0.15$ the $\delta k\to0$ extrapolation of the absolute scale is
-curvature-dominated (linearity residual $0.30$) and only the ratios are
-quoted. The quenched node parameters themselves shift from the annealed
+than $200$ error-bar widths away. A $q=0.15$ run (own gate row passed) is committed alongside but is
+\emph{excluded from the evidence}: its probe radii violate the
+pipeline's own linear-range rule (slope change $0.30$ between probe
+radii), so neither its ratios nor its absolute scale are quoted here.
+Absolute speeds at $q=0.08$ carry the full medium-ensemble uncertainty,
+$v=1.03\pm0.18$, consistent with the exact $1.18$. The quenched node parameters themselves shift from the annealed
 closed forms---$|\lambda_0|$ by $+2.8\%$ and $\omega_0$ by $+8.6\%$ at
 $q=0.08$---of which the gate row's own instrumental offsets account for
 $+0.3\%$ and $+2.3\%$; the remainder is a property of the quenched
@@ -447,12 +531,16 @@ $\tfrac12(\openone\pm n\cdot\sigma)$, $n=Ru/\sqrt{(Ru)\!\cdot\!(Ru)}$.
 Measured on the quenched vacuum (the 26 directions of the cubic
 $\{100\}/\{110\}/\{111\}$ stars at each of the three---by
 $\pi$-periodicity identical---corner representatives; gate row passed):
-helicity-map bilinear isotropy
-$0.020\pm0.010\,(\mathrm{stat})\pm0.048\,(\mathrm{syst})$---the
-systematic being the annealed gate row's own return, $0.048\pm0.014$,
-for the identical estimator---chirality $-1$ (stable under every
-jackknife resampling), pointwise
-$|1-n\cdot n_{\rm exact}|$ of mean $0.010\pm0.002$ \evX{}. (The residue
+chirality $-1$, stable under every jackknife resampling in both rows;
+pointwise helicity-direction agreement $|1-n\cdot n_{\rm exact}|$ of
+mean $0.013\pm0.004$, with the gate row returning $0.015\pm0.004$ on
+the exactly isotropic operator---the instrument floor. The bilinear
+isotropy statistic (a maximum over the nine entries of
+$R^TR/s-\openone$, hence positively biased) is reported only as an
+upper bound: the quenched row gives $0.075\pm0.025$ against the gate
+row's own $0.083\pm0.036$, so the measurement sits at the instrument's
+noise floor and bounds the node's bilinear anisotropy at
+$\lesssim0.1$ \evX{}. (The residue
 projectors are rank one by construction of the spectral estimator, so
 ``purity'' is not reported as a measurement.) One convention is essential for eigenvector work: the
 $e^{-ik\cdot x}$ Fourier contraction estimates $U(-k)=\bar U(k)$, whose
@@ -471,11 +559,18 @@ $M=4L^3\equiv0 \bmod 4$), and
 \begin{equation}
 [\hat S, P]=0
 \end{equation}
-\emph{exactly, including all lift signs}: verified on the complete Fock
-space of a ring substrate, and in genuine three-dimensional geometry on the
-sector pairs $\{0,1,2,M{-}2,M{-}1,M\}$ (particle--hole duality maps the
-deep sectors to one- and two-hole problems), per layer and full cycle at
-$L=2,3$ \evM{}. With the grading $\eta=\mathrm{sign}(N_c-M/2)$---conserved
+\emph{exactly, including all lift signs}, as an operator identity on the
+full Fock space at every lattice size \evP{}: a string-factorization
+lemma reduces each layer's commutation with the Majorana string to a
+fixed finite block check (conversion and imprint blocks act on same-site
+modes, so their Jordan--Wigner spectators are block internal), and the
+translation lift contributes
+$\mathrm{sign}(\pi)=(-1)^{(L-1)L^2}=+1$ for every $L$
+(Appendix~\ref{app:proofs}). Independent sector certificates confirm the
+identity directly through the three-carrier sectors at $L=2,3$
+($1.6\times10^6$ three-carrier states at $L=3$), the $M{-}2$ sector by
+particle--hole duality, and one- and two-particle sectors at $L=4$, over
+eight environment draws \evM{}. With the grading $\eta=\mathrm{sign}(N_c-M/2)$---conserved
 by every layer, odd under $P$, and size independent away from half
 filling---define
 \begin{equation}
@@ -488,8 +583,8 @@ space~\cite{Wetterich2022}: the automaton's quantum mechanics is exact
 \evM{}. On the substrate the construction extends to the half-filled sector
 by an explicit orbit-wise grading; in three dimensions no size-independent
 grading of the half-filled sector was found and the question is left open.
-All physical sectors (vacuum plus finitely many carriers) are covered
-rigorously at every size.
+Away from half filling, all carrier sectors are covered at every size, by
+proof and by direct verification.
 
 \subsection{Bridge to the spectral analysis}
 
@@ -505,7 +600,15 @@ the sector) and the Hermitian forms. Consequently the measured propagator
 pair of the Fourier analysis appears once as a particle and once as an
 antiparticle in the $(K,I)$ picture, and the chirality bookkeeping of
 Sec.~\ref{sec:spectrum} is the particle/antiparticle structure of a
-single Weyl node. Machine-checked in three dimensions: the intertwining
+single Weyl node. Two scope remarks are owed. The complex structure is
+nonlocal---a Majorana string mapping $k$-particle to $(M{-}k)$-particle
+sectors---so no local occupation observable commutes with $I$; the
+identification of measured objects with $I$-Hermitian matrix elements is
+established here for the one-particle sector, and multi-carrier
+correlators (such as the $C_2$ certificates of
+Sec.~\ref{sec:interaction}) are not re-expressed in the $I$ picture.
+Machine-checked in three dimensions at $L=2$ (one environment draw, 20
+random vectors): the intertwining
 identities hold exactly and the form isometry to $3\times10^{-15}$
 \evP{}, \evM{}. What remains genuinely distinct is the damping: the
 in-state reduced dynamics is a contraction (the chord), and only the
@@ -528,7 +631,11 @@ gauge yields an axis-universal action: 40 terms with identical degree
 structure for all three axes; the quadratic part is the signed-swap
 bilinear of $C_a$ plus the environment transport term, and the
 environment control appears as quartic and higher couplings between the
-channel bilinears and $e^\prime\tilde e$ \evM{}.
+channel bilinears and $e^\prime\tilde e$ \evM{}. Axis universality is a
+property of the physical gauge specifically: the bare (all-plus sign)
+gauge yields axis-dependent term counts ($49/42/51$)---discarding the
+lift signs breaks the relabeling equivalence, a gauge artifact asserted
+as such \evM{}.
 
 \section{Mass: inversion doubling}
 \label{sec:mass}
@@ -565,12 +672,32 @@ quaternionic triple $\{C_a\}$ in $M_4(\mathbb R)$ is zero-dimensional
 anticommutant is two-dimensional with strictly negative squares---
 wrong-sign masses only); eight components are minimal, as realized here.
 
-The census of Sec.~\ref{sec:census} extends to the massive model: the
-corner and all three half-point nodes acquire the \emph{identical} gap
-$2\arctan[q_m/(1-q_m)]$ (deviation below $10^{-12}$), the half-points
-becoming additional anisotropic Dirac species, while the nodal lines
-split only weakly ($2m/9.8$ at $(0.7,\pi/2,\pi/2)$ for $q=0.08$; $2m/5.0$
-at $q=0.15$), leaving sub-gap remnant states inside the Dirac gap \evM{}.
+The census of Sec.~\ref{sec:census} has a sharp massive fate, charted
+by the same sweep at $q\in\{0.08,0.15\}$, $q_m=0.05$ \evM{}. The mass
+layer breaks all axis permutations (exactly the 8 diagonal sign flips
+survive as spectral symmetries) and makes the spectrum self-conjugate
+at every $k$, so both quasienergy branches live at the same momenta.
+The \emph{resonant principal quartet}---the corner and the three
+half-points, the self-conjugate nodes with $2k\equiv0$ (mod $\pi$),
+where $\omega\equiv-\omega$---is gapped by exactly
+$2\arctan[q_m/(1-q_m)]$ (two exactly two-fold levels split by $2m$ to
+$10^{-15}$). \emph{Every one of the 40 extra Weyl points survives
+exactly ungapped}: for each, the original doublet at $\omega$ and its
+inversion partner at $-\omega$ re-close at a common point (coinciding
+to $6\times10^{-14}$, displaced below $0.005\pi$ from the massless
+location) with unchanged integer charges. The mechanism is
+off-resonance: inversion doubling places the partner at the conjugate
+quasienergy $-\omega\neq\omega$, and the mass layer gaps only resonant
+sector pairs. Survivor charges sum to zero per branch. The massive
+model also adds structures with no massless counterpart: degeneracy
+curves confined to the $\{k_a\in\{0,\pi/2\}\}$ mirror planes (where the
+inter-sector mass matrix element vanishes by symmetry), isolated Weyl
+nodes pinned at the resonant quasienergies $\omega\in\{0,\pi\}$ (16
+events at $q=0.08$, charges summing to zero), and a 12-line edge
+network that remains exactly degenerate, with the original line
+doublet split only weakly ($2m/9.8$ at $(0.7,\pi/2,\pi/2)$, $q=0.08$),
+leaving sub-gap remnants. The massive model is therefore a Dirac
+quartet embedded in a spectator population that stays massless.
 
 \begin{figure*}[!t]
 \includegraphics[width=0.85\textwidth]{figs/mass.pdf}
@@ -584,14 +711,20 @@ precision. \evX{}, \evP{}}
 
 Measured on the quenched vacuum with the gated eight-launch instrument
 (Fig.~\ref{fig:mass}): the gap is
-$m=0.0547\pm0.0038$ against the closed form $0.0526$ (the gate row's own
-estimator carries a $+1.7\sigma$ pair-splitting bias at the same setting,
-recorded as a systematic), the multiplet center is
-$\omega_c=0.3182\pm0.0027$, and the dispersion lies on the exact
-operator branches with a maximum pull of $1.0$ jackknife errors over all
-nine (family, $\delta k$) points---machine-asserted from the committed
-run output---with the family ordering of the curvatures that the exact
-model prescribes \evX{}.
+$m=0.0576\pm0.0058\,(\mathrm{stat})\pm0.0150\,(\mathrm{syst})$ against
+the closed form $0.0526$---the systematic being the gate row's own
+pair-splitting bias on the exactly known operator, measured with the
+identical estimator, which dominates the error budget---and the
+multiplet center is $\omega_c=0.3190\pm0.0054$. The dispersion lies on
+the exact operator branches with maximum pulls of $1.2$ (quenched row)
+and $1.7$ (gate row) jackknife errors over the nine (family,
+$\delta k$) points---machine-asserted from the committed run output;
+the points share media blocks and the center estimate, so the
+worst-pull statistic is quoted, not a $\chi^2$---with the family
+ordering of the curvatures that the exact model prescribes \evX{}. At
+this accuracy the instrument has no power to resolve quenched-medium
+shifts of the size seen in the node parameters
+(Sec.~\ref{sec:quenchedcone}).
 
 \section{Interaction}
 \label{sec:interaction}
@@ -604,13 +737,30 @@ with probability $g/3$ each) \emph{and} the site's carrier fermion parity
 is odd, the selected two environment species at that site are swapped.
 The imprint field is autonomous in the same sense as the media: its
 randomness lives in the initial product measure only (value $0$ with
-probability $1-g$), and it evolves by legal deterministic pair-swap
-streaming with the axis rotating per cycle. A per-cycle resampled field
+probability $1-g$; the four values are carried as two bits), and it
+evolves by legal deterministic pair-swap streaming with the axis rotating
+per cycle, lifting with the standard reordering parity like every
+environment layer. A per-cycle resampled field
 would be a stochastic rule---an annealed approximation, not an
 automaton---and is not used.
 Three design facts are load bearing. (i)~A fixed swap pair breaks cubic
-symmetry at $O(g)$ (anisotropic node corrections at $10\sigma$); the
-rotating $C_3$-covariant triple is protected at all orders \evX{}, \evP{}.
+symmetry at $O(g)$ (anisotropic node corrections at $10\sigma$) \evX{};
+the rotating triple is protected by symmetry. The interacting quenched
+ensemble---media, imprint field, and the layered dynamics including
+L4---is exactly covariant under the tetrahedral rotation group $A_4$:
+cyclic axis rotations with a channel relabeling $W$ (the accompanying
+layer-order shift is a similarity, being a cyclic rotation of an
+ordered product), and double axis reversals with a commutant relabeling
+$V$ and bond-center reflections, verified quenched per mode
+\emph{including} the imprint back-reaction; single-axis reversals are
+provably not symmetries (no signed relabeling exists among all 384).
+$A_4$ acts irreducibly on $\mathbb R^3$ and admits no invariant vector
+and no non-scalar invariant symmetric rank-2 tensor, so at \emph{every}
+order in $g$ the node's velocity and damping tensors are scalar: the
+cone stays isotropic and undisplaced, with anisotropy possible only at
+rank $\ge4$ in $\delta k$, exactly as at $g=0$ \evP{}, \evM{}. ($C_3$
+covariance alone would not suffice: $\sum_{a\neq b}k_ak_b$ is
+$C_3$-invariant and anisotropic.)
 (ii)~Parity control (not occupancy) is particle--hole even, so the complex
 structure of Sec.~\ref{sec:exactqm} survives at $g>0$ unchanged \evM{}.
 (iii)~The lift gauge of the imprint is \emph{physical}: the permutation
@@ -625,7 +775,9 @@ interacting carrier--environment theory at the correlator level, with
 free-fermion structure only per medium realization---so the interaction
 certificate is differential: $\Delta C_2(g)=C_2(g)-C_2(0)$ vanishes
 identically at $g=0$ and switches on linearly,
-$\Delta C_2/g\simeq0.35$ on the exact substrate \evM{}. A control-variant
+$\Delta C_2/g\simeq0.35$ on the exact substrate (a one-dimensional ring
+with a fixed swap pair and a static imprint field---an interaction
+certificate, not the production three-dimensional layer) \evM{}. A control-variant
 experiment (occupancy-controlled imprint, used only as an instrument
 control) separates the parity-blocking contact artifact: $2$--$3\%$ of the
 signal \evM{}.
@@ -646,9 +798,9 @@ survives interaction by measurement as well; over six cycles the paired
 ratio stays momentum independent to $\le1.2\%$ wherever the amplitude
 gate retains all six probe momenta (at one intermediate cycle the gate
 retains a single momentum and $k$-independence is not claimed there);
-beyond leading order the re-read (recross) channel partially
-\emph{recoheres} the amplitude, so the asymptotic $\Gamma_{\rm int}$ is
-bounded above by the law \evX{}.
+beyond leading order the re-read (recross) channel produces excursions on
+\emph{both} sides of the law (within $\approx3\%$ of it through six
+cycles), and the asymptotic interaction damping rate is left open \evX{}.
 
 \section{Damping: a theorem and its unitary completion}
 \label{sec:damping}
@@ -695,9 +847,10 @@ in which the two same-axis engagements read lattice-adjacent sites with
 both offsets realized across coin branches; (iii) a deterministic
 environment rule with randomness confined to the initial measure---an
 isotropic node forces $\Gamma>0$: node unitarity requires an
-almost-surely deterministic conversion word, the only
-translation-invariant binary media with deterministic window counts are
-the crystals, and both crystal classes destroy the cone. \evP{}
+almost-surely deterministic conversion word; among media factorizing
+over axis lines, the media with deterministic read-window counts are
+exactly the per-line crystal products, and every member destroys the
+cone. \evP{}
 \end{theorem}
 
 The restriction to the quaternionic class is necessary, not stylistic:
@@ -709,10 +862,31 @@ sets with finest eigenvalue angle $2\pi/\ell$ the constant grows as
 $\kappa(\ell)\to2\ell/\pi$ \evM{}. The bound is a statement about the
 quaternionic class, degrading linearly with coin refinement. In these
 terms the theorem reads: no legal in-state automaton of this class can
-advance any mode's interference phase by more than $\kappa$ radians per
-$e$-fold of visibility decay, and ``an isotropic node forces
-$\Gamma>0$'' asserts a nonzero uniform visibility decay, not a node
-width.
+hold its node quasienergy farther than $\kappa\Gamma$ from
+$(\pi/2)\mathbb Z$. The bound governs the node---momenta where the
+transport phases vanish, so the composite stays inside the group
+algebra; at generic $k$ the momentum factors $E_a(k)$ leave the event
+class and the ratio exceeds $\kappa$ already on the coincube operator
+(reaching $6.06$ at $q=0.02$, $k=0.4\,e_x$) \evM{}. And ``an isotropic
+node forces $\Gamma>0$'' asserts a nonzero uniform visibility decay,
+not a node width.
+
+The media hypothesis of the second statement is likewise scoped: for
+general three-dimensional translation-invariant media the
+deterministic-count classification is open---a family staggered along
+the read axis with an independent phase per transverse line lies
+outside the crystal list. It does not rescue the cone. Cross-streaming
+makes a carrier's two same-axis reads sample \emph{adjacent} transverse
+lines, so per-line determinism does not give ensemble determinism: for
+independent phases of density $r$ the ensemble one-cycle operator is
+damped by exactly $\Gamma=-3\ln[r^2+(1-r)^2]$ per cycle, vanishing only
+at the crystal limits $r\in\{0,1\}$; and an exhaustive supercell
+construction (all 4096 members of the family on the $2^3$ supercell,
+each exactly unitary and closed under the model's streaming) finds
+every one of its 11\,864 degenerate band groups failing an
+isotropic-pair witness at the folded corner momenta---a witness that
+does detect the unitary-arc cone when fed one. Interior supercell
+momenta are not exhaustively excluded. \evM{}
 
 The idealized ordered-dimer environment does achieve the commutator-limited
 decoherence $\Gamma=k^2/2$ per event---the branch-remerging mechanism is
@@ -735,8 +909,8 @@ flipping the environment bits ($w_0^2=w_1^2$) \evP{}. Numerically: all
 $|\lambda|=1$ to $4\times10^{-16}$ with slope isotropy asserted below
 $10^{-3}$ and $\omega_0$ tunable at the $\sqrt q$ scale \evM{}. In
 quenched three dimensions the fresh-read law is exact at the first cycle
-(coherent path enumeration, no sampling), with growing recoherent re-read
-corrections thereafter ($11$--$25\%$ by three cycles at $q=0.08$); the
+(coherent path enumeration, no sampling), with growing re-read
+corrections thereafter ($11$--$24\%$ by three cycles at $q=0.08$); the
 long-time pole structure of the quenched two-boundary object is open.
 \evM{}
 
@@ -747,14 +921,17 @@ Under the strictest single-fermion contract, the free-fermion sector of the
 three-dimensional problem posed in Ref.~\cite{Wetterich2022} is solved: a
 legal probabilistic cellular automaton whose dynamics is exactly unitary
 quantum mechanics and whose single-carrier excitation on a clustering
-product vacuum is an isotropic Weyl fermion---dispersion and spinor
-residues---extendable to a massive Dirac fermion with an exact tunable
-mass, and to a certified media-mediated interaction under which the free
-spectrum survives at leading order. Every closed form is verified against
+product vacuum is, by gated measurement, an isotropic Weyl
+fermion---dispersion and spinor residues---extendable to a massive
+Dirac quartet with an exact tunable mass, and to a certified
+media-mediated interaction under which the free spectrum survives at
+leading order. Every closed form is verified against
 the operators it describes, and every measurement runs behind a
-known-answer gate. The solution is a lattice fermion in the standard
-sense: the census of Sec.~\ref{sec:census} places its partner species at
-displaced momenta and quasienergies rather than removing them.
+known-answer gate. The solution is a lattice fermion with a computed
+spectator census: the sweep of Sec.~\ref{sec:census} places 43 further
+Weyl points and three nodal lines at momentum distance $\ge0.41\pi$
+from the working node, and the massive model gaps only the resonant
+quartet among them.
 
 The precise open problems are: (i) the half-filled carrier sector of the
 complex-structure construction in three dimensions; (ii) the long-time
@@ -762,8 +939,10 @@ behavior of the quenched two-boundary propagator (re-read resummation);
 (iii) the continuum limit and the fate of Lorentz symmetry beyond the
 leading cone, including interaction corrections beyond the scalar law; and
 (iv) multi-carrier physics beyond the contact terms already present in the
-extracted quartic action; and (v) the physics of the sub-gap nodal-line
-remnants of the massive census. The damping of the in-state quasiparticle
+extracted quartic action; and (v) the spectator population of the
+massive census---the exactly massless off-resonant Weyl species, the
+pinned nodes, and the sub-gap nodal-line remnants---and whether a legal
+layer can gap it. The damping of the in-state quasiparticle
 is not on this list: it is an exact, mode-blind prediction of the
 construction (Proposition~\ref{prop:factor}), bounded by
 Theorem~\ref{thm:qbound}, and absent from the two-boundary amplitude.
@@ -816,11 +995,18 @@ coins, and degenerates for diagonal coins: a linear node forces
 $U(k_0)=\lambda_0\openone$, the splitting generators are conjugated
 involutions with automatically scalar anticommutators ($2\times2$
 Cayley--Hamilton), and the required bilinear orthogonality gives
-$T_{00}T_{11}=-T_{01}T_{10}$. For the blocked two-origin cycles, an
-exhaustive sweep (all 512 sign/direction tables per placement, both
-engagement patterns, $p\in\{0.15,0.25,0.35,0.5\}$, multistart continuous
-momentum search) establishes strictly positive anisotropy floors at
-generic $p$, with per-sector assertions.
+$T_{00}T_{11}=-T_{01}T_{10}$. For the blocked two-origin cycles the
+exclusion is exhaustive in the tables and heuristic in momentum: all
+512 sign/direction designs per (placement, engagement, $p$) sector are
+enumerated, with $p\in\{0.15,0.25,0.35,0.5\}$ and 14-start continuous
+momentum solving, and every design carries an explicit certificate---a
+candidate node entering the sector's anisotropy floor, a
+degenerate-only scalar point, or no scalar point at all, the last
+certified by a minimum scalar residual $\ge0.074$ against the $10^{-9}$
+solver tolerance of solvable designs. The floors are claimed at the
+sampled grid values of $p$ only; between them they dip toward zero on
+approach to the tuned $p^*$, which is the content of part (iii), not a
+violation.
 (iii) \emph{The fine-tuned points.} At the singular weight $p=\tfrac12$
 the single-origin placement has $U(k_0)$ scalar at
 $k_0=(\tfrac{3\pi}4,\tfrac{3\pi}4,-\tfrac\pi4)$ (and its symmetry
@@ -831,15 +1017,50 @@ In the blocked placements, branch continuation in $p$ (warm-started exact
 scalar solves with probe-radius-extrapolated anisotropy) locates
 codimension-one transversal zeros of the single remaining Gram condition
 at $p^*=0.3300$ (additive placement,
-$k_0/\pi=\pm(0.916,0.916,-0.916)$, $|\lambda_0|=0.1736$) and
-$p^*=0.3204$ (multiplicative, $|\lambda_0|=0.1799$), both with
-$\omega_0=\pi$ and $\chi=-1$: isolated tuned nodes, not parameter
-families. All parts are machine-checked, the sweep exhaustively.
+$k_0/\pi=\pm(0.916,0.916,-0.916)$, $|\lambda_0|=0.1736$, $\chi=-1$) and
+$p^*=0.3204$ (multiplicative, $|\lambda_0|=0.1799$, $\chi=+1$), both
+with $\omega_0=\pi$: isolated tuned nodes, not parameter families. All parts are machine-checked, the sweep exhaustively.
 \hfill$\square$
 
-\subsection{The mass identity, Eq.~(\ref{eq:massgap})}
+\subsection{Particle--hole equivariance, $[\hat S,P]=0$}
 
-At $k=0$ the momentum factors are the identity, so the direction reversal
+\emph{Lemma (string factorization).} Let $B$ be a parity-even operator
+with support $T$, and $T_c$ the carrier modes in $T$. The Majorana
+factors of $P$ anticommute pairwise, so sorting gives
+$P=\sigma\,P_{T_c}P_{T_c^\complement}$ with a fixed reordering sign
+$\sigma=\pm1$; a parity-even $B$ commutes with every Majorana off its
+support, hence with $P_{T_c^\complement}$, and
+$[B,P]=\sigma\,[B,P_{T_c}]\,P_{T_c^\complement}$: the block-local check
+suffices.
+
+\emph{Layers.} L2 acts, per fired site, on the four same-site carrier
+modes (plus the control); the stored Jordan--Wigner spectators lie
+inside the contiguous block, so $[{\rm L2},P]=0$ reduces to one finite
+block check per axis, independent of $L$. L1 is a canonical permutation
+lift, for which $U_\pi PU_\pi^{-1}=\mathrm{sign}(\pi)\,P$; per channel
+the axis-$a$ shift is $L^2$ disjoint $L$-cycles, so
+$\mathrm{sign}(\pi)=(-1)^{(L-1)L^2}=+1$ for every $L$ (even $L$: $L^2$
+even; odd $L$: $L-1$ even). L3 is supported on environment modes and
+parity even, so it commutes with every carrier Majorana. L4's carrier
+part is a parity projector and its environment part a string-free
+adjacent swap, block-checked in both lift gauges. Size independence is
+structural: the same finite blocks recur at every site of every
+lattice, so the identity holds on the full Fock space at every $L$.
+\hfill$\square$
+
+\subsection{The mass identities, Eq.~(\ref{eq:massgap})}
+
+First, the factorization
+$U(k)=(\openone\otimes R_m)[U_4(k)\oplus U_4(-k)]$ with
+$R_m=(1-q_m)\openone+q_mXZ$: (1)
+$d^{(8)}=d\otimes\mathrm{diag}(1,-1)$, so every transport phase is
+block diagonal in $b_m$ with opposite momentum sign in the two blocks,
+$E_8(k)=E_4(k)\oplus E_4(-k)$; (2) $C_8=C_4\otimes\openone$, so
+conversions are block diagonal and identical in the two blocks; hence
+the pre-mass cycle is $U_4(k)\oplus U_4(-k)$ and the once-per-cycle
+mass layer is $\openone_4\otimes R_m$ (machine-checked symbolically in
+the full vector momentum). Second, the gap:
+at $k=0$ the momentum factors are the identity, so the direction reversal
 that distinguishes the two $b_m$ sectors is invisible and the axis layers
 act as $U_4(0)\otimes\openone_2$. The mass layer acts on the $b_m$ factor
 alone: $M_2=(1-q_m)\openone+q_m XZ$, a real multiple of a rotation with
@@ -848,6 +1069,20 @@ $\sqrt{(1-q_m)^2+q_m^2}$. Hence
 $U(0)=U_4(0)\otimes M_2$: the spectrum is the product set, frequencies add
 angles, the multiplet center is unshifted, and the gap is exactly
 $2\arctan[q_m/(1-q_m)]$, independent of $q$. \hfill$\square$
+
+\subsection{The imprint amplitude law}
+
+In the one-particle sector the carrier's site has odd parity, so the
+imprint fires iff $\iota\neq0$, probability $g$. The permutation lift
+of the fired pair swap has sign table $|00\rangle\to+|00\rangle$,
+$|01\rangle\to+|10\rangle$, $|10\rangle\to+|01\rangle$,
+$|11\rangle\to-|11\rangle$ (the canonical transposition lift), and the
+swap preserves the Bernoulli pair measure, so the per-event coherent
+factor is the plain sign average $(1-q)^2+2q(1-q)-q^2=1-2q^2$,
+identical for the three pairs. One line of expectation:
+$U_g=(1-g)U+g(1-2q^2)U=(1-2gq^2)U$ at annealed order. The Givens
+lift's table gives $1-2q(1-q)$ instead: the law is lift-gauge
+dependent, the isotropy of the damping is not. \hfill$\square$
 
 \subsection{Theorem \ref{thm:qbound} (Q-pinning)}
 
@@ -859,9 +1094,15 @@ $T=w\openone+x C_x+y C_y+z C_z$ with $|w|+\lVert(x,y,z)\rVert_1\le1$,
 and its eigenvalues are $w\pm i\lVert(x,y,z)\rVert_2$. Since
 $\lVert\cdot\rVert_2\le\lVert\cdot\rVert_1$, every eigenvalue lies
 inside the convex hull of the chords between adjacent fourth roots of
-unity; on the extremal chord $1\to i$, $\lambda=(1-t)+it$ has
-$\arg\lambda/(-\ln|\lambda|)$ maximized at the midpoint $t=\tfrac12$,
-where it equals $\pi/(2\ln2)$. This bounds
+unity. On the extremal chord $1\to i$, $\lambda(t)=(1-t)+it$, the
+maximized quantity is
+$\mathrm{dist}(\arg\lambda,(\pi/2)\mathbb Z)/(-\ln|\lambda|)$: by the
+square-hull reduction and the $\pi/2$ rotation symmetry of the event
+angles it attains its maximum $\pi/(2\ln2)$ at the chord midpoint
+$t=\tfrac12$, where the distance folds from $\arg\lambda$ to
+$\pi/2-\arg\lambda$. (The unfolded ratio $\arg\lambda/(-\ln|\lambda|)$
+diverges toward the chord endpoint and is maximized nowhere interior; a
+dense hull scan confirms no interior point exceeds $\kappa$.) This bounds
 $\mathrm{dist}(\arg\lambda,(\pi/2)\mathbb Z)\le\kappa\Gamma$ for
 arbitrary, non-commuting products---the full statement of the theorem.
 The group closure is the load-bearing hypothesis: outside
@@ -874,9 +1115,11 @@ structure being hypothesis (ii)): unitarity of the node eigenvalue
 requires the conversion count $N$ (mod 4) along a read window to be
 deterministic, by
 $|\mathbb E[i^N]|^2=(p_0-p_2)^2+(p_1-p_3)^2\le1$ with equality only at a
-vertex; translation-invariant binary media with deterministic window
-counts are exactly the two uniform and two staggered crystals (enumerated
-exactly on rings); and the deterministic-word cycles' spectra are computed
+vertex; on rings, and on three-dimensional media factorizing over axis
+lines, the media with deterministic window counts are exactly the
+(per-line) crystals (exhaustively enumerated at $L=6,7,8,10$), with the
+non-factorizing phase-per-line family closed separately as described in
+the main text; and the deterministic-word cycles' spectra are computed
 explicitly and are never isotropic. Machine checks accompany every step,
 including randomized non-commuting products. \hfill$\square$
 
@@ -935,20 +1178,24 @@ self-asserting; in \texttt{scripts/} of Ref.~\cite{repo} unless noted).}
 \begin{ruledtabular}
 \footnotesize
 \begin{tabular}{ll}
-finite-ray tests & \texttt{tests/test\_finite\_ray\_theorem}\\
+finite-ray tests & \texttt{tests/test\_finite\_ray\_*}\\
 $v(q)$ dressing law & \texttt{theory\_linear\_law}\\
 Abelian-gauge diamond & \texttt{w2\_scalar\_gauges}\\
 coin scans ($n=2,4$) & \texttt{w3\_transfer\_scan}\\
 annealed cone & \texttt{w3\_cone\_verify}, \texttt{theory\_real\_cone}\\
 lift certificates & \texttt{w3c\_lift\_check}, \texttt{w3c\_composite\_check}\\
 3D sector certificates & \texttt{theory\_3d\_certs}\\
+$[\hat S,P]$ equivariance proof & \texttt{theory\_sp\_proof}\\
 quenched cone (gated) & \texttt{w3c\_corner}\\
-census; factorization & \texttt{spectrum\_census}\\
+gapless census, charges & \texttt{census\_sweep}\\
+factorization; structural loci & \texttt{spectrum\_census}\\
+estimator positive controls & \texttt{w3c\_positive\_control}\\
 two-component taxonomy (Thm~\ref{thm:ntwo}) & \texttt{theory\_redteam}\\
 helicity residues & \texttt{w4\_helicity\_exact}, \texttt{w4\_helicity}\\
 complex structure & \texttt{e1\_complex\_structure}, \texttt{e1\_interacting}\\
 Grassmann actions & \texttt{e2\_coincube\_actions}\\
 mass sector & \texttt{m8\_mass\_exact}, \texttt{m8\_corner}, \texttt{theory\_mass}\\
+mass factorization & \texttt{theory\_mass\_identity}\\
 massive dispersion pulls & \texttt{m8\_pulls}\\
 interaction & \texttt{i2\_connected}, \texttt{i2\_split}, \texttt{i3\_quenched3d}\\
 imprint-field dynamics & \texttt{theory\_interaction}\\
@@ -996,9 +1243,14 @@ $e^{+ik\cdot x}$ contraction (Sec.~\ref{sec:spectrum}). For interaction
 ratios, paired common-noise evolution (identical randomness with the
 imprint on and off) cancels the medium-ensemble variance, which is
 otherwise dominated by low-order conversion caustics. Gate tolerances are
-set to catch catastrophic estimator failure (percent scale), not to
-certify accuracy; accuracy statements rest on the quoted statistical
-errors and the recorded systematics.
+set to catch catastrophic estimator failure, not to certify accuracy:
+the cone-ratio gates use $\max(2\%, 3\sigma)$ of the gate row's own
+jackknife, the massive-gap gate allows $30\%$ of the gap, and the node
+modulus gate $0.05$ absolute. Accuracy statements never rest on gates;
+they rest on the quoted statistical errors and the recorded systematics,
+and the estimator's ability to resolve anisotropy is established by
+positive controls (a synthetic diamond-splitting truth and a legal
+broken-coin walk) run through the identical pipeline.
 
 \emph{Recorded failure modes.} The following estimator pathologies were
 each encountered, diagnosed and firewalled during this program, and are
@@ -1046,8 +1298,9 @@ in--out transfer's uniform modulus $1/D$ per read is a global scalar
 renormalization; the physical statement is the vanishing of all
 \emph{relative} damping. The quality factor of the in-state quasiparticle,
 $Q=\omega_0/\Gamma$, rises from $0.60$ to $0.90$ over
-$q\in[0.02,0.25]$ and is bounded by $\kappa$ per
-Theorem~\ref{thm:qbound}.
+$q\in[0.02,0.25]$; the quantity Theorem~\ref{thm:qbound} bounds by
+$\kappa$ is $\mathrm{dist}(\omega_0,(\pi/2)\mathbb Z)/\Gamma$, which
+coincides with $Q$ for $q\lesssim0.2$ (where $\omega_0<\pi/4$).
 
 \begin{thebibliography}{99}
 \bibitem{Wetterich2022} C.~Wetterich,
@@ -1124,8 +1377,8 @@ Phys.\ Rev.\ A \textbf{114}, 012208 (2026), arXiv:2601.15885.
 \bibitem{Bergholtz} E.~J.~Bergholtz, J.~C.~Budich, and F.~K.~Kunst,
 \emph{Exceptional topology of non-Hermitian systems},
 Rev.\ Mod.\ Phys.\ \textbf{93}, 015005 (2021).
-\bibitem{repo} P.~Topa, \emph{coincube: verification code for this
-paper}, \url{https://github.com/PiotrTopa/coincube}, tag \texttt{v1.2.0}.
+\bibitem{repo} P.~S.~Topa, \emph{coincube: verification code for this
+paper}, \url{https://github.com/PiotrTopa/coincube}, tag \texttt{v1.3.0}.
 \end{thebibliography}
 
 \end{document}
