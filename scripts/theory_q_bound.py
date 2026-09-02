@@ -1,37 +1,57 @@
 #!/usr/bin/env python
-"""Q-bound theory: is the quasiparticle quality factor pinned for legal PCAs?
+"""Q-bound theorem for quaternionic-event probabilistic CAs -- with its
+exact scope boundary exhibited.
 
-Machine checks for docs/notes/theory-q-bound.md. All headline claims
-re-asserted every run; results -> results/theory_q_bound.json.
+Self-contained machine checks; assertions run before the results file is
+written; results -> results/theory_q_bound.json.
 
-Summary of what is proven/checked here:
-  A. Chord bound: for any convex mixture lambda = sum p_j z_j over the
-     quaternionic event angles (pi/2)Z, dist(arg lambda, (pi/2)Z) <=
-     kappa * (-ln|lambda|) with kappa = pi/(2 ln 2) = 2.2662 exactly
-     (attained at the chord midpoint); finer angle sets (ell-cycles) give
-     kappa(ell) ~ 4 ell / pi.
-  B. The coincube family satisfies the bound at every q (numerically, the
-     non-commuting cycle composition included).
-  C. Node-unitarity characterization: the annealed node map is unitary iff
-     the conversion count N is deterministic (|E[i^N]| = 1); for the
-     coincube's adjacent-pair read windows, translation-invariant binary
-     media with deterministic window counts are EXACTLY {all-0, all-1, the
-     two staggered crystals} (ring enumeration).
-  D. The staggered crystal: unitary for all k (Gamma = 0), U(0) = -I, and
-     the first-order fan is the pure corner-mover DIAMOND — no cone.
-  E. Deterministic versor words (two-stripe media): U(0) = +-i pairs but the
-     velocity projections give dead/chiral axes — no cone.
-  F. The idealized order-random dimer map (needs a stochastic env CA —
-     outside the framework): node-unitary, Gamma = k^2/2, and STILL the
-     diamond fan — even that route fails the cone.
-  G. The in-out arc T = E (c + s C), c^2 + s^2 = 1: unitary for all k, the
-     isotropic cone survives (symbolic proof for general (alpha, beta),
-     closed forms with A = c^2 - s^2, B = 2cs) — the unique completion of
-     the mixture family achieving Q = infinity WITH the cone.
+THEOREM (Q-pinning, rescoped). Let every conversion event lie in the
+quaternionic event set R.Q8 = {+-1, +-C_x, +-C_y, +-C_z} (the coincube's
+certified set; eigenvalue angles in (pi/2)Z). Then for ANY product of ANY
+convex mixtures of events -- non-commuting factors and correlated weights
+included -- every eigenvalue lambda of the composite obeys
 
-Verdict: within the legal class (deterministic CA + initial-measure
-randomness), zero node damping forces deterministic conversion words, which
-kill the isotropic cone. The Q-bound survives all legal media correlations.
+    dist(arg lambda, (pi/2)Z) <= kappa * (-ln|lambda|),
+    kappa = pi/(2 ln 2) = 2.26618...
+
+Proof: products of mixtures over a group are mixtures over the group
+(convolution), so the composite lies in the group algebra R[Q8]; in the
+quaternionic representation T = w + x C_x + y C_y + z C_z with
+|w| + l1-norm(v) <= 1; the eigenvalues are w +- i l2-norm(v), and l2 <= l1
+places them inside the convex hull of {+-1, +-i}; the chord maximization on
+the hull gives kappa exactly (midpoint of the 1 -> i chord).
+
+SCOPE BOUNDARY (checked here as a REPORTED counterexample): the theorem
+fails for event sets not closed into R.Q8. Transpositions S12, S23 on >= 3
+modes are signed permutations with angles {0, pi}, but their mixtures'
+products develop 3-cycle eigenvalues near e^{2 pi i/3}: the ratio
+dist/Gamma is ~4.9 at eps = 0.05, ~26 at eps = 0.01, unbounded as eps -> 0.
+The bound is therefore a statement about the quaternionic class, not about
+all signed-permutation event sets; for event sets with finest angle
+2 pi/ell the chord constant grows as kappa(ell) ~ 2 ell/pi (tabulated).
+
+Parts (all asserted):
+  A. chord bound: kappa exact at the chord midpoint; 20000-mixture hull scan.
+  B. products: 4000 random NON-COMMUTING products of mixtures over R.Q8:
+     group-algebra closure, l1 bound, eigenvalue form, dist <= kappa*Gamma.
+  B2. the S3/transposition counterexample (the scope boundary, reported).
+  C. the coincube family at every q, from the OPERATOR eigenvalues (the
+     closed form is re-derived as a spectral branch, not assumed).
+  D. node-unitarity characterization: the annealed node map E[C^N] is
+     unitary iff the window count N is deterministic; for adjacent-pair
+     read windows the deterministic-count translation-invariant binary
+     media are exactly {all-0, all-1, two staggered crystals} (enumerated).
+  E-G. deterministic media kill the cone (crystal -> diamond fan; versor
+     words -> dead axes; the order-random dimer map, which would need a
+     stochastic env rule, still gives the diamond); the in-out arc
+     T = E(cI + sC), c^2+s^2 = 1, is unitary with the isotropic cone for
+     all weights (symbolic).
+
+Hypotheses ledger: the bound uses (i) convex probability weights and
+(ii) the R.Q8 event set; media correlations are free. The cone => Gamma > 0
+statement additionally uses the coincube read geometry (adjacent-pair
+windows, both directions coin-reachable) and a deterministic env CA with
+randomness only in the initial measure.
 
 Run:  PYTHONPATH=src .venv/bin/python scripts/theory_q_bound.py
 """
@@ -95,22 +115,79 @@ def part_chord(rng):
     return res
 
 
+def part_products(rng):
+    """random non-commuting products of mixtures over R.Q8: the theorem"""
+    Q8 = [np.eye(4), -np.eye(4)] + [sg * c for c in C4 for sg in (1, -1)]
+    span = np.stack([np.eye(4).ravel()] + [c.ravel() for c in C4])
+    worst_hull = worst_ratio = max_resid = 0.0
+    for _ in range(4000):
+        nf = rng.integers(1, 9)
+        T = np.eye(4)
+        for _ in range(nf):
+            p = rng.dirichlet(np.ones(8) * rng.uniform(0.15, 2.0))
+            T = sum(pi * U for pi, U in zip(p, Q8)) @ T
+        coef, _, _, _ = np.linalg.lstsq(span.T, T.ravel(), rcond=None)
+        max_resid = max(max_resid, float(np.abs(span.T @ coef
+                                                - T.ravel()).max()))
+        w, v = coef[0], coef[1:]
+        r2n = float(np.linalg.norm(v))
+        worst_hull = max(worst_hull, abs(w) + r2n)
+        lam = w + 1j * r2n
+        if 1e-12 < abs(lam) and abs(abs(lam) - 1) > 1e-12:
+            gam = -np.log(abs(lam))
+            d = np.abs((np.angle(lam) + np.pi / 4) % (np.pi / 2) - np.pi / 4)
+            worst_ratio = max(worst_ratio, d / gam)
+    return dict(span_residual=float(max_resid),
+                hull_max_l1=float(worst_hull),
+                max_dist_over_Gamma=float(worst_ratio), kappa=float(KAPPA))
+
+
+def part_boundary_S3():
+    """the reviewer-style counterexample OUTSIDE R.Q8: transposition
+    mixtures develop 3-cycle eigenvalues; the bound fails and is unbounded
+    as eps -> 0. Reported as the theorem's exact scope boundary."""
+    S12 = np.array([[0, 1, 0], [1, 0, 0], [0, 0, 1.]])
+    S23 = np.array([[1, 0, 0], [0, 0, 1], [0, 1, 0.]])
+    rows = []
+    for eps in (0.05, 0.01, 0.002):
+        M1 = (1 - eps) * S12 + eps * np.eye(3)
+        M2 = (1 - eps) * S23 + eps * np.eye(3)
+        w = np.linalg.eigvals(M2 @ M1)
+        # the complex pair approaching e^{2 pi i/3}
+        lam = w[np.argmax(np.abs(np.angle(w)) * (np.abs(w.imag) > 1e-12))]
+        gam = -np.log(abs(lam))
+        d = np.abs((np.angle(lam) + np.pi / 4) % (np.pi / 2) - np.pi / 4)
+        rows.append(dict(eps=float(eps), arg_over_pi=float(np.angle(lam) / np.pi),
+                         Gamma=float(gam), ratio=float(d / gam)))
+    return dict(rows=rows, kappa=float(KAPPA))
+
+
 def part_family():
-    """the coincube cycle at every q obeys the bound (non-commuting comp.)"""
+    """the coincube node at every q, from the OPERATOR (closed form
+    re-derived as a spectral branch)"""
     res = {"rows": []}
-    worst = 0.0
+    worst = cf_dev = 0.0
     for q in np.linspace(0.02, 0.98, 49):
+        U = np.eye(4)
+        for a in range(3):
+            T = (1 - q) * np.eye(4) + q * C4[a]
+            U = T @ T @ U
+        lam = np.linalg.eigvals(U)
+        lam0 = lam[np.argmax(lam.imag)]
         A, B = 1 - 2 * q, 2 * q * (1 - q)
-        lam0 = (A**3 - B**3) + 1j * A * B * np.sqrt(3 * A**2 + 2 * A * B + 3 * B**2)
+        lam_cf = (A**3 - B**3) + 1j * A * B * np.sqrt(3 * A**2 + 2 * A * B
+                                                      + 3 * B**2)
+        cf_dev = max(cf_dev, min(abs(lam0 - lam_cf),
+                                 abs(lam0 - np.conj(lam_cf))))
         gam = -np.log(abs(lam0))
-        Q = dist_vertex(np.angle(lam0)) / gam
+        d = np.abs((np.angle(lam0) + np.pi / 4) % (np.pi / 2) - np.pi / 4)
+        Q = d / gam
         worst = max(worst, Q)
-        if abs(q - 0.1) < 1e-9 or abs(q - 0.15) < 1e-9 or abs(q - 0.2) < 1e-9:
+        if abs(q - 0.1) < 1e-9 or abs(q - 0.2) < 1e-9:
             res["rows"].append(dict(q=float(q), omega0=float(np.angle(lam0)),
-                                    Gamma=float(gam),
-                                    Q_naive=float(np.angle(lam0) / gam),
-                                    Q_vertex=float(Q)))
+                                    Gamma=float(gam), Q_vertex=float(Q)))
     res["family_max_Q_vertex"] = float(worst)
+    res["operator_vs_closedform_dev"] = float(cf_dev)
     res["kappa"] = float(KAPPA)
     return res
 
@@ -382,6 +459,8 @@ def main():
     t0 = time.time()
     rng = np.random.default_rng(SEED)
     for name, fn in [("chord", lambda: part_chord(rng)),
+                     ("products", lambda: part_products(rng)),
+                     ("boundary_S3", part_boundary_S3),
                      ("family", part_family),
                      ("count", lambda: part_count(rng)),
                      ("crystal", lambda: part_crystal(rng)),
@@ -397,8 +476,16 @@ def main():
     assert abs(ch["chord_max"] - KAPPA) < 1e-6
     assert abs(ch["chord_argmax_p"] - 0.5) < 1e-3
     assert ch["hull_scan_max"] <= KAPPA + 1e-9
+    pr = out["products"]
+    assert pr["span_residual"] < 1e-10
+    assert pr["hull_max_l1"] <= 1 + 1e-12
+    assert pr["max_dist_over_Gamma"] <= KAPPA + 1e-9
+    bs = out["boundary_S3"]["rows"]
+    assert bs[0]["ratio"] > KAPPA          # the boundary is real ...
+    assert bs[1]["ratio"] > 2 * bs[0]["ratio"]   # ... and unbounded
     fam = out["family"]
     assert fam["family_max_Q_vertex"] <= KAPPA + 1e-9
+    assert fam["operator_vs_closedform_dev"] < 1e-12
     cnt = out["count"]
     assert cnt["deterministic_count_configs"] == {"8": 4, "10": 4, "7": 2}
     cr = out["crystal"]

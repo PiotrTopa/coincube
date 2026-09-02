@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 """W3 theory strike: real Clifford structure of the dynamical-coin cone.
 
-Machine checks for docs/notes/theory-real-cone.md. Results are written to
+Machine checks for the real-coin cone theory (free-spectrum section of the
+paper). Results are written to
 results/theory_real_cone.json.
 
 Model (annealed dynamical coin, one full cycle = two blocking origins per axis):

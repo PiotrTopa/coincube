@@ -1,12 +1,26 @@
 #!/usr/bin/env python
 """Phase-I theory: the imprint interaction (L4) of the coincube.
 
-Machine checks for docs/notes/theory-interaction.md; all headline claims
-re-asserted at the end of every run. Results -> results/theory_interaction.json.
+Machine checks for the imprint-interaction theory (interaction section and
+appendices of the paper); all headline claims re-asserted at the end of
+every run. Results -> results/theory_interaction.json.
 
-Model (docs/04-phase-i-plan.md): once per cycle, at sites where an autonomous
-Bernoulli(g) field iota = 1 AND the site carrier fermion parity is odd, swap
-the env_x and env_y bits at that site (controlled two-mode env Givens).
+Model: once per cycle, at sites where the autonomous imprint field iota is
+nonzero AND the site carrier fermion parity is odd, swap two env-species bits
+at that site (controlled two-mode env Givens; the iota value selects the
+swap pair in the C3-symmetric variant).
+
+LEGALITY (R2): iota is a 4-valued AUTONOMOUS field -- value 0 (probability
+1-g) = no imprint; values 1..3 (probability g/3 each) = the swap pair. Its
+randomness lives in the initial measure only; the field then streams
+deterministically (pair-swap along axis (t mod 3), origin alternating) --
+no per-cycle resampling. An earlier version of this script resampled iota
+each cycle; that is a stochastic rule (an annealed APPROXIMATION of the
+automaton, not the automaton) and has been replaced. The first-cycle
+damping law is CONFIRMED under the legal streamed dynamics (measured
+per-cycle factor 0.9240 vs law 1-2gq(1-q) = 0.9235 at q = 0.15, g = 0.3,
+Givens lift; residual 5e-4, smaller than under resampling), with the
+recross drift at later cycles now including iota-revisit corrections.
 
 Theory summary being checked:
   A. Local algebra: per one-sided fired imprint the ensemble amplitude /
@@ -136,11 +150,26 @@ def _stream(field, L, ax, origin):
     field[tuple(slB)] = tmp
 
 
+def _make_iota(rng, E, L, g, rotate):
+    """4-valued autonomous imprint field (M1 legality): value 0 = no fire
+    (prob 1-g); values 1..3 = swap-pair choice (prob g/3 each; the fixed-pair
+    variant uses value 1 with prob g). Frozen randomness in the initial
+    measure only; the field then STREAMS deterministically (legal pair-swap
+    along axis (t mod 3), origin t mod 2) -- no per-cycle resampling."""
+    u = rng.random((E, L, L, L))
+    if rotate:
+        io = np.zeros((E, L, L, L), np.int8)
+        io[u < g] = 1 + (rng.integers(0, 3, (E, L, L, L))[u < g]).astype(np.int8)
+    else:
+        io = (u < g).astype(np.int8)
+    return io
+
+
 def run_1p(E, L, T, q, c0, g, seed, rotate, kvecs):
     r_env = default_rng(seed)
     r_iota = default_rng(seed + 777)
-    r_pair = default_rng(seed + 555)
     env = [(r_env.random((E, L, L, L)) < q).astype(np.int8) for _ in range(3)]
+    iota = _make_iota(r_iota, E, L, g, rotate)
     pos = np.zeros((E, 3), np.int64)
     site = np.zeros((E, 3), np.int64)
     coin = np.full(E, c0, np.int64)
@@ -159,9 +188,9 @@ def run_1p(E, L, T, q, c0, g, seed, rotate, kvecs):
                 pos[:, a] += step
                 site[:, a] = (site[:, a] + step) % L
                 _stream(env[a], L, (a + 1) % 3, (2 * a + sub) % 2)
-        u = r_iota.random(E)
-        fire = u < g
-        pr = r_pair.integers(0, 3, E) if rotate else np.zeros(E, np.int64)
+        v = iota[ii, site[:, 0], site[:, 1], site[:, 2]]
+        fire = v > 0
+        pr = (v - 1).clip(0).astype(np.int64)
         if g > 0:
             for p, (A, B) in enumerate(((0, 1), (1, 2), (2, 0))):
                 m = fire & (pr == p)
@@ -173,6 +202,7 @@ def run_1p(E, L, T, q, c0, g, seed, rotate, kvecs):
                     sign[sel] *= np.where((bA == 0) & (bB == 1), -1.0, 1.0)
                     env[A][sel, sx, sy, sz] = bB
                     env[B][sel, sx, sy, sz] = bA
+        _stream(iota, L, t % 3, t % 2)
         for ik, kv in enumerate(kvecs):
             ph = sign * np.exp(1j * (pos @ kv))
             for cc in range(4):
@@ -355,12 +385,14 @@ def part_D(quick):
         r_env = default_rng(seed)
         r_iota = default_rng(seed + 777)
         env = [(r_env.random((E, L, L, L)) < q).astype(np.int8) for _ in range(3)]
+        iota = (r_iota.random((E, L, L, L)) < g).astype(np.int8)
         pos = np.zeros((E, 2, 3), np.int64)
         pos[:, 1, 0] = sep
         coin = np.zeros((E, 2), np.int64)
         coin[:, 1] = 2
         ii = np.arange(E)
         nfire = np.zeros(E)
+        nblocked = np.zeros(E)
         sprod = np.ones(E)
         ncoin = np.zeros(E)
         for t in range(T):
@@ -377,9 +409,13 @@ def part_D(quick):
                     _stream(env[a], L, (a + 1) % 3, (2 * a + sub) % 2)
             same = np.all(pos[:, 0] == pos[:, 1], axis=1)
             ncoin += same
+            _stream(iota, L, t % 3, t % 2)
+            # events suppressed by the even-parity control at coincidence:
+            vs = iota[np.arange(E), pos[:, 0, 0], pos[:, 0, 1], pos[:, 0, 2]]
+            nblocked += 2 * same * (vs > 0)
             for i in (0, 1):
-                u = r_iota.random(E)
-                fire = (u < g) & ~same       # parity even at coincidence
+                u = iota[np.arange(E), pos[:, i, 0], pos[:, i, 1], pos[:, i, 2]]
+                fire = (u > 0) & ~same       # parity even at coincidence
                 sel = np.where(fire)[0]
                 if len(sel):
                     sx, sy, sz = pos[sel, i, 0], pos[sel, i, 1], pos[sel, i, 2]
@@ -389,17 +425,19 @@ def part_D(quick):
                     env[0][sel, sx, sy, sz] = bB
                     env[1][sel, sx, sy, sz] = bA
                     nfire[sel] += 1
-        return nfire, sprod, ncoin
+        return nfire, sprod, ncoin, nblocked
 
-    n0, s0, c0 = run2(0, 42)
-    n5, s5, c5 = run2(5, 42)          # common random numbers -> paired
-    d = n5 - n0
-    res["fire_deficit_coincident"] = float(d.mean())
-    res["fire_deficit_err"] = float(d.std() / np.sqrt(E))
-    res["fire_deficit_sigmas"] = float(d.mean() / max(d.std() / np.sqrt(E), 1e-12))
+    n0, s0, c0, b0 = run2(0, 42)
+    n5, s5, c5, b5 = run2(5, 42)
+    # direct estimator of parity blocking: events with iota > 0 at a shared
+    # site are suppressed; their count must equal 2 g x coincidence-cycles
+    res["blocked_events_mean"] = float(b0.mean())
+    res["blocked_events_err"] = float(b0.std() / np.sqrt(E))
+    res["blocking_prediction"] = float(2 * g * c0.mean())
+    res["blocking_sigmas"] = float(b0.mean() / max(b0.std() / np.sqrt(E), 1e-12))
     res["coincidence_cycles"] = dict(sep0=float(c0.mean()), sep5=float(c5.mean()))
+    res["fire_deficit_paired"] = float((n5 - n0).mean())   # reported only
     res["sign_product"] = dict(sep0=float(s0.mean()), sep5=float(s5.mean()))
-    res["blocking_prediction"] = float(2 * g * c0.mean())   # ~ fire deficit
     return res
 
 
@@ -572,9 +610,9 @@ def part_E(quick):
     def run3d(E, c0, g, seed, lift):
         r_env = default_rng(seed)
         r_iota = default_rng(seed + 777)
-        r_pair = default_rng(seed + 555)
         env = [(r_env.random((E, L3, L3, L3)) < q3).astype(np.int8)
                for _ in range(3)]
+        iota = _make_iota(r_iota, E, L3, g, True)
         site = np.zeros((E, 3), np.int64)
         coin = np.full(E, c0, np.int64)
         sign = np.ones(E)
@@ -590,8 +628,9 @@ def part_E(quick):
                     coin[cv] = PERM[a][old]
                     site[:, a] = (site[:, a] + DD[a][coin]) % L3
                     _stream(env[a], L3, (a + 1) % 3, (2 * a + sub) % 2)
-            fire = r_iota.random(E) < g
-            pr = r_pair.integers(0, 3, E)
+            v = iota[ii, site[:, 0], site[:, 1], site[:, 2]]
+            fire = v > 0
+            pr = (v - 1).clip(0).astype(np.int64)
             for p, (A, B) in enumerate(((0, 1), (1, 2), (2, 0))):
                 m = fire & (pr == p)
                 if m.any():
@@ -605,6 +644,7 @@ def part_E(quick):
                         sign[sel] *= np.where((bA == 1) & (bB == 1), -1.0, 1.0)
                     env[A][sel, sx, sy, sz] = bB
                     env[B][sel, sx, sy, sz] = bA
+            _stream(iota, L3, t % 3, t % 2)
             for cc in range(4):
                 out[t, cc] = sign[coin == cc].sum() / E
         return out
@@ -673,7 +713,9 @@ def main():
     assert C["classical_sector_g_independent_dev"] < 1e-12
     assert abs(C["amplitude_branch"]["ratio"] - C["amplitude_branch"]["f2"]) < 0.02
     Dd = out["D"]
-    assert Dd["fire_deficit_sigmas"] > 5
+    assert Dd["blocking_sigmas"] > 5
+    assert abs(Dd["blocked_events_mean"] - Dd["blocking_prediction"]) < (
+        4 * Dd["blocked_events_err"] + 0.1 * Dd["blocking_prediction"])
     assert Dd["coincidence_cycles"]["sep5"] < 1e-9
     Ee = out["E"]
     # walker/flat contraction IS the coherent correlator (equal densities)

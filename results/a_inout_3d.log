@@ -1,0 +1,12 @@
+exact coherent 3D path sum: q = 0.08, up to T = 3 cycles
+  t=1 k=[3.14 0.   0.  ]: rel dev = 0.0000   |Z| meas/pred = 1.0000
+  t=1 k=[0.4 0.1 0.7]: rel dev = 0.0000   |Z| meas/pred = 1.0000
+  t=1 k=[1.1 2.  0.3]: rel dev = 0.0000   |Z| meas/pred = 1.0000
+  t=2 k=[3.14 0.   0.  ]: rel dev = 0.1147   |Z| meas/pred = 1.1716
+  t=2 k=[0.4 0.1 0.7]: rel dev = 0.1102   |Z| meas/pred = 0.9870
+  t=2 k=[1.1 2.  0.3]: rel dev = 0.1426   |Z| meas/pred = 0.9879
+  t=3 k=[3.14 0.   0.  ]: rel dev = 0.2433   |Z| meas/pred = 1.2535
+  t=3 k=[0.4 0.1 0.7]: rel dev = 0.2253   |Z| meas/pred = 1.0737
+  t=3 k=[1.1 2.  0.3]: rel dev = 0.1437   |Z| meas/pred = 0.9332
+
+(endpoint classes at t=3: 1008)

@@ -42,7 +42,7 @@ Machine checks in this script:
 NOT covered (stated honestly): rules with frozen (identity) autonomous
 environments -- the carrier re-reads the same bits, no freshness, and J5's
 localisation is the observed outcome; and non-autonomous rules (the CPA / 3/2
-family), for which a conjecture is recorded in docs/notes/theory-rationality.md.
+family), for which a conjecture is recorded here (not proven).
 
 Run:  .venv/bin/python scripts/theory_rationality.py
 """

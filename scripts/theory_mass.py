@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """M8 theory: exact structure of the inversion-doubled massive coincube.
 
-Machine checks for docs/notes/theory-mass.md (all headline claims re-asserted
+Machine checks for the mass-sector theory (all headline claims re-asserted
 at the end of every run). Results -> results/theory_mass.json.
 
 Model (main thread, scripts/m8_mass_exact.py): 8 channels = coin (x) mass bit;

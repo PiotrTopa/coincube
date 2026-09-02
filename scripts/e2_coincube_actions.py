@@ -20,7 +20,8 @@ GU17; validated in the E2 module tests as "pure transport"); it needs no new
 extraction. A full coincube sub-step is the Grassmann composition of the
 three layers as consecutive factors.
 
-Appends the results to docs/notes/e2-extracted-actions.md.
+Appends the results to results/e2-actions.md (or to
+docs/notes/e2-extracted-actions.md when that directory exists).
 """
 import sys
 from fractions import Fraction

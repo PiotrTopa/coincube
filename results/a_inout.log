@@ -1,0 +1,12 @@
+1. (sqrt(1-q) + sqrt(q) C) exactly orthogonal  [OK]
+   node: |lam| = 1 (max dev 4.4e-16), omega0 = 1.12302 (sqrt-q scale: arctan sqrt(q/(1-q)) = 0.28676), gap = 1.57e-16
+   slopes: 100:1.2047  110:1.2047  111:1.2047  r1:1.2047  r2:1.2047
+   isotropy max/min = 1.00005   ALL |lam| = 1: UNDAMPED CONE
+
+2. substrate in-out correlator (1D, re-reads present):
+   t=1: max|G/Z - pred| = 3.23e-01   eigen-moduli spread = 1.1897
+   t=2: max|G/Z - pred| = 3.85e-01   eigen-moduli spread = 1.6446
+   t=3: max|G/Z - pred| = 3.53e-01   eigen-moduli spread = 3.1308
+   baseline (in-in, t=2): eigen-moduli spread = 1.2248, max modulus = 0.8749 (vs in-out max 0.6610)
+
+Route A: the two-boundary propagator is unitary up to a global scalar at the fresh-read level; 1D deviations quantified above are the known re-read (companion) artifact.

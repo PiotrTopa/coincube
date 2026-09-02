@@ -13,8 +13,9 @@ diamond-exclusion significance is COMPUTED HERE, per channel, no channel
 selection; the annealed gate row's deviation from the exact operator is
 reported as a systematic and added in quadrature.
 
-Gate (hard assertions): the annealed known-answer row must reproduce the
-exact operator's ratios and node modulus or the run dies.
+Gate (hard assertions): an annealed known-answer row AT EACH measured q must
+reproduce the exact operator's ratios and node modulus or the run dies; each
+quenched row inherits the gate systematic of its own q.
 """
 import json, pathlib, time
 import numpy as np
@@ -24,6 +25,7 @@ from pca3d.models.coincube import annealed_u, evolve_field_cc
 L, R, TCYC, NB = 48, 3000, 8, 10
 RUNS = [("annealed", 0.08, (0.03, 0.05, 0.08)),
         ("quenched", 0.08, (0.03, 0.05, 0.08)),
+        ("annealed", 0.15, (0.03, 0.05, 0.08)),
         ("quenched", 0.15, (0.03, 0.05, 0.08))]
 X_POINTS = [np.array(v, float) * np.pi for v in
             [(1, 0, 0), (0, 1, 0), (0, 0, 1)]]

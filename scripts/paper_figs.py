@@ -28,27 +28,28 @@ def fig_cone():
     data = json.load(open("results/w3c_corner.json"))
     labels = {("annealed", 0.08): "annealed gate\n$p=0.08$",
               ("quenched", 0.08): "quenched\n$q=0.08$",
+              ("annealed", 0.15): "annealed gate\n$p=0.15$",
               ("quenched", 0.15): "quenched\n$q=0.15$"}
     chans = ["110", "111", "r1", "r2"]
     marks = ["o", "s", "^", "v"]
-    fig, ax = plt.subplots(figsize=(3.6, 2.6))
+    fig, ax = plt.subplots(figsize=(4.2, 2.6))
     gate_syst = {}
     for row in data:
         if row["mode"] == "annealed":
             for c in chans:
-                gate_syst[c] = abs(row["rows"][c]["ratio"] - 1.0)
+                gate_syst[(row["q"], c)] = abs(row["rows"][c]["ratio"] - 1.0)
     for xi, row in enumerate(data):
         for ci, c in enumerate(chans):
             rr = row["rows"][c]
-            err = np.sqrt(rr["sig_ratio"] ** 2 + gate_syst[c] ** 2)
+            err = np.sqrt(rr["sig_ratio"] ** 2 + gate_syst[(row["q"], c)] ** 2)
             ax.errorbar(xi + 0.15 * (ci - 1.5), rr["ratio"], yerr=err,
                         fmt=marks[ci], ms=4, capsize=2, color=f"C{ci}",
                         label=c if xi == 0 else None)
             ax.plot(xi + 0.15 * (ci - 1.5), rr["diamond"], marker="_",
                     ms=9, color="r")
     ax.axhline(1.0, color="k", lw=0.8)
-    ax.text(2.28, 1.62, "diamond\npredictions", color="r", fontsize=6,
-            ha="center")
+    ax.text(len(data) - 0.72, 1.62, "diamond\npredictions", color="r",
+            fontsize=6, ha="center")
     ax.set_xticks(range(len(data)),
                   [labels[(r["mode"], r["q"])] for r in data])
     ax.set_ylabel("slope ratio at the node")

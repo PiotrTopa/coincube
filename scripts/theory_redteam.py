@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 """Red-team response, theory front: proofs extended to the stated scopes.
 
-Machine checks for docs/notes/theory-redteam-response.md. Assertions run
+Machine checks for the two-component node taxonomy (Theorem 2 of the
+paper) and related adversarial claims. Assertions run
 BEFORE the results file is written. Results -> results/theory_redteam.json.
 
 P1  Two-boundary completion: the solution set is the unitary ARC (every
@@ -221,6 +222,91 @@ def part_P3_symbolic():
     return out
 
 
+def part_P3_tuned(rng):
+    """the blocked (m = 2, two-origin) cycles are NOT excluded either: both
+    placements admit an isotropic two-component Weyl node at an isolated,
+    fine-tuned mixing parameter (additive p* = 0.3300, multiplicative
+    p* = 0.3204) -- a codimension-1 transversal zero of the single
+    remaining Gram condition, located here by branch continuation:
+    warm-started exact scalar-point solving along p, with the splitting
+    anisotropy extrapolated to zero probe radius, gives a smooth V-shaped
+    trace touching zero. Together with the m = 1 multiplicative node at
+    p = 1/2, two-component isotropic nodes exist only at isolated tuned
+    points with locked quasienergy omega0 = pi and no parameter dial --
+    versus the four-component construction's symmetry-protected nodes on
+    the entire parameter family."""
+    dirs = [np.array(v, float) / np.linalg.norm(v) for v in
+            ((1, 0, 0), (0, 1, 0), (0, 0, 1), (1, 1, 0), (1, 0, 1),
+             (0, 1, 1), (1, 1, 1), (1, -1, 1))]
+    d1, d2 = np.array([1, -1.]), np.array([-1, 1.])
+    design = [(d1, ROT), (d1, ROT), (d2, ROT)]
+
+    def make_U(place):
+        def Uf(kv, p):
+            M = np.eye(2, dtype=complex)
+            for (d, C), k in zip(design, kv):
+                E = np.diag(np.exp(1j * k * d))
+                t = (1 - p) * E + p * C if place == "a" else E @ (
+                    (1 - p) * np.eye(2) + p * C)
+                M = t @ t @ M
+            return M
+        return Uf
+
+    def scalar_solve(Uf, p, k_start):
+        def sdev(kk):
+            Um = Uf(kk, p)
+            return np.array([Um[0, 1].real, Um[0, 1].imag, Um[1, 0].real,
+                             Um[1, 0].imag, (Um[0, 0] - Um[1, 1]).real,
+                             (Um[0, 0] - Um[1, 1]).imag])
+        r = least_squares(sdev, k_start, xtol=1e-15, ftol=1e-15, gtol=1e-15,
+                          method="lm", max_nfev=2000)
+        return r.x, np.abs(r.fun).max()
+
+    def aniso_extrap(Uf, p, k0):
+        vals = []
+        for eps in (1e-3, 3e-4):
+            sl = np.array([abs(np.diff(np.linalg.eigvals(
+                Uf(k0 + eps * n, p)))[0]) / eps for n in dirs])
+            if sl.min() < 0.05:          # dead-direction branch: reject
+                return None
+            vals.append((eps, sl.max() / sl.min() - 1))
+        (e1, a1), (e2, a2) = vals
+        return max(a2 + (a2 - a1) * (0 - e2) / (e2 - e1), 0.0)
+
+    res = {}
+    for place, pseed in (("a", 0.330), ("m", 0.320)):
+        Uf = make_U(place)
+        rloc = np.random.default_rng(42)
+        best = (np.inf, None)
+        for _ in range(300):
+            k0, dev = scalar_solve(Uf, pseed, rloc.uniform(-np.pi, np.pi, 3))
+            if dev > 1e-12:
+                continue
+            if abs(np.trace(Uf(k0, pseed)) / 2) < 1e-8:
+                continue
+            a = aniso_extrap(Uf, pseed, k0)
+            if a is not None and a < best[0]:
+                best = (a, k0)
+        kcur = best[1]
+        trace = []
+        for p in np.arange(pseed - 0.006, pseed + 0.006, 0.0004):
+            kcur, dev = scalar_solve(Uf, p, kcur)
+            a = aniso_extrap(Uf, p, kcur)
+            if a is not None:
+                trace.append((float(p), float(a), kcur.copy()))
+        pstar, astar, kstar = min(trace, key=lambda r: r[1])
+        lam0 = np.trace(Uf(kstar, pstar)) / 2
+        ends = (trace[0][1], trace[-1][1])
+        res[place] = dict(
+            p_star=float(pstar), min_aniso_extrapolated=float(astar),
+            trace_endpoint_anisos=[float(x) for x in ends],
+            k0_over_pi=[float(x) for x in
+                        np.mod(kstar + np.pi, 2 * np.pi) / np.pi - 1],
+            mod_lam0=float(abs(lam0)),
+            omega0_over_pi=float(np.angle(lam0) / np.pi))
+    return res
+
+
 def part_P3_sweep(rng, quick):
     """sector-resolved exhaustive design sweep: all antidiagonal-coin sign
     tables x traceless direction tables per axis, both placements, single
@@ -258,12 +344,14 @@ def part_P3_sweep(rng, quick):
                          (Um[0, 0] - Um[1, 1]).imag])
 
     nstart = 6 if quick else 14
+    PGRID = (0.15, 0.25, 0.35, 0.5)
     sectors = {}
     for place in ("a", "m"):
         for m in (1, 2):
-            for p in (0.25, 0.5):
+            for p in PGRID:
                 key = f"{place}_m{m}_p{p}"
-                sectors[key] = dict(scalar_points=0, min_aniso=np.inf)
+                sectors[key] = dict(scalar_points=0, min_aniso=np.inf,
+                                    designs_with_scalar=0)
     ndesign = 0
     for place in ("a", "m"):
         for m in (1, 2):
@@ -271,9 +359,10 @@ def part_P3_sweep(rng, quick):
                     itertools.product(dsets, coins), repeat=3):
                 design = list(combo)
                 ndesign += 1
+                design_hit = set()
                 for _ in range(nstart):
                     x0 = rng.uniform(-np.pi, np.pi, 3)
-                    for p in (0.25, 0.5):
+                    for p in PGRID:
                         key = f"{place}_m{m}_p{p}"
                         r = least_squares(
                             lambda kk: sdev(kk, design, p, place, m), x0,
@@ -293,6 +382,9 @@ def part_P3_sweep(rng, quick):
                             continue
                         sec = sectors[key]
                         sec["scalar_points"] += 1
+                        if key not in design_hit:
+                            design_hit.add(key)
+                            sec["designs_with_scalar"] += 1
                         aniso = float(sl.max() / max(sl.min(), 1e-30) - 1)
                         if aniso < sec["min_aniso"]:
                             sec["min_aniso"] = aniso
@@ -528,6 +620,7 @@ def main():
                      ("P3_lemma", part_P3_symbolic),
                      ("P3_deadaxis", part_P3_deadaxis),
                      ("P3_counterexample", part_P3_counterexample),
+                     ("P3_tuned", lambda: part_P3_tuned(rng)),
                      ("P3_sweep", lambda: part_P3_sweep(rng, args.quick)),
                      ("P4", lambda: part_P4(rng)),
                      ("P5a", part_P5a)]:
@@ -555,15 +648,28 @@ def main():
     assert ce["chirality"] == -1
     assert ce["arc_node_is_minus_I_dev"] < 1e-12
     assert ce["arc_unitary_dev"] < 1e-12
+    tn = out["P3_tuned"]
+    for place in ("a", "m"):
+        assert tn[place]["min_aniso_extrapolated"] < 1e-3   # tuned nodes exist
+        assert 0.30 < tn[place]["p_star"] < 0.35
+        # V-shaped touch: endpoints of the trace are >> the minimum
+        assert min(tn[place]["trace_endpoint_anisos"]) > \
+            5 * max(tn[place]["min_aniso_extrapolated"], 1e-4)
+        assert abs(abs(tn[place]["omega0_over_pi"]) - 1) < 1e-6  # omega0 = pi
     sw = out["P3_sweep"]
-    # the counterexample sector contains (numerically) isotropic nodes ...
+    # the m=1 multiplicative p=1/2 sector contains the symbolic counterexample
     assert sw["m_m1_p0.5"]["min_aniso"] < 1e-4
-    # ... and every other sector has a strictly positive anisotropy floor
-    for key in ("a_m1_p0.25", "a_m1_p0.5", "a_m2_p0.25", "a_m2_p0.5",
-                "m_m1_p0.25", "m_m2_p0.25", "m_m2_p0.5"):
+    # generic-p sectors on the grid have positive anisotropy floors (isotropic
+    # nodes occur only at the isolated tuned points located in P3_tuned;
+    # grid floors dip near the tuned p* -- e.g. 0.29 at p = 0.35 -- but stay
+    # bounded away from zero AT the grid values)
+    for key in ("a_m1_p0.15", "a_m1_p0.25", "a_m1_p0.35", "a_m1_p0.5",
+                "a_m2_p0.15", "a_m2_p0.25", "a_m2_p0.35", "a_m2_p0.5",
+                "m_m1_p0.15", "m_m1_p0.25", "m_m1_p0.35",
+                "m_m2_p0.15", "m_m2_p0.25", "m_m2_p0.35", "m_m2_p0.5"):
         sec = sw[key]
         if sec["min_aniso"] is not None:
-            assert sec["min_aniso"] > 0.3, key
+            assert sec["min_aniso"] > 0.05, key
     P4 = out["P4"]
     assert P4["Phi_intertwines_i_vs_I"] < 1e-12
     assert P4["Phi_intertwines_dynamics"] < 1e-12

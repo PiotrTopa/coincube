@@ -2,7 +2,10 @@
 """I3 hardening: quenched-3D verification of the interaction damping law.
 
 Paired common-noise walker estimator on the massless coincube (q = 0.08) with
-the ADR 0014 imprint (C3 rotating pair, permutation lift). Each walker carries
+the ADR 0014 imprint (C3 rotating pair, permutation lift). The imprint field
+iota is a four-valued AUTONOMOUS field: random in the initial product measure
+only, then evolved by legal deterministic pair-swap streaming (axis rotating
+per cycle, origin alternating) -- no per-cycle resampling. Each walker carries
 its own media + iota field and is evolved TWICE with identical randomness:
 branch A ignores imprints (g = 0), branch B applies them. The flat-contraction
 identity (J38) makes E[sign . e^{-ikx}] the canonical coherent-vacuum
@@ -60,9 +63,14 @@ def run(g, launch, seed):
     r = np.random.default_rng(seed)
     envA = xp.asarray(r.random((3, E, L, L, L)) < Q)   # pristine (branch A)
     envB = envA.copy()                                  # imprinted (branch B)
-    u = r.random((E, L, L, L))
-    iota = xp.asarray(np.minimum((u < g).astype(np.int64) *
-                                 (1 + (u * 3 / g).astype(np.int64) % 3), 3))
+    if g > 0:
+        u = r.random((E, L, L, L))
+        iota = xp.asarray(np.minimum((u < g).astype(np.int64) *
+                                     (1 + (u * 3 / g).astype(np.int64) % 3),
+                                     3).astype(np.int8))
+    else:
+        r.random((E, L, L, L))                   # keep the draw sequence paired
+        iota = xp.zeros((E, L, L, L), dtype=xp.int8)
     pos = {b: xp.zeros((E, 3), dtype=xp.int64) for b in "AB"}
     ch = {b: xp.full(E, launch, dtype=xp.int64) for b in "AB"}
     sg = {b: xp.ones(E, dtype=xp.float64) for b in "AB"}
@@ -102,6 +110,9 @@ def run(g, launch, seed):
             nb = xp.where(fire, ba, bb)
             envs["B"][ea][idx, site[0], site[1], site[2]] = na
             envs["B"][eb][idx, site[0], site[1], site[2]] = nb
+        # legal autonomous iota dynamics: deterministic pair-swap streaming,
+        # axis (t mod 3), origin alternating (matches theory_interaction.py)
+        iota = stream(iota, t % 3, t % 2)
         for b, acc in (("A", zA), ("B", zB)):
             x = pos[b].get() if GPU else np.asarray(pos[b])
             s = sg[b].get() if GPU else np.asarray(sg[b])
@@ -113,6 +124,14 @@ def run(g, launch, seed):
 def main():
     print(f"paired quenched-3D damping check: L={L}, E={E} x "
           f"{len(LAUNCHES)} launches, q={Q}, T={TCYC}  (GPU={GPU})")
+    # GATE (hard, non-circular known answer): at g = 0 the two branches share
+    # all randomness and the imprint layer must be bit-for-bit inert, so
+    # rho(t, k) = 1 EXACTLY -- this validates the paired estimator machinery
+    # independently of the damping law it is used to test.
+    zA0, zB0 = run(0.0, LAUNCHES[0], 100)
+    dev0 = float(np.abs(zB0 - zA0).max())
+    assert dev0 == 0.0, f"GATE FAILED: paired estimator not exact at g=0 ({dev0})"
+    print(f" [gate PASSED] g=0 known answer: max|Z_B - Z_A| = {dev0} (exact)")
     for g in GS:
         t0 = time.time()
         zA = np.zeros((TCYC, len(KLIST)), dtype=complex)

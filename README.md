@@ -40,6 +40,8 @@ maps to a runnable, self-asserting script here.
                     i2*/i3*   interaction certificates and survival
                     a_inout*  two-boundary (in-out) propagator
                     theory_*  machine-checked proof packs
+                    spectrum_census.py  gapless census + factorization
+                    m8_pulls.py  massive dispersion vs exact branches
                     paper_figs.py  regenerates the manuscript figures
     tests/          131 tests: reproduction, theorem suite, legality,
                     exactness anchors

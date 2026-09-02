@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """I3a: substrate verification of the one-sided amplitude damping law.
 
-Theory (docs/notes/theory-interaction.md, proven at annealed order): the
+Theory (proven at annealed order; see the paper's interaction section): the
 parity control makes the vacuum imprint-transparent, so the ensemble 1p
 amplitude stays CLOSED under back-reaction:
 
