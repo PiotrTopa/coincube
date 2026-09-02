@@ -19,6 +19,7 @@ audit trail the assertion design cannot provide by itself.
 | Sep 1 | q=0.05 rows (old instrument) | transcription of superseded-instrument numbers removed from the manuscript in red-team round 1; never re-measured with v6. |
 | Sep 2 | i3 first relaunch with streamed iota | crashed on GPU OOM (int64 iota); no gate involved, no data; rerun with int8 iota passed. |
 | Sep 2 | m8, w4 with t=0 in fit window | superseded by reruns with the post-launch window T0=1 (review round 3, F23); pre-fix outputs replaced in place, visible in git history. |
+| Sep 2 | q=0.15 cone row exclusion | the row was excluded from evidence at the ANALYSIS level (probe radii outside the node's linear window, slope change 0.30 between radii); at the time of exclusion no automated rule encoded this — the linear-range flag (LIN_MAX = 0.15, within_linear_range in the JSON) was added to w3c_corner.py afterwards, prospectively. The committed 4-row JSON predates the flag. |
 | Sep 2 | m8 (T0=1) stdout logs, twice | log files lost while the JSON landed intact: git stash/rebase operations executed against the repo during the live runs replaced the tracked log's inode, orphaning the writer's file descriptor. The two runs' JSONs are byte-identical (determinism certificate). Lesson adopted: long runs write logs outside the repo and copy in on completion; no git operations against a repo with live writers. Final log from run 3. |
 
 ## Evidence runs (current)

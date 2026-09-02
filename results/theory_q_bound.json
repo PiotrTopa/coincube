@@ -14,21 +14,21 @@
    "16": 10.120212232065578,
    "32": 20.339076190606708
   },
-  "kappa_scaling_4ell_over_pi": {
+  "kappa_scaling_2ell_over_pi": {
    "4": 0.8899268328117188,
    "8": 0.973888925880463,
    "16": 0.9935495125320869,
    "32": 0.9983920678314547
   }
  },
- "chord_seconds": 0.8,
+ "chord_seconds": 0.5,
  "products": {
   "span_residual": 4.440892098500626e-16,
   "hull_max_l1": 0.9555353106169497,
   "max_dist_over_Gamma": 1.520057299600651,
   "kappa": 2.266180070913597
  },
- "products_seconds": 1.4,
+ "products_seconds": 0.9,
  "boundary_S3": {
   "rows": [
    {
@@ -186,7 +186,7 @@
    "candidates": 2
   }
  },
- "media3d_seconds": 31.0,
+ "media3d_seconds": 22.8,
  "arc": {
   "symbolic_isotropy_general_alpha_beta": true,
   "arc_rows": [
@@ -239,5 +239,5 @@
   "max_aniso": 1.1102230246251565e-15,
   "max_unitary_dev": 8.881784197001252e-16
  },
- "arc_seconds": 3.4
+ "arc_seconds": 2.5
 }

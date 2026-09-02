@@ -16,6 +16,12 @@ reported as a systematic and added in quadrature.
 Gate (hard assertions): an annealed known-answer row AT EACH measured q must
 reproduce the exact operator's ratios and node modulus or the run dies; each
 quenched row inherits the gate systematic of its own q.
+
+Linear-range rule: a row whose Richardson pair shows a slope change above
+LIN_MAX between probe radii is outside the node's linear window; its
+families are flagged within_linear_range = False in the output and the row
+is excluded from evidence. (Formalized here after the q = 0.15 row was
+excluded by hand at the analysis level; see results/RUN_REGISTRY.md.)
 """
 import json, pathlib, time
 import numpy as np
@@ -50,6 +56,7 @@ FAMILIES = {
 #: factorized-transport (diamond) slope ratio prediction per unit direction
 DIAMOND = {f: float(np.abs(_norm(FAMILIES[f][0])).sum()) for f in FAMILIES}
 BOUND = 2 * np.sqrt(3) + 0.3
+LIN_MAX = 0.15                        # linear-range rule (evidence flag)
 T0 = 1                                # post-launch fit window
 
 
@@ -161,9 +168,15 @@ def analyse(mode, q, deltas, seed=11):
         ratio = v / v100
         sr = np.sqrt((nn - 1) / nn * ((rjk[ok] - rjk[ok].mean()) ** 2).sum()) \
             if nn > 1 else np.nan
+        lin_ok = bool(full[fname]["lin"] <= LIN_MAX)
         rows[fname] = {"v": float(v), "sig_v": float(sv), "ratio": float(ratio),
                        "sig_ratio": float(sr), "lin": float(full[fname]["lin"]),
+                       "within_linear_range": lin_ok,
                        "diamond": DIAMOND[fname], "n_jk": int(nn)}
+        if not lin_ok:
+            print(f"  [linear-range rule] {fname}: lin "
+                  f"{full[fname]['lin']:.3f} > {LIN_MAX} -- row excluded "
+                  f"from evidence")
         assert not (v > BOUND), f"cone bound violated: {fname}"
         print(f"  {fname:>4} {v:>8.4f} {sv:>7.4f} {ratio:>7.4f} {sr:>7.4f} "
               f"{full[fname]['lin']:>6.3f} {DIAMOND[fname]:>8.3f}")

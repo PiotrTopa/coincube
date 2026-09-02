@@ -149,7 +149,7 @@ def part_chord(rng):
         qv = dist_vertex(np.angle(lam), ell) / (-np.log(np.abs(lam)))
         tab[ell] = float(qv.max())
     res["kappa_of_ell"] = {str(k): v for k, v in tab.items()}
-    res["kappa_scaling_4ell_over_pi"] = {str(ell): float(tab[ell] / (4 * ell / (2 * np.pi)))
+    res["kappa_scaling_2ell_over_pi"] = {str(ell): float(tab[ell] / (4 * ell / (2 * np.pi)))
                                          for ell in tab}
     return res
 

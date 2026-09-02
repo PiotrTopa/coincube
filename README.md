@@ -1,7 +1,8 @@
 # coincube
 
-**A 3D probabilistic cellular automaton that is exactly a quantum field
-theory of Weyl and Dirac fermions — verification code and manuscript.**
+**A 3D probabilistic cellular automaton that is exactly a fermionic
+quantum field theory, whose measured excitation is an isotropic Weyl
+fermion — verification code and manuscript.**
 
 The *coincube* is a probabilistic cellular automaton on the 3D cubic
 lattice — classical bits, local invertible homogeneous update layers, a
