@@ -406,9 +406,9 @@ def main():
     ys = np.arange(40, R - 40)
     dis = np.abs(posn[ys] - ys)
     broken_speed = float(dis.max()) / 8.0
-    assert broken_speed < 3.0, broken_speed
+    assert broken_speed == 0.0, broken_speed
     print(f"L2' negative control (phase restart): |speed| = {broken_speed}"
-          " per 3-swap batch < 3 (extra pair cancels)   [OK]")
+          " per 3-swap batch == 0 exactly (extra pair cancels)   [OK]")
 
     # ---- LEMMA 3: slot counting on the real substep schedule
     Tm = 12

@@ -213,6 +213,8 @@ def reread_reachability(j_extra, T_long=20, L1=1024):
 
 
 def main():
+    import json
+    out = {"T": T, "q": Q, "launch": C0, "part1": {}, "part2": {}}
     ann = annealed_reference()
     print(f"T={T} cycles, q={Q}, launch channel {C0}; "
           f"annealed support {len(ann)} endpoints")
@@ -232,15 +234,22 @@ def main():
         note = "QUENCHED == ANNEALED EXACTLY" if dev < 1e-14 else \
             "quenched != annealed"
         print(f"      -> {note}")
+        out["part1"][f"F{j}" if j else "S0"] = {
+            "reread_events": int(st["reread"]),
+            "inconsistent": int(st["inconsistent"]),
+            "max_dev": float(dev)}
 
     print("\nPart 2: kinematic no-re-read certificate (20 cycles, 1D "
           "reduction, wrap-free):")
     for name, j in (("S0", 0), ("F1", 1)):
         bad = reread_reachability(j)
+        out["part2"][name] = int(bad)
         print(f"  {name}: label-match pairs inside the reachable set: {bad}"
               + ("  -> NO re-read possible up to 20 cycles" if bad == 0
                  else "  (re-reads kinematically allowed)"))
     assert reread_reachability(1) == 0, "F1 certificate failed"
+    json.dump(out, open("results/reread_kinematics.json", "w"), indent=1)
+    print("written: results/reread_kinematics.json")
     print("[T1 PASSED] F1 (one extra phase-continuing swap pair per "
           "substep) eliminates all re-reads: quenched propagator == "
           "annealed operator exactly, at machine precision (T=3 exact "

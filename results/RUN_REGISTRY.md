@@ -23,8 +23,9 @@ audit trail the assertion design cannot provide by itself.
 | Sep 2 | m8 (T0=1) stdout logs, twice | log files lost while the JSON landed intact: git stash/rebase operations executed against the repo during the live runs replaced the tracked log's inode, orphaning the writer's file descriptor. The two runs' JSONs are byte-identical (determinism certificate). Lesson adopted: long runs write logs outside the repo and copy in on completion; no git operations against a repo with live writers. Final log from run 3. |
 
 | Sep 3 | w3c_fresh first launch (gate row) | killed mid-run: launched at TCYC=7 before the sharp torus horizon T <= ceil(L/8) = 6 at L=48 was proven; relaunched at TCYC=6. No output written. |
-| Sep 3 | w3c_control_fresh at R=1200 | CONTROL GATE TRIPPED: broken-triple (control B) r1 anisotropy not resolved at 3 sigma with R=1200 (ratio 0.65, sigma 0.14 — 2.5 sigma); a positive control must resolve its known answer. Relaunched at R=3600; anisotropy resolved at 8.6/11.6 sigma. No JSON was written by the failed run; its log is retained outside the repo. |
+| Sep 3 | w3c_control_fresh at R=1200 | CONTROL GATE TRIPPED: broken-triple (control B) r1 anisotropy not resolved at 3 sigma with R=1200 (ratio 0.727 +- 0.140 — 2.0 sigma; the same numbers are recorded in the instrument's docstring); a positive control must resolve its known answer. Relaunched at R=3600; anisotropy resolved at 8.6/11.6 sigma. No JSON was written by the failed run; its log is retained outside the repo. |
 | Sep 3 | i3_fresh first launch | crashed on an over-strict amplitude-gate assertion (gate.sum() >= 3) at the starvation-prone last cycle; the gate was made tolerant (retained-momentum accounting) before rerun. No data involved. |
+| Sep 4 | w4_fresh replication (R=6000, seed 91011) | GATE TRIPPED on the ANNEALED known-answer row: helicity-map isotropy statistic 0.102 +- 0.019 against the hard 0.10 threshold. The statistic is a positively biased max over the nine bilinear entries and measures the instrument's noise floor on the exactly known operator; the floor fluctuated 1.5 sigma above the committed campaign's 0.065 +- 0.017 under the independent seed stream. Run discarded per policy (no JSON written); not rerun with another seed (that would be seed selection). Consequence for the paper's claim: none reversed — the helicity isotropy statistic is already reported only as an instrument-floor upper bound (~0.1), and this trip confirms the floor's scale and seed dependence. |
 
 ## Evidence runs (current)
 
@@ -46,6 +47,22 @@ generic-schedule subsection (re-read corrections) and for the
 schedule-comparison figure; it no longer backs the headline rows.
 
 Formalization note: the linear-range rule (probe radii inside the node's
-measured linear window) is encoded prospectively in w3c_corner.py
-(LIN_MAX / within_linear_range) and inherited by w3c_fresh.py via the
-asserted estimator identity.
+measured linear window) is encoded in w3c_corner.py (LIN_MAX /
+within_linear_range). w3c_fresh.py computes no linear-range flag of its
+own; its compliance is verified from the committed per-delta values
+(worst per-delta slope variation 0.091 < 0.15 across both rows), not
+enforced in code.
+
+## Replication runs (Sep 4, doubled R, independent seed streams)
+
+Purpose: close the observation that the committed fresh campaign's three
+quenched central values drift positive in the same direction
+(+1.8/+1.1/+0.7 sigma), and the caveat that w3c_fresh and w4_fresh share
+a media seed stream. Outputs go to *_r2.json; the committed campaign
+remains the paper's evidence.
+
+| run | outcome |
+|---|---|
+| w3c_fresh_r2 (R=6000, seed 90011) | BOTH GATES PASSED. Quenched node lam0 = 0.6180 +- 0.0038 (-0.36% vs closed form 0.6202), om0 = 0.3029 +- 0.0303 (-0.4 sigma); the committed run's +1.6%/1.8 sigma excursion did NOT replicate under the independent stream — a fluctuation, as the statistics indicated. z_diamond (new fields): weakest channel r1 = 18.4 sigma, cubic channels 594/780 sigma. |
+| w4_fresh (R=6000, seed 91011) | discarded — see the gate-trip entry above. |
+| m8_fresh_r2 (R=6000, seed 92011) | (running) |

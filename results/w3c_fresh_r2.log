@@ -1,0 +1,22 @@
+annealed closed forms: |lam0|=0.6202  om0=0.3159  v=1.1806
+
+--- annealed q=0.08  (R=6000 x 4 launches, 10 blocks, TCYC=6, 1281s evolve) ---
+  node: |lam0|=0.6259+-0.0047 om0=0.3013+-0.0067  (shift vs annealed: +0.92% / -4.63%)
+     100: v=1.1712  ratio=1.0000+-0.0000  z_diamond=nan
+     110: v=1.1714  ratio=1.0002+-0.0007  z_diamond=555.1
+     111: v=1.1715  ratio=1.0003+-0.0010  z_diamond=733.8
+      r1: v=1.1556  ratio=0.9867+-0.0248  z_diamond=23.7
+      r2: v=1.1621  ratio=0.9922+-0.0202  z_diamond=29.7
+  [gate PASSED: annealed node at the annealed closed forms]
+
+--- quenchedF1 q=0.08  (R=6000 x 4 launches, 10 blocks, TCYC=6, 1276s evolve) ---
+  node: |lam0|=0.6180+-0.0038 om0=0.3029+-0.0303  (shift vs annealed: -0.36% / -4.12%)
+     100: v=1.2875  ratio=1.0000+-0.0000  z_diamond=nan
+     110: v=1.2870  ratio=0.9996+-0.0007  z_diamond=594.5
+     111: v=1.2869  ratio=0.9995+-0.0009  z_diamond=780.5
+      r1: v=1.2640  ratio=0.9818+-0.0323  z_diamond=18.4
+      r2: v=1.2787  ratio=0.9932+-0.0183  z_diamond=32.8
+  [gate PASSED: quenchedF1 node at the annealed closed forms]
+
+[T2 GATE PASSED] fresh-tape quenched node parameters equal the annealed closed forms within statistics -- the production-schedule shifts are eliminated.
+written: results/w3c_fresh_r2.json

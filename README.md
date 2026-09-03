@@ -121,12 +121,17 @@ fresh-tape identity covers observables *linear* in the evolved field —
 amplitudes, propagators, spectra; higher-order statistics still know the
 difference between one tape and an average over tapes. On a finite torus
 it holds up to a sharp horizon, T ≤ ⌈L/8⌉ cycles, before the fast tape
-laps the lattice. The cone comes with lattice partner species elsewhere
-in the zone, charted by a computed census, and the mass gaps only the
-resonant quartet of them. And the in-state quasiparticle is damped —
-provably unavoidably so within this event class, with an exact bound
-tying phase advance to visibility loss (the two-boundary propagator of
-the same formalism is the unitary completion).
+laps the lattice. The perfect isotropy is the k→0 cone: at finite
+momentum the node carries a parity-odd anisotropy ∝ k_x·k_y·k_z — the
+same quaternion orientation that makes the leading cone exact forbids
+the symmetries that would kill this term (proven unavoidable at four
+components by exhaustive enumeration; cancelled exactly on the
+mass-doubled Dirac branch). The cone comes with lattice partner species
+elsewhere in the zone, charted by a computed census, and the mass gaps
+only the resonant quartet of them. And the in-state quasiparticle is
+damped — provably unavoidably so within this event class, at every
+density (Q ≤ π/(2·ln 2)), with the two-boundary propagator of the same
+formalism as the unitary completion.
 
 **Why the repo looks the way it does.** Every `[proven]` /
 `[machine-checked]` / `[measured]` tag in the paper maps to a script here

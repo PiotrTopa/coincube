@@ -71,7 +71,7 @@ discretised fermionic quantum field theory.
 Transporting Lorentz-invariant composites `chi^A = psi_1^A psi_2^A psi_3^A psi_4^A`
 (the 2211.09002 four-dimensional route) is *excluded*, deliberately and permanently, by
 project decision. This forecloses the one construction already known to reach four
-dimensions; that is accepted. See `docs/00-scope.md`.
+dimensions; that is accepted. The contract is restated in the manuscript's introduction.
 
 ## R4half -- Block fermion parity
 

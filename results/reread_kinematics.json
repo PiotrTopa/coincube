@@ -1,0 +1,26 @@
+{
+ "T": 3,
+ "q": 0.08,
+ "launch": 0,
+ "part1": {
+  "S0": {
+   "reread_events": 13654,
+   "inconsistent": 13654,
+   "max_dev": 0.0017206249461306814
+  },
+  "F1": {
+   "reread_events": 0,
+   "inconsistent": 0,
+   "max_dev": 2.7755575615628914e-17
+  },
+  "F2": {
+   "reread_events": 2262,
+   "inconsistent": 2262,
+   "max_dev": 0.00030481651436555933
+  }
+ },
+ "part2": {
+  "S0": 380,
+  "F1": 0
+ }
+}
