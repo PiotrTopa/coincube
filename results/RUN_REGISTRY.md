@@ -65,4 +65,4 @@ remains the paper's evidence.
 |---|---|
 | w3c_fresh_r2 (R=6000, seed 90011) | BOTH GATES PASSED. Quenched node lam0 = 0.6180 +- 0.0038 (-0.36% vs closed form 0.6202), om0 = 0.3029 +- 0.0303 (-0.4 sigma); the committed run's +1.6%/1.8 sigma excursion did NOT replicate under the independent stream — a fluctuation, as the statistics indicated. z_diamond (new fields): weakest channel r1 = 18.4 sigma, cubic channels 594/780 sigma. |
 | w4_fresh (R=6000, seed 91011) | discarded — see the gate-trip entry above. |
-| m8_fresh_r2 (R=6000, seed 92011) | (running) |
+| m8_fresh_r2 (R=6000, seed 92011) | BOTH GATES PASSED. Quenched m = 0.05569 +- 0.00412 (+0.76 sigma vs closed form 0.05258; campaign row was +1.1 sigma on the shared stream), omega_c = 0.3089 +- 0.0059; dispersion on the exact branches. Together with w3c_fresh_r2 the same-sign-drift observation is resolved: independent streams scatter both ways. |
