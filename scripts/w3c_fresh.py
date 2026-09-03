@@ -6,12 +6,12 @@ pair per axis substep; bits move +-6 sites/cycle), no path re-reads a bit,
 so the quenched ensemble propagator equals the annealed operator EXACTLY.
 Consequence at scale: the quenched node parameters must equal the annealed
 closed forms within statistics -- the production-schedule shifts
-(|lambda_0| +2.8%, omega_0 +8.6% at q=0.08) must VANISH.
+(|lambda_0| +2.8%, omega_0 +8.6% at q=0.08) must vanish within statistics.
 
 Instrument: the w3c v6 pipeline (estimator functions source-identical to
 scripts/w3c_corner.py, asserted), NB-block jackknife, annealed known-answer
 gate row. Wrap constraint: bits travel 6*TCYC sites; requires L > 6*TCYC,
-hence TCYC = ceil(L/8) = 6 at L=48 (sharp horizon, x_freshtape_proof).
+hence TCYC = ceil(L/8) = 6 at L=48 (sharp horizon, freshtape_proof).
 
 Gates (hard): annealed row reproduces the exact operator (as in w3c);
 quenched-F1 node modulus and frequency match the ANNEALED closed forms

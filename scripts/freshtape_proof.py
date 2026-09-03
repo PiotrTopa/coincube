@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """T2/TASK 1+3: the fresh-tape theorem for F1 streaming (all-T proof) + rebuild
-certificates.  Companion of scripts/x_reread_kinematics.py (T1 instrument).
+certificates.  Companion of scripts/reread_kinematics.py (T1 instrument).
 
 THEOREM (fresh tape, g = 0).  Coincube, single-particle sector, product
 Bernoulli(q) vacuum, F1 streaming (per axis-a substep the axis-a env field

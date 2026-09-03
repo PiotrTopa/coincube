@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """T2/TASK 2: g > 0 write events (imprint layer L4) under fresh-tape
-streaming.  Companion of scripts/x_freshtape_proof.py.
+streaming.  Companion of scripts/freshtape_proof.py.
 
 The imprint layer WRITES: once per cycle, at the carrier's site (parity
 control is trivial in the 1p sector), it swaps the two env-species bits of
@@ -11,7 +11,7 @@ species and their values enter the weight, so freshness at g > 0 means:
 no conversion read, no lift sign-read, and no iota read ever touches a bit
 whose value already entered the weight.
 
-KINEMATICS under F1 (machine-checked in scripts/x_freshtape_proof.py
+KINEMATICS under F1 (machine-checked in scripts/freshtape_proof.py
 lemmas; the counting below is asserted here by exact enumeration):
 
   (i)  read -> write rendezvous is IMPOSSIBLE: between a conversion read of
