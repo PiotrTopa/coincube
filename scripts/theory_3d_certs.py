@@ -121,6 +121,31 @@ def stream_env(lat, field, ax, origin):
     return f.reshape(-1)
 
 
+def stream_point(lat, field, ax, origin, schedule="production", phase=None):
+    """One streaming APPLICATION POINT of the cycle.
+
+    schedule='production' (default; the committed certificates): a single
+    stream_env with the given per-substep origin -- byte-identical to the
+    original code path.
+    schedule='fresh' (F1, freshtape rebuild): THREE phase-continuing swaps;
+    ``phase`` is the field's 1-element mutable phase counter (the n-th swap
+    ever applied to the field has origin n mod 2, counted across substeps
+    and cycles; the counter resets wherever env_run resets).
+    """
+    if schedule == "production":
+        return stream_env(lat, field, ax, origin)
+    assert schedule == "fresh" and phase is not None
+    for _ in range(3):
+        field = stream_env(lat, field, ax, phase[0] % 2)
+        phase[0] += 1
+    return field
+
+
+def new_phases():
+    """Per-field phase counters (mutable), one per env field."""
+    return [[0], [0], [0]]
+
+
 # ----------------------------------------------------------------------------
 # sector layer rules (signed permutations on occupied-mode tuples)
 # ----------------------------------------------------------------------------
@@ -158,7 +183,7 @@ def shift_state(lat, occ, sign, a):
     return tuple(sorted(img)), sign * (-1 if inv % 2 else 1)
 
 
-def cycle_sector(lat, states, env0):
+def cycle_sector(lat, states, env0, schedule="production"):
     """evolve every basis state of a sector through one full cycle
     (both origins per axis); env fields evolve deterministically alongside.
     Returns (perm indices, signs, env_out)."""
@@ -169,12 +194,14 @@ def cycle_sector(lat, states, env0):
     for i, st in enumerate(states):
         occ, sg = st, 1
         env_run = [f.copy() for f in env0]
+        phases = new_phases()
         for a in range(3):
             for sub in range(2):
                 occ, sg = conv_state(lat, occ, sg, a, env_run[a])
                 occ, sg = shift_state(lat, occ, sg, a)
-                env_run[a] = stream_env(lat, env_run[a], (a + 1) % 3,
-                                        (2 * a + sub) % 2)
+                env_run[a] = stream_point(lat, env_run[a], (a + 1) % 3,
+                                          (2 * a + sub) % 2, schedule,
+                                          phases[a])
         out_p[i] = index[occ]
         out_s[i] = sg
         if i == 0:
@@ -182,16 +209,17 @@ def cycle_sector(lat, states, env0):
     return out_p, out_s, env
 
 
-def layer_sequence(lat, env0):
+def layer_sequence(lat, env0, schedule="production"):
     """the cycle as an explicit list of (kind, a, env-snapshot) layers"""
     seq = []
     env_run = [f.copy() for f in env0]
+    phases = new_phases()
     for a in range(3):
         for sub in range(2):
             seq.append(("conv", a, env_run[a].copy()))
             seq.append(("shift", a, None))
-            env_run[a] = stream_env(lat, env_run[a], (a + 1) % 3,
-                                    (2 * a + sub) % 2)
+            env_run[a] = stream_point(lat, env_run[a], (a + 1) % 3,
+                                      (2 * a + sub) % 2, schedule, phases[a])
     return seq
 
 
@@ -206,13 +234,14 @@ def apply_layer(lat, occ, sign, layer):
 # instrument reference (1p) and the Majorana-string PH lift on small sectors
 # ----------------------------------------------------------------------------
 
-def instrument_1p(lat, env0):
+def instrument_1p(lat, env0, schedule="production"):
     """signed permutation of the instrument rule: per sub-step, signed C_a at
     env_a sites, then the coin-steered shift; env streams alongside."""
     M = lat.M
     perm = np.arange(M)
     sign = np.ones(M, dtype=np.int64)
     env_run = [f.copy() for f in env0]
+    phases = new_phases()
     for a in range(3):
         for sub in range(2):
             newp = perm.copy()
@@ -225,8 +254,8 @@ def instrument_1p(lat, env0):
                     m = lat.mode(s, int(PERM[a][c]))
                 newp[j] = lat.shift_mode(m, a)
             perm, sign = newp, news
-            env_run[a] = stream_env(lat, env_run[a], (a + 1) % 3,
-                                    (2 * a + sub) % 2)
+            env_run[a] = stream_point(lat, env_run[a], (a + 1) % 3,
+                                      (2 * a + sub) % 2, schedule, phases[a])
     return perm, sign
 
 
@@ -248,10 +277,12 @@ def majorana_sign(occ, M):
 
 # ----------------------------------------------------------------------------
 
-def check_lattice(lat, rng, ntrial, do_2h):
+def check_lattice(lat, rng, ntrial, do_2h, schedule="production", q=0.3):
     res = {"L": lat.L, "M": lat.M}
+    if schedule != "production":         # keep the committed production json
+        res["schedule"] = schedule       # byte-identical under re-runs
+        res["q"] = q
     M = lat.M
-    q = 0.3
 
     states_1p = [(m,) for m in range(M)]
     states_2p = list(itertools.combinations(range(M), 2))
@@ -271,16 +302,16 @@ def check_lattice(lat, rng, ntrial, do_2h):
         # --- 1: composite coherence ---
         # 0p
         occ, sg = (), 1
-        for lay in layer_sequence(lat, env0):
+        for lay in layer_sequence(lat, env0, schedule):
             occ, sg = apply_layer(lat, occ, sg, lay)
         assert occ == () and sg == 1
         # 1p vs instrument
-        p1, s1, _ = cycle_sector(lat, states_1p, env0)
-        ip, isg = instrument_1p(lat, env0)
+        p1, s1, _ = cycle_sector(lat, states_1p, env0, schedule)
+        ip, isg = instrument_1p(lat, env0, schedule)
         dev_1p = max(dev_1p, int(np.abs(p1 - ip).max()),
                      int(np.abs(s1 - isg).max()))
         # 2p vs Lambda^2(1p)
-        p2, s2, _ = cycle_sector(lat, states_2p, env0)
+        p2, s2, _ = cycle_sector(lat, states_2p, env0, schedule)
         for idx, (i, j) in enumerate(states_2p):
             a1, a2 = int(p1[i]), int(p1[j])
             flip = -1 if a1 > a2 else 1
@@ -292,13 +323,13 @@ def check_lattice(lat, rng, ntrial, do_2h):
         # --- 2: PH duality ---
         # 0p <-> Mp: sigma_full must equal sigma_vac = +1
         occ, sg = full, 1
-        for lay in layer_sequence(lat, env0):
+        for lay in layer_sequence(lat, env0, schedule):
             occ, sg = apply_layer(lat, occ, sg, lay)
         assert occ == full
         sig_full_all.append(int(sg))
 
         # 1p <-> 1h, per layer and full cycle
-        for lay in layer_sequence(lat, env0):
+        for lay in layer_sequence(lat, env0, schedule):
             for m in range(M):
                 o1, g1 = apply_layer(lat, (m,), 1, lay)         # 1p side
                 oh, gh = apply_layer(lat, states_1h[m], 1, lay)  # 1h side
@@ -307,7 +338,7 @@ def check_lattice(lat, rng, ntrial, do_2h):
                 # duality: hole image must be mp with the P-sign relation
                 if hp != mp or gh * sP1[m] != sP1[mp] * g1:
                     layer_ok = False
-        ph, sh_, _ = cycle_sector(lat, states_1h, env0)
+        ph, sh_, _ = cycle_sector(lat, states_1h, env0, schedule)
         # states_1h[m] indexes the hole at m; its image is the state with
         # hole at index found via the sector permutation
         hole_of = {st: h for h, st in enumerate(states_1h)}
@@ -321,7 +352,7 @@ def check_lattice(lat, rng, ntrial, do_2h):
             sP2 = np.array([majorana_sign(st, M) for st in states_2p])
             states_2h = [tuple(m for m in range(M) if m not in st)
                          for st in states_2p]
-            p2h, s2h, _ = cycle_sector(lat, states_2h, env0)
+            p2h, s2h, _ = cycle_sector(lat, states_2h, env0, schedule)
             for idx in range(len(states_2p)):
                 if (int(p2h[idx]) != int(p2[idx])
                         or int(s2h[idx]) * int(sP2[idx])
@@ -412,15 +443,16 @@ def shift_mask(smap, occ, sign, M):
     return occ2, sign * (-1 if inv else 1)
 
 
-def mask_layer_seq(lat, env0, smaps):
+def mask_layer_seq(lat, env0, smaps, schedule="production"):
     seq = []
     env_run = [f.copy() for f in env0]
+    phases = new_phases()
     for a in range(3):
         for sub in range(2):
             seq.append(("conv", conv_ops_of(lat, env_run[a], a)))
             seq.append(("shift", smaps[a]))
-            env_run[a] = stream_env(lat, env_run[a], (a + 1) % 3,
-                                    (2 * a + sub) % 2)
+            env_run[a] = stream_point(lat, env_run[a], (a + 1) % 3,
+                                      (2 * a + sub) % 2, schedule, phases[a])
     return seq
 
 
@@ -462,23 +494,25 @@ def wedge_predict(modes, p1, s1):
     return tuple(sorted(img)), sg * (-1 if inv % 2 else 1)
 
 
-def check_extended(rng, ndraw=4, qs=(0.15, 0.3)):
+def check_extended(rng, ndraw=4, qs=(0.15, 0.3), schedule="production"):
     """Extended coverage (belt and braces on top of the per-layer proof of
     scripts/theory_sp_proof.py): 3-carrier sectors at L = 2 and 3; the
     M-2 sector at L = 3 via PH duality to 2 holes; 1p/2p (+ 1h duality and
     sigma_full) at L = 4; ndraw env draws at each q in qs."""
     res = {}
+    if schedule != "production":
+        res["schedule"] = schedule
 
     # engine cross-validation at L = 2, one draw: bitmask engine == tuple
     # engine on 1p and 2p (perm and sign, state by state)
     lat = Lattice(2)
     env0 = [(rng.random(lat.NS) < 0.3).astype(np.int8) for _ in range(3)]
     smaps = smaps_of(lat)
-    seq = mask_layer_seq(lat, env0, smaps)
+    seq = mask_layer_seq(lat, env0, smaps, schedule)
     states_1p = [(m,) for m in range(lat.M)]
     states_2p = list(itertools.combinations(range(lat.M), 2))
-    p1, s1, _ = cycle_sector(lat, states_1p, env0)
-    p2, s2, _ = cycle_sector(lat, states_2p, env0)
+    p1, s1, _ = cycle_sector(lat, states_1p, env0, schedule)
+    p2, s2, _ = cycle_sector(lat, states_2p, env0, schedule)
     dev = 0
     for m in range(lat.M):
         occ, sg = mask_cycle_one(lat, seq, 1 << m)
@@ -508,9 +542,9 @@ def check_extended(rng, ndraw=4, qs=(0.15, 0.3)):
             for _ in range(ndraw):
                 env0 = [(rng.random(lat.NS) < q).astype(np.int8)
                         for _ in range(3)]
-                seq = mask_layer_seq(lat, env0, smaps)
+                seq = mask_layer_seq(lat, env0, smaps, schedule)
                 # 1p: bitmask engine vs the instrument (exact reference)
-                ip, isg = instrument_1p(lat, env0)
+                ip, isg = instrument_1p(lat, env0, schedule)
                 p1v = np.empty(M, dtype=np.int64)
                 s1v = np.empty(M, dtype=np.int64)
                 for m in range(M):
@@ -593,7 +627,7 @@ def check_extended(rng, ndraw=4, qs=(0.15, 0.3)):
     return res
 
 
-def mutation_controls(rng):
+def mutation_controls(rng, schedule="production"):
     """the checks must FAIL under wrong sign conventions (teeth check):
     (a) dropping the conversion spectator string (L = 2);
     (b) dropping the translation inversion parity (L = 3 — at L = 2 the two
@@ -625,17 +659,19 @@ def mutation_controls(rng):
         M = lat.M
         env0 = [(rng.random(lat.NS) < 0.4).astype(np.int8) for _ in range(3)]
         states_2p = list(itertools.combinations(range(M), 2))
-        p1, s1, _ = cycle_sector(lat, [(m,) for m in range(M)], env0)
+        p1, s1, _ = cycle_sector(lat, [(m,) for m in range(M)], env0, schedule)
         mis = 0
         for (i, j) in states_2p:
             occ, sg = (i, j), 1
             env_run = [f.copy() for f in env0]
+            phases = new_phases()
             for a in range(3):
                 for sub in range(2):
                     occ, sg = cf(lat, occ, sg, a, env_run[a])
                     occ, sg = sf(lat, occ, sg, a)
-                    env_run[a] = stream_env(lat, env_run[a], (a + 1) % 3,
-                                            (2 * a + sub) % 2)
+                    env_run[a] = stream_point(lat, env_run[a], (a + 1) % 3,
+                                              (2 * a + sub) % 2, schedule,
+                                              phases[a])
             a1, a2 = int(p1[i]), int(p1[j])
             flip = -1 if a1 > a2 else 1
             if (occ != (min(a1, a2), max(a1, a2))
@@ -646,16 +682,39 @@ def mutation_controls(rng):
 
 
 def main():
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--fresh", action="store_true",
+                    help="rerun the certificates under the fresh-tape (F1) "
+                         "schedule (3 phase-continuing swaps per streaming "
+                         "application point) at q = 0.08; writes "
+                         "results/theory_3d_certs_fresh.json and leaves the "
+                         "committed production json untouched")
+    args = ap.parse_args()
+    schedule = "fresh" if args.fresh else "production"
+    results_path = (RESULTS.with_name("theory_3d_certs_fresh.json")
+                    if args.fresh else RESULTS)
+    # fresh reruns at the working point q = 0.08 (>= 2 env draws per check);
+    # production keeps the committed q = (0.15, 0.3) / 0.3 configuration.
+    qcert = 0.08 if args.fresh else 0.3
+    qs_ext = (0.08,) if args.fresh else (0.15, 0.3)
+    ndraw_ext = 2 if args.fresh else 4
+
     out = {"seed": SEED}
+    if schedule != "production":
+        out["schedule"] = schedule
     t0 = time.time()
     rng = np.random.default_rng(SEED)
-    out["L2"] = check_lattice(Lattice(2), rng, ntrial=4, do_2h=True)
+    out["L2"] = check_lattice(Lattice(2), rng, ntrial=4, do_2h=True,
+                              schedule=schedule, q=qcert)
     print(f"[{time.time() - t0:6.1f}s] L = 2 done")
-    out["L3"] = check_lattice(Lattice(3), rng, ntrial=2, do_2h=False)
+    out["L3"] = check_lattice(Lattice(3), rng, ntrial=2, do_2h=False,
+                              schedule=schedule, q=qcert)
     print(f"[{time.time() - t0:6.1f}s] L = 3 done")
-    out["mutation_controls"] = mutation_controls(rng)
+    out["mutation_controls"] = mutation_controls(rng, schedule=schedule)
     print(f"[{time.time() - t0:6.1f}s] mutation controls done")
-    out["extended"] = check_extended(rng, ndraw=4, qs=(0.15, 0.3))
+    out["extended"] = check_extended(rng, ndraw=ndraw_ext, qs=qs_ext,
+                                     schedule=schedule)
     print(f"[{time.time() - t0:6.1f}s] extended coverage done "
           "(3p at L=2,3; M-2 at L=3; 1p/2p/1h at L=4)")
 
@@ -683,10 +742,10 @@ def main():
     assert ext["L4"]["n_2p_mismatch_vs_wedge"] == 0
     assert ext["L4"]["n_1h_duality_mismatch"] == 0
     assert all(s == 1 for s in ext["L4"]["sigma_full"])
-    print("all headline assertions passed")
-    RESULTS.parent.mkdir(exist_ok=True)
-    RESULTS.write_text(json.dumps(out, indent=1))
-    print(f"wrote {RESULTS}")
+    print(f"all headline assertions passed (schedule = {schedule})")
+    results_path.parent.mkdir(exist_ok=True)
+    results_path.write_text(json.dumps(out, indent=1))
+    print(f"wrote {results_path}")
 
 
 if __name__ == "__main__":

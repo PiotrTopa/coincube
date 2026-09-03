@@ -20,6 +20,9 @@ Then check against the fermionic reference:
       the crossing signs are exactly coherent.
 """
 import itertools
+import json
+import pathlib
+
 import numpy as np
 
 from pca3d.models.coincube import COIN_C, COIN_D
@@ -61,7 +64,9 @@ def local_tables():
 L2_PERM16, L2_SIGN16 = local_tables()
 
 
-def apply_l2(perm, sign):
+def apply_l2(perm, sign, s16=None):
+    if s16 is None:
+        s16 = L2_SIGN16
     for x in range(LX):
         base = 4 * x
         ebit = 1 << (NCAR + x)
@@ -71,7 +76,7 @@ def apply_l2(perm, sign):
                 continue
             loc = (t >> base) & 15
             perm[s] = (t & ~(15 << base)) | (int(L2_PERM16[loc]) << base)
-            sign[s] *= int(L2_SIGN16[loc])
+            sign[s] *= int(s16[loc])
     return perm, sign
 
 
@@ -120,14 +125,26 @@ SH_PERM, SH_SIGN = lift_mode_perm(mode_perm_shift())
 ENV_PERM = {o: lift_mode_perm(mode_perm_env(o)) for o in (0, 1)}
 
 
-def full_cycle():
+def full_cycle(schedule="production", s16=None):
+    """The composite lifted cycle. schedule='production' (default, the
+    committed certificate): one L3 streaming layer per sub-step, origin o.
+    schedule='fresh' (F1): three PHASE-CONTINUING streaming layers per
+    sub-step (the n-th layer ever applied has origin n mod 2). ``s16``
+    optionally overrides the L2 sign table (mutation control)."""
     perm = np.arange(DIM, dtype=np.int64)
     sign = np.ones(DIM, dtype=np.int64)
+    phase = 0
     for o in (0, 1):
-        perm, sign = apply_l2(perm, sign)
+        perm, sign = apply_l2(perm, sign, s16)
         perm, sign = compose(perm, sign, SH_PERM, SH_SIGN)
-        ep, es = ENV_PERM[o]
-        perm, sign = compose(perm, sign, ep, es)
+        if schedule == "fresh":
+            for _ in range(3):
+                ep, es = ENV_PERM[phase % 2]
+                perm, sign = compose(perm, sign, ep, es)
+                phase += 1
+        else:
+            ep, es = ENV_PERM[o]
+            perm, sign = compose(perm, sign, ep, es)
     return perm, sign
 
 
@@ -135,11 +152,12 @@ def carrier_mode(x, c):
     return 4 * x + c
 
 
-def single_particle_reference(env_bits):
+def single_particle_reference(env_bits, schedule="production"):
     """Instrument rule: per sub-step, signed C at env sites then shift."""
     n1 = 4 * LX                  # 1p states indexed (x, c) -> 4x + c
     M = np.eye(n1)
     env = list(env_bits)
+    phase = 0
     permC = np.argmax(np.abs(COIN_C[0]), axis=0)
     for o in (0, 1):
         step = np.zeros((n1, n1))
@@ -155,8 +173,14 @@ def single_particle_reference(env_bits):
                     xt = (x + int(COIN_D[0][c])) % LX
                     step[4 * xt + c, j] = 1.0
         M = step @ M
-        x0, x1 = o, (o + 1) % LX
-        env[x0], env[x1] = env[x1], env[x0]
+        if schedule == "fresh":
+            for _ in range(3):
+                x0, x1 = phase % 2, (phase % 2 + 1) % LX
+                env[x0], env[x1] = env[x1], env[x0]
+                phase += 1
+        else:
+            x0, x1 = o, (o + 1) % LX
+            env[x0], env[x1] = env[x1], env[x0]
     return M, env
 
 
@@ -187,26 +211,85 @@ def wedge_square(M):
     return W
 
 
-def main():
-    perm, sign = full_cycle()
+def run_checks(schedule, s16=None, ntrial=4, verbose=True):
+    """Bijectivity + 1p-vs-instrument + 2p-vs-Lambda^2 over ntrial env draws.
+    Returns (n_1p_mismatch, n_2p_mismatch, n_2p_states_checked)."""
+    perm, sign = full_cycle(schedule, s16)
     assert len(np.unique(perm)) == DIM, "composite not bijective"
     assert np.all(np.abs(sign) == 1)
-    print(f"composite cycle on {NM} modes: signed permutation OK "
-          f"({DIM} states)")
-
+    if verbose:
+        print(f"composite cycle on {NM} modes ({schedule}): signed "
+              f"permutation OK ({DIM} states)")
     rng = np.random.default_rng(4)
-    for trial in range(4):
+    n1_mis = n2_mis = n2_states = 0
+    for trial in range(ntrial):
         env0 = [int(b) for b in rng.integers(0, 2, LX)]
-        M1_ref, env_out = single_particle_reference(env0)
+        M1_ref, env_out = single_particle_reference(env0, schedule)
         M1 = sector_matrix(perm, sign, env0, env_out, 1)
         ok1 = np.allclose(M1, M1_ref, atol=1e-12)
         M2 = sector_matrix(perm, sign, env0, env_out, 2)
-        ok2 = np.allclose(M2, wedge_square(M1_ref), atol=1e-12)
-        print(f"env={env0}: 1p == instrument rule: {ok1};  "
-              f"2p == Lambda^2(1p): {ok2}")
-        assert ok1 and ok2
-    print("\ncomposite sign coherence: CERTIFIED "
-          "(2-particle sector is the exact antisymmetrised square)")
+        W = wedge_square(M1_ref)
+        ok2 = np.allclose(M2, W, atol=1e-12)
+        n1_mis += int(np.sum(~np.isclose(M1, M1_ref, atol=1e-12)))
+        n2_mis += int(np.sum(~np.isclose(M2, W, atol=1e-12)))
+        n2_states += M2.size
+        if verbose:
+            print(f"env={env0}: 1p == instrument rule: {ok1};  "
+                  f"2p == Lambda^2(1p): {ok2}")
+    return n1_mis, n2_mis, n2_states
+
+
+def main():
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--fresh", action="store_true",
+                    help="run the composite certificate under the fresh-tape "
+                         "(F1) schedule + a sign-rule mutation control; "
+                         "writes results/w3c_composite_check_fresh.json")
+    args = ap.parse_args()
+
+    if not args.fresh:                    # committed production certificate
+        n1, n2, _ = run_checks("production")
+        assert n1 == 0 and n2 == 0
+        print("\ncomposite sign coherence: CERTIFIED "
+              "(2-particle sector is the exact antisymmetrised square)")
+        return
+
+    # --- fresh-tape (F1) rerun -------------------------------------------
+    n1, n2, n2s = run_checks("fresh", ntrial=8)
+    assert n1 == 0 and n2 == 0
+    print("\ncomposite sign coherence under F1: CERTIFIED "
+          f"({n2s} 2p sector matrix entries checked over 8 env draws)")
+
+    # mutation control: corrupt ONE sign rule -- flip the L2 sign of the
+    # two-carrier local config {c0, c1} (loc = 3). 1p states never populate
+    # a two-carrier local config, so the 1p certificate must SURVIVE while
+    # the 2p-vs-Lambda^2 coherence must FAIL: the check has teeth exactly
+    # where the multi-particle sign structure lives.
+    s16_mut = L2_SIGN16.copy()
+    assert bin(3).count("1") == 2
+    s16_mut[3] *= -1
+    m1, m2, _ = run_checks("fresh", s16=s16_mut, verbose=False)
+    print(f"mutation control (flip L2 sign at loc=3): 1p mismatches {m1} "
+          f"(must be 0), 2p mismatches {m2} (must be > 0)")
+    assert m1 == 0, "mutation leaked into the 1p sector (control invalid)"
+    assert m2 > 0, "MUTATION CONTROL FAILED: corrupted sign rule not detected"
+
+    out = {"LX": LX, "modes": NM, "dim": DIM, "schedule": "fresh",
+           "n_env_draws": 8,
+           "n_1p_mismatch": n1, "n_2p_mismatch": n2,
+           "n_2p_entries_checked": n2s,
+           "mutation_control": {"rule": "L2_SIGN16[3] flipped (config "
+                                "{c0,c1}, two-carrier only)",
+                                "n_1p_mismatch": m1, "n_2p_mismatch": m2,
+                                "passes": bool(m1 == 0 and m2 > 0)},
+           "note": "fresh = three phase-continuing streaming layers per "
+                   "sub-step (odd-ring single-transposition convention); "
+                   "production certificate unchanged and re-runnable "
+                   "without --fresh"}
+    pathlib.Path("results/w3c_composite_check_fresh.json").write_text(
+        json.dumps(out, indent=1))
+    print("written: results/w3c_composite_check_fresh.json")
 
 
 if __name__ == "__main__":

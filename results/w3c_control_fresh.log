@@ -1,0 +1,11 @@
+exact pooled-pipeline prediction (broken-triple control, q=0.08, TCYC=6):
+  100:1.0000  110:1.0008  111:1.0012  r1:0.6507  r2:1.1957
+quenched F1 evolve done (939s, R=3600, L=48, NB=10, TCYC=6)
+   fam  exact_r   meas_r  sig_jk   pull
+   100   1.0000   1.0000  0.0000    nan
+   110   1.0008   1.0008  0.0005  -0.03
+   111   1.0012   1.0012  0.0006  -0.04
+    r1   0.6507   0.6810  0.0371   0.82
+    r2   1.1957   1.2173  0.0187   1.16
+[control PASSED] estimator recovers anisotropic truth from fresh-schedule (F1) media; ratios are not pinned to 1
+written: results/w3c_control_fresh.json

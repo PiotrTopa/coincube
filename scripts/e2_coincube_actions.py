@@ -164,6 +164,67 @@ def main():
           "axis-universal; bare gauge axis-dependent 49/42/51 — gauge "
           "artifact; env swap block 3 terms)")
 
+    # ---- fresh-tape (F1) schedule at the action level -------------------
+    # The conversion-block extraction above takes NO streaming input: the
+    # table is the one-site controlled Givens (controlled_l2), so the
+    # extracted conversion action is schedule-independent by construction.
+    # The schedule enters the action only through the number and placement
+    # of env TRANSPORT factors: F1 puts three consecutive phase-continuing
+    # pair-swap layers per axis substep where production puts one.
+    # Machine check on a 4-site env ring (M = 4 modes, transport/clock
+    # gauge, GU17): (i) each production pair-swap layer's action is EXACTLY
+    # the quadratic transport bilinear L = -sum_b psi'_{P(b)} psibar_b;
+    # (ii) the lift of one fresh batch (origins 0, 1, 0 — phase-continuing)
+    # equals the composition of the three single-layer lifts, sign for
+    # sign; (iii) the batch action is again EXACTLY the single quadratic
+    # transport bilinear of the composed permutation P_batch = P0 P1 P0.
+    # One fresh batch is therefore one standard streaming factor with the
+    # composed transport matrix — no new action terms of any degree.
+    from fractions import Fraction as _Fr
+
+    from pca3d.grassmann.extract import clock_sign_table
+
+    Lr = 4  # ring size (even; smallest with two distinct origins)
+
+    def swap_mode_perm(o):
+        pi = list(range(Lr))
+        for x in range(0, Lr, 2):
+            i, j = (x + o) % Lr, (x + o + 1) % Lr
+            pi[i], pi[j] = j, i
+        return pi
+
+    def bilinear_terms(pi):
+        return {(pi[b], Lr + b): _Fr(-1) for b in range(Lr)}
+
+    lifts = {}
+    for o in (0, 1):
+        pi = swap_mode_perm(o)
+        sp, ss = clock_sign_table(np.array(pi))
+        lifts[o] = (sp, ss)
+        L_lay = extract_action(sp, ss)
+        assert dict(L_lay.terms) == bilinear_terms(pi), \
+            f"single swap layer (o={o}) is not the pure transport bilinear"
+
+    # one fresh batch: phase-continuing origins 0, 1, 0
+    pc, sc = np.arange(1 << Lr), np.ones(1 << Lr, dtype=np.int64)
+    pi_batch = list(range(Lr))
+    for o in (0, 1, 0):
+        sp, ss = lifts[o]
+        pc, sc = sp[pc], sc * ss[pc]
+        pi_batch = [swap_mode_perm(o)[m] for m in pi_batch]
+    sp_b, ss_b = clock_sign_table(np.array(pi_batch))
+    assert np.array_equal(pc, sp_b) and np.array_equal(sc, ss_b), \
+        "fresh batch lift != composition of three production layer lifts"
+    L_batch = extract_action(pc, sc)
+    assert dict(L_batch.terms) == bilinear_terms(pi_batch), \
+        "fresh batch action is not the single composed transport bilinear"
+    print("fresh-tape check passed: conversion-block extraction is "
+          "schedule-independent (no streaming input); one F1 batch factor "
+          "== composition of three production streaming factors (lift "
+          "asserted sign-for-sign on a 4-site ring), and its action is "
+          "again the single quadratic transport bilinear of the composed "
+          "permutation")
+
     if args.write_note:
         import os
         out_path = ("docs/notes/e2-extracted-actions.md"

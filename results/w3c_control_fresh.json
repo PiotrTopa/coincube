@@ -1,0 +1,48 @@
+{
+ "model": "coins (C_x, C_y, identity), q=0.08, chord weights",
+ "streaming": "fresh (F1: 3 phase-continuing swaps per substep)",
+ "L": 48,
+ "R": 3600,
+ "TCYC": 6,
+ "NB": 10,
+ "T0": 1,
+ "wall_s": 1498.004233121872,
+ "rows": {
+  "100": {
+   "exact_ratio": 1.0,
+   "ratio": 1.0,
+   "sig_ratio": 0.0,
+   "pull": NaN,
+   "n_jk": 10
+  },
+  "110": {
+   "exact_ratio": 1.0007797784659134,
+   "ratio": 1.0007650730581559,
+   "sig_ratio": 0.00046494015043950553,
+   "pull": -0.03162860368930761,
+   "n_jk": 10
+  },
+  "111": {
+   "exact_ratio": 1.0012348826155453,
+   "ratio": 1.0012118254623716,
+   "sig_ratio": 0.0006435381967835576,
+   "pull": -0.03582872514619096,
+   "n_jk": 10
+  },
+  "r1": {
+   "exact_ratio": 0.6506805897022989,
+   "ratio": 0.6810070599091862,
+   "sig_ratio": 0.03714857744296112,
+   "pull": 0.8163561647401255,
+   "n_jk": 10
+  },
+  "r2": {
+   "exact_ratio": 1.1956633190038348,
+   "ratio": 1.2173304995675043,
+   "sig_ratio": 0.018743107411746927,
+   "pull": 1.1560079173472544,
+   "n_jk": 10
+  }
+ },
+ "note": "TCYC = 6 = ceil(L/8): sharp wrap-free fresh-tape torus horizon; exact prediction = annealed operator through the identical pooled pipeline (fresh-tape theorem makes quenched == annealed exact for this model)"
+}

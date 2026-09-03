@@ -1,19 +1,25 @@
 # coincube
 
 **A 3D probabilistic cellular automaton that is exactly a fermionic
-quantum field theory, whose measured excitation is an isotropic Weyl
-fermion — verification code and manuscript.**
+quantum field theory, whose single-fermion excitation is an isotropic
+Weyl fermion — exact by theorem, confirmed by gated measurement —
+verification code and manuscript.**
 
 The *coincube* is a probabilistic cellular automaton on the 3D cubic
 lattice — classical bits, local invertible homogeneous update layers, a
 Bernoulli product vacuum — whose dynamics is *exactly* unitary quantum
 mechanics (explicit complex structure, mechanically extracted Grassmann
-action) and whose single-fermion excitation is, by gated measurement, an
-isotropic Weyl fermion. A dense-sweep census with computed topological
-charges charts the full gapless spectrum; inversion doubling gives the
-resonant node quartet an annealed-operator gap of exactly
+action). Its environment streaming outruns the carrier ("fresh tape"):
+no bit is ever consulted twice, so the ensemble propagator equals the
+Bloch operator theory identically at every time, and every closed form
+is a statement about the automaton itself. The single-fermion
+excitation is an isotropic Weyl fermion, exact by the fresh-tape
+theorem and confirmed by gated measurement. A dense-sweep census with
+computed topological charges charts the full gapless spectrum;
+inversion doubling gives the resonant node quartet a gap of exactly
 `2·arctan[q_m/(1−q_m)]`; a media-mediated interaction with a continuous
-coupling is certified.
+coupling carries the exact damping law `U_g = (1−2gq²)·U` at every
+cycle.
 
 This repository contains the complete verification code behind the paper
 
@@ -43,13 +49,21 @@ sub-layers:
    conditional lookup-table op: branch-free, local.
 2. **Move** — every carrier shifts ±1 cell along the current axis,
    direction read off its coin register. Unconditional.
-3. **Stream** — the env field itself scrolls, by pair-swaps *along the
-   next axis over* (cross-streaming). Load-bearing detail: if the env
-   scrolled along its own axis, a carrier would keep re-reading its own
-   bit and the construction breaks.
+3. **Stream** — the env field itself scrolls, by three consecutive
+   pair-swap layers *along the next axis over* (cross-streaming), with
+   swap origins that keep alternating across the whole run
+   (phase-continuing). Two load-bearing details. If the env scrolled
+   along its own axis, a carrier would keep re-reading its own bit and
+   the construction breaks. And the *speed* matters: three swaps per
+   substep move every env bit ±6 cells per cycle while the carrier
+   manages at most ±2, so every bit the particle could revisit has
+   already left its light cone — **no bit is ever read twice** (the
+   "fresh-tape" theorem, proven and verified as an exact sum over all
+   2²⁴ read histories).
 
 So the environment is a pre-rolled random tape the particle reads as it
-walks, and the tape scrolls deterministically. Quantum behavior is not
+walks, the tape scrolls deterministically, and the scrolling is fast
+enough that every read hits an untouched cell. Quantum behavior is not
 injected anywhere. The claim (Wetterich's construction, extended here to
 3D) is that the *statistics* of this classical bit machine are exactly a
 fermionic quantum field theory: signed permutations are orthogonal
@@ -73,8 +87,10 @@ circular range. A\*-on-a-grid always has that diagonal artifact.
 longer monomial. Averaging over the random tape is the loophole in the
 no-go: each individual run is still a signed permutation (we test exactly
 this), but the measured, averaged propagator isn't, so continuous
-velocities become possible. That alone, however, still gives you the
-diamond.
+velocities become possible. Because of the fresh tape this isn't an
+approximation: every read is an independent Bernoulli draw *exactly*, so
+the averaged operator IS the automaton's propagator, not an idealization
+of it. That alone, however, still gives you the diamond.
 
 *The quaternion coin.* The fix is *which* three conversion tables you
 use. C_x, C_y, C_z are chosen to multiply like the quaternion units
@@ -100,15 +116,17 @@ a fourth env field gives an exact, tunable mass (a Dirac fermion), and
 one extra rule letting the carrier *write back* into the environment
 gives interactions.
 
-**The honest fine print** (stated carefully in the paper): the exact
-algebra lives in the annealed (independent-reads) idealization — on the
-real streaming automaton, isotropy is a gated *measurement*; the cone
-comes with lattice partner species elsewhere in the zone, charted by a
-computed census, and the mass gaps only the resonant quartet of them; and
-the in-state quasiparticle is damped — provably unavoidably so within
-this event class, with an exact bound tying phase advance to visibility
-loss (the two-boundary propagator of the same formalism is the unitary
-completion).
+**The honest fine print** (stated carefully in the paper): the
+fresh-tape identity covers observables *linear* in the evolved field —
+amplitudes, propagators, spectra; higher-order statistics still know the
+difference between one tape and an average over tapes. On a finite torus
+it holds up to a sharp horizon, T ≤ ⌈L/8⌉ cycles, before the fast tape
+laps the lattice. The cone comes with lattice partner species elsewhere
+in the zone, charted by a computed census, and the mass gaps only the
+resonant quartet of them. And the in-state quasiparticle is damped —
+provably unavoidably so within this event class, with an exact bound
+tying phase advance to visibility loss (the two-boundary propagator of
+the same formalism is the unitary completion).
 
 **Why the repo looks the way it does.** Every `[proven]` /
 `[machine-checked]` / `[measured]` tag in the paper maps to a script here
@@ -133,7 +151,13 @@ committed evidence behind every number in the paper.
       grassmann/    exact Grassmann algebra and action extraction
       search/       legal-rule enumeration from elementary processes
     scripts/        certificates, proofs and measurements, by paper section:
+                    freshtape_*  the fresh-tape theorem (exact path sums)
+                                 and the exact interaction law
+                    reread_kinematics.py  re-read census, generic vs fresh
                     w3*/w3c*  cone scan, verification, legality, lift coherence
+                    *_fresh   the gated campaign on the fresh-tape model
+                              (cone, helicity, mass, interaction, controls,
+                              in-out) and schedule-parameterized certificates
                     w4*       helicity residues
                     e1/e2     complex structure; Grassmann actions
                     m8*       massive Dirac
@@ -142,17 +166,19 @@ committed evidence behind every number in the paper.
                     theory_*  machine-checked proof packs
                     census_sweep.py  dense-sweep census + Chern charges
                     spectrum_census.py  structural loci + factorization
+                    orbit_flow.py  spectator-orbit continuation in q
+                    bridge_check.py  complex-structure/spectral bridge
                     m8_pulls.py  massive dispersion vs exact branches
                     w3c_positive_control.py  estimator positive controls
                     paper_figs.py  regenerates the manuscript figures
-    tests/          134 tests: reproduction, theorem suite, legality,
-                    exactness anchors
+    tests/          137 tests: reproduction, theorem suite, legality,
+                    fresh-tape schedule, exactness anchors
 
 ## Reproduce
 
     python3 -m venv .venv
     .venv/bin/pip install -e ".[dev]"
-    PYTHONPATH=src .venv/bin/python -m pytest -q          # 134 tests (GPU-marked tests skip on CPU-only boxes)
+    PYTHONPATH=src .venv/bin/python -m pytest -q          # 137 tests (GPU-marked tests skip on CPU-only boxes)
     PYTHONPATH=src .venv/bin/python scripts/m8_mass_exact.py       # example
     PYTHONPATH=src:scripts .venv/bin/python scripts/e1_complex_structure.py
 

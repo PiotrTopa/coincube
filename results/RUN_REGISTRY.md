@@ -22,12 +22,30 @@ audit trail the assertion design cannot provide by itself.
 | Sep 2 | q=0.15 cone row exclusion | the row was excluded from evidence at the ANALYSIS level (probe radii outside the node's linear window, slope change 0.30 between radii); at the time of exclusion no automated rule encoded this — the linear-range flag (LIN_MAX = 0.15, within_linear_range in the JSON) was added to w3c_corner.py afterwards, prospectively. The committed 4-row JSON predates the flag. |
 | Sep 2 | m8 (T0=1) stdout logs, twice | log files lost while the JSON landed intact: git stash/rebase operations executed against the repo during the live runs replaced the tracked log's inode, orphaning the writer's file descriptor. The two runs' JSONs are byte-identical (determinism certificate). Lesson adopted: long runs write logs outside the repo and copy in on completion; no git operations against a repo with live writers. Final log from run 3. |
 
+| Sep 3 | w3c_fresh first launch (gate row) | killed mid-run: launched at TCYC=7 before the sharp torus horizon T <= ceil(L/8) = 6 at L=48 was proven; relaunched at TCYC=6. No output written. |
+| Sep 3 | w3c_control_fresh at R=1200 | CONTROL GATE TRIPPED: broken-triple (control B) r1 anisotropy not resolved at 3 sigma with R=1200 (ratio 0.65, sigma 0.14 — 2.5 sigma); a positive control must resolve its known answer. Relaunched at R=3600; anisotropy resolved at 8.6/11.6 sigma. No JSON was written by the failed run; its log is retained outside the repo. |
+| Sep 3 | i3_fresh first launch | crashed on an over-strict amplitude-gate assertion (gate.sum() >= 3) at the starvation-prone last cycle; the gate was made tolerant (retained-momentum accounting) before rerun. No data involved. |
+
 ## Evidence runs (current)
 
 Every results/*.json and *.log file in this directory is the output of the
 run that produced it; instruments crash on gate failure before writing.
-The runs backing the paper's quoted numbers: w3c_corner (4 rows, per-q
-gates), m8_corner (2 rows, gated), w4_helicity (gated), i3_quenched3d
-(g=0 exactness gate), w3c_positive_control (anisotropic known-answer
-controls A and B), plus the theory/certificate scripts (assert before
-write).
+
+The runs backing the paper's quoted numbers (fresh-tape campaign, Sep 3):
+w3c_fresh (annealed gate + quenched F1 rows, TCYC=6 = ceil(48/8)),
+w4_fresh (helicity), m8_fresh (massive, TCYC=6), i3_fresh (interaction
+law, L=40, T=3), w3c_control_fresh (known-answer controls A and B at
+R=3600), inout_fresh (exact two-boundary check), plus the
+theory/certificate scripts (assert before write): freshtape_proof,
+reread_kinematics, freshtape_interaction, theory_3d_certs (both
+schedules), bridge_check, orbit_flow.
+
+The generic-schedule campaign (w3c_corner 4 rows, m8_corner, w4_helicity,
+i3_quenched3d, w3c_positive_control) remains evidence for the paper's
+generic-schedule subsection (re-read corrections) and for the
+schedule-comparison figure; it no longer backs the headline rows.
+
+Formalization note: the linear-range rule (probe radii inside the node's
+measured linear window) is encoded prospectively in w3c_corner.py
+(LIN_MAX / within_linear_range) and inherited by w3c_fresh.py via the
+asserted estimator identity.

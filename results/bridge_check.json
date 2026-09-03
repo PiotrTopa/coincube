@@ -1,0 +1,38 @@
+[
+ {
+  "L": 3,
+  "q_env": 0.08,
+  "seed": 1,
+  "M": 108,
+  "Phi_intertwines_i_vs_I": 0.0,
+  "Phi_intertwines_dynamics": 0.0,
+  "hermitian_form_matches": 8.881784197001252e-15
+ },
+ {
+  "L": 3,
+  "q_env": 0.08,
+  "seed": 2,
+  "M": 108,
+  "Phi_intertwines_i_vs_I": 0.0,
+  "Phi_intertwines_dynamics": 0.0,
+  "hermitian_form_matches": 7.944109290391274e-15
+ },
+ {
+  "L": 3,
+  "q_env": 0.35,
+  "seed": 3,
+  "M": 108,
+  "Phi_intertwines_i_vs_I": 0.0,
+  "Phi_intertwines_dynamics": 0.0,
+  "hermitian_form_matches": 8.881784197001252e-15
+ },
+ {
+  "L": 2,
+  "q_env": 0.08,
+  "seed": 4,
+  "M": 32,
+  "Phi_intertwines_i_vs_I": 0.0,
+  "Phi_intertwines_dynamics": 0.0,
+  "hermitian_form_matches": 3.552713678800501e-15
+ }
+]

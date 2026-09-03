@@ -1,0 +1,59 @@
+{
+  "L": 48,
+  "T": 3,
+  "q": 0.08,
+  "g": 0.3,
+  "launch": 0,
+  "law_per_cycle": 0.99616,
+  "configA_flush": {
+    "counters": {
+      "env_reread": 0,
+      "pending_read": 0,
+      "relocated_read": 0,
+      "write_on_read": 0,
+      "iota_reread": 0,
+      "writes": 12632256
+    },
+    "dev_per_cycle": [
+      1.1102230246251565e-16,
+      1.457167719820518e-16,
+      2.0747292772682613e-15
+    ],
+    "scale_per_cycle": [
+      0.6063550013440001,
+      0.36766638765488246,
+      0.22293635298061995
+    ]
+  },
+  "configB_noflush": {
+    "counters": {
+      "env_reread": 0,
+      "pending_read": 230272,
+      "relocated_read": 230272,
+      "write_on_read": 0,
+      "iota_reread": 0,
+      "writes": 12632256
+    },
+    "dev_per_cycle": [
+      1.1102230246251565e-16,
+      0.0009387755837049691,
+      0.0011341401696002007
+    ],
+    "scale_per_cycle": [
+      0.6063550013440001,
+      0.36766638765488246,
+      0.22293635298061995
+    ]
+  },
+  "cyclefield_first_reread": {
+    "mass production (1/cycle, fixed axis)": 2,
+    "mass F1 (3/cycle, fixed axis)": null,
+    "iota production (1/cycle, rotating axis)": 6,
+    "iota rotating 3/cycle": 6,
+    "iota rotating 5/cycle": 6,
+    "iota rotating 6/cycle": 3,
+    "iota rotating 7/cycle": null,
+    "iota F1 (3/cycle, fixed axis)": null
+  },
+  "elapsed_s": 81.75401878356934
+}

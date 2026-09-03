@@ -1,0 +1,16 @@
+F1i paired damping check: L=40, E=5000 x 2 launches, q=0.08, T=3  (GPU=True)
+ [gate PASSED] g=0 known answer: max|Z_B - Z_A| = 0.0 (exact)
+
+ g = 0.3  (evolve 67s)   law per cycle = 0.99616   tol = 0.0372
+   t  |rho| wmean    law^t  k-spread  n_k
+   1      0.99742  0.99616   0.00000    6
+   2      0.99993  0.99233   0.00018    6
+   3      0.98334  0.98852   0.00000    1
+
+ g = 0.6  (evolve 68s)   law per cycle = 0.99232   tol = 0.0526
+   t  |rho| wmean    law^t  k-spread  n_k
+   1      0.98967  0.99232   0.00000    6
+   2      0.99387  0.98470   0.00036    6
+   3      0.98503  0.97714   0.00000    1
+
+[PASSED] F1i law exact at every cycle within MC noise

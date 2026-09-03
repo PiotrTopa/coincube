@@ -1,0 +1,35 @@
+{
+  "q": 0.08,
+  "lemma_broken_speed_per_batch": 0.0,
+  "t3_dev_by_channel": {
+    "0": 2.7755575615628914e-17,
+    "1": 2.7755575615628914e-17,
+    "2": 2.7755575615628914e-17,
+    "3": 2.7755575615628914e-17
+  },
+  "s0_control": {
+    "reread": 13654,
+    "dev": 0.0017206249461306814,
+    "minsep_batches": 2
+  },
+  "t4_channel0": {
+    "reread_paths": 0,
+    "dev": 9.107298248878237e-17,
+    "annealed_l1": 0.8150316286417049,
+    "engine_crosscheck_dev": 5.7462715141731735e-18
+  },
+  "torus_first_wrap_dn": {
+    "12": 4,
+    "16": 4,
+    "24": 6,
+    "32": 8
+  },
+  "torus_exhibit_L16": {
+    "T2_rereads": 0,
+    "T3_rereads": 2262,
+    "T3_minsep_batches": 4,
+    "T3_dev": 0.00030481651436555933
+  },
+  "annealed_uk_dev": 1.2758510841771824e-15,
+  "elapsed_s": 20.52858066558838
+}

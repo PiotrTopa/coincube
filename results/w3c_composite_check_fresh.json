@@ -1,0 +1,17 @@
+{
+ "LX": 3,
+ "modes": 15,
+ "dim": 32768,
+ "schedule": "fresh",
+ "n_env_draws": 8,
+ "n_1p_mismatch": 0,
+ "n_2p_mismatch": 0,
+ "n_2p_entries_checked": 34848,
+ "mutation_control": {
+  "rule": "L2_SIGN16[3] flipped (config {c0,c1}, two-carrier only)",
+  "n_1p_mismatch": 0,
+  "n_2p_mismatch": 16,
+  "passes": true
+ },
+ "note": "fresh = three phase-continuing streaming layers per sub-step (odd-ring single-transposition convention); production certificate unchanged and re-runnable without --fresh"
+}

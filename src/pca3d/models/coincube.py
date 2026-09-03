@@ -128,25 +128,53 @@ def step_bits(n: np.ndarray, env: np.ndarray):
 # -- exact single-particle signed field (the instrument) -----------------------
 
 
+def _swap_once(field, sa, o):
+    """One pair-swap streaming application along axis sa, origin o."""
+    m = xp.moveaxis(field, sa, -1)
+    if o:
+        m = xp.roll(m, -1, axis=-1)
+    m0 = m[..., 0::2].copy()
+    m[..., 0::2] = m[..., 1::2]
+    m[..., 1::2] = m0
+    if o:
+        m = xp.roll(m, 1, axis=-1)
+    return xp.moveaxis(m, -1, sa)
+
+
 def evolve_field_cc(L: int, R: int, TCYC: int, q: float, seed: int = 3,
                     annealed: bool = False, launch: int = 0,
-                    co_stream: bool = False, n_blocks: int = 1) -> np.ndarray:
-    if L % 2:
-        raise ValueError("coincube requires even L (pair-swap env streaming)")
+                    co_stream: bool = False, n_blocks: int = 1,
+                    streaming: str = "production") -> np.ndarray:
     """Signed single-particle field of the layered CA, mean over R media.
 
     Per medium the field evolution is the exact fermionic single-particle
     sector: conversion applies the SIGNED C_a where env = 1 (Givens signs),
     then the coin-steered shift. Returns G(t, 4, L, L, L).
+
+    streaming = 'fresh' (F1) is the manuscript's model: three
+    PHASE-CONTINUING swaps per axis substep (bits at +-6 sites/cycle); no
+    path ever re-reads a bit, so the quenched ensemble propagator equals
+    the annealed operator exactly for TCYC <= ceil(L/8) (freshtape
+    theorem; sharp torus horizon).
+    streaming = 'production' (default, kept as the byte-identical baseline
+    of the generic-schedule campaign): one swap per axis substep (bits
+    counter-propagate at +-2 sites/cycle; re-reads and their corrections
+    exist).
     """
+    if L % 2:
+        raise ValueError("coincube requires even L (pair-swap env streaming)")
+    if streaming not in ("production", "fresh"):
+        raise ValueError("streaming must be 'production' or 'fresh'")
     perms = [xp.asarray(p) for p in PERMS]
     signs = [xp.asarray(s) for s in SIGNS]
+    fresh = streaming == "fresh"
     r = np.random.default_rng(seed)
     acc = np.zeros((max(1, n_blocks), TCYC + 1, 4, L, L, L))
     per_block = max(1, R // max(1, n_blocks))
 
     for rep in range(R):
         env = xp.asarray(r.random((3, L, L, L)) < q)
+        phase = [0, 0, 0]
         g = xp.zeros((4, L, L, L))
         g[launch, L // 2, L // 2, L // 2] = 1.0
         out = [g.copy()]
@@ -166,15 +194,14 @@ def evolve_field_cc(L: int, R: int, TCYC: int, q: float, seed: int = 3,
                 g[c] = xp.roll(g[c], int(COIN_D[a][c]), axis=a)
             if not annealed:
                 sa = a if co_stream else (a + 1) % 3
-                m = xp.moveaxis(env[a], sa, -1)
-                if o:
-                    m = xp.roll(m, -1, axis=-1)
-                m0 = m[..., 0::2].copy()
-                m[..., 0::2] = m[..., 1::2]
-                m[..., 1::2] = m0
-                if o:
-                    m = xp.roll(m, 1, axis=-1)
-                env[a] = xp.moveaxis(m, -1, sa)
+                if fresh:
+                    e = env[a]
+                    for _s in range(3):
+                        e = _swap_once(e, sa, phase[a] % 2)
+                        phase[a] += 1
+                    env[a] = e
+                else:
+                    env[a] = _swap_once(env[a], sa, o)
 
         for _ in range(TCYC):
             for a in (0, 1, 2):
@@ -217,39 +244,39 @@ def annealed_u8(kvec, q: float, qm: float) -> np.ndarray:
 
 def evolve_field_m8(L: int, R: int, TCYC: int, q: float, qm: float,
                     seed: int = 3, annealed: bool = False,
-                    launch: int = 0, n_blocks: int = 1) -> np.ndarray:
-    """Signed single-particle field of the massive coincube, mean over media."""
-    if L % 2:
-        raise ValueError("coincube requires even L (pair-swap env streaming)")
-    _doc = """
+                    launch: int = 0, n_blocks: int = 1,
+                    streaming: str = "production") -> np.ndarray:
+    """Signed single-particle field of the massive coincube, mean over media.
 
     Axis layers as in evolve_field_cc (conversion, coin-steered shift,
     cross-streamed env); one mass layer per cycle (site-controlled Givens on
-    the b_m pairs, 4th env field of density q_m, streamed along axis 0 with
-    per-cycle alternating origin). Returns G(t, 8, L, L, L).
+    the b_m pairs, 4th env field of density q_m). streaming = 'fresh' (F1)
+    is the manuscript's model: carrier fields three phase-continuing swaps
+    per substep; mass field three phase-continuing swaps per cycle along
+    axis 0 -- all reads fresh for TCYC <= ceil(L/8).
+    streaming = 'production' (default, generic-schedule baseline): carrier
+    fields one swap per substep, mass field streamed along axis 0 with
+    per-cycle alternating origin (re-reads at Delta t = 2 explain the
+    quenched mass drifts). Returns G(t, 8, L, L, L).
     """
+    if L % 2:
+        raise ValueError("coincube requires even L (pair-swap env streaming)")
+    if streaming not in ("production", "fresh"):
+        raise ValueError("streaming must be 'production' or 'fresh'")
     perms = [xp.asarray(p) for p in PERMS8]
     signs = [xp.asarray(s) for s in SIGNS8]
     mperm = np.asarray(MASS_PERM)
     msign = np.asarray(MASS_SIGN)
+    fresh = streaming == "fresh"
     r = np.random.default_rng(seed)
     acc = np.zeros((max(1, n_blocks), TCYC + 1, 8, L, L, L))
     per_block = max(1, R // max(1, n_blocks))
 
-    def stream(field, axis, o):
-        m = xp.moveaxis(field, axis, -1)
-        if o:
-            m = xp.roll(m, -1, axis=-1)
-        m0 = m[..., 0::2].copy()
-        m[..., 0::2] = m[..., 1::2]
-        m[..., 1::2] = m0
-        if o:
-            m = xp.roll(m, 1, axis=-1)
-        return xp.moveaxis(m, -1, axis)
-
     for rep in range(R):
         env = xp.asarray(r.random((3, L, L, L)) < q)
         envm = xp.asarray(r.random((L, L, L)) < qm)
+        phase = [0, 0, 0]
+        mphase = 0
         g = xp.zeros((8, L, L, L))
         g[launch, L // 2, L // 2, L // 2] = 1.0
         out = [g.copy()]
@@ -266,7 +293,15 @@ def evolve_field_m8(L: int, R: int, TCYC: int, q: float, qm: float,
             for c in range(8):
                 g[c] = xp.roll(g[c], int(COIN_D8[a][c]), axis=a)
             if not annealed:
-                env[a] = stream(env[a], (a + 1) % 3, o)
+                sa = (a + 1) % 3
+                if fresh:
+                    e = env[a]
+                    for _s in range(3):
+                        e = _swap_once(e, sa, phase[a] % 2)
+                        phase[a] += 1
+                    env[a] = e
+                else:
+                    env[a] = _swap_once(env[a], sa, o)
 
         for t in range(TCYC):
             for a in (0, 1, 2):
@@ -280,7 +315,14 @@ def evolve_field_m8(L: int, R: int, TCYC: int, q: float, qm: float,
                 new[cp] = xp.where(mask, float(msign[c]) * g[c], g[cp])
             g = new
             if not annealed:
-                envm = stream(envm, 0, t % 2)
+                if fresh:
+                    nonloc = envm
+                    for _s in range(3):
+                        nonloc = _swap_once(nonloc, 0, mphase % 2)
+                        mphase += 1
+                    envm = nonloc
+                else:
+                    envm = _swap_once(envm, 0, t % 2)
             out.append(g.copy())
         stack = xp.stack(out)
         b = min(rep // per_block, max(1, n_blocks) - 1)
