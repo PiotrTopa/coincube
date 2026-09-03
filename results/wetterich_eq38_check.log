@@ -1,0 +1,8 @@
+Wetterich arXiv:2203.14081, Eq. (38) (CS9) -- exact recomputation
+  local factor == printed CS8                : yes
+  extracted action == printed CS9 + top      : yes
+  printed CS9 satisfies its own CS3          : NO
+  corrected CS9 (top coeff -1 -> -2) satisfies CS3: yes
+  discrepancy: the single monomial p1p2p3p4 b1b2b3b4 (coefficient -1 printed, -2 correct)
+
+[ALL ASSERTIONS PASSED]  (0.0s)  -> results/wetterich_eq38_check.json

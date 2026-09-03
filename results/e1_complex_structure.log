@@ -1,0 +1,7 @@
+1. PH lift: orthogonal OK, P^2 = +1, [Shat, P] = 0: True
+2. on non-half-filled sectors: I^2 = -1 OK, I antisymmetric: True, {K, I} = 0: True, K^2 = 1 (diag signs) OK
+3. [Shat, I] = 0 on non-half-filled sectors: True
+   unitarity in the complex picture: <Sq1, Sq2>_C = <q1, q2>_C  [OK]
+4. half-filled sector (7392 states): no Shat-orbit meets its PH image; explicit orbit-wise eta CONSTRUCTED and verified -> I^2 = -1, [Shat, I] = 0 hold GLOBALLY.
+
+E1 core: (K, I) exhibited, algebra verified, Shat unitary in the complex picture (globally, given check 4).

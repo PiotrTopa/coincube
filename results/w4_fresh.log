@@ -1,12 +1,12 @@
 
---- annealed q=0.08  (929s evolve) ---
+--- annealed q=0.08  (902s evolve) ---
   node pole: 0.5847+0.2030j  (exact annealed 0.5895+0.1927j)
   samples: 78 resolved, 0 unresolved (26 cubic-star directions x 3 pi-copies)
   helicity map: ||M^T M / s - I|| = 0.065 +- 0.017,  det M = -0.9629-0.0035i  ->  chi = -1 (exact -1; stable over all jackknife samples: True)
   pointwise |1 - n.n_exact|: mean 0.013 +- 0.008  max 0.067
   [gate PASSED]
 
---- quenched q=0.08  (778s evolve) ---
+--- quenched q=0.08  (837s evolve) ---
   node pole: 0.5979+0.1985j  (exact annealed 0.5895+0.1927j)
   samples: 78 resolved, 0 unresolved (26 cubic-star directions x 3 pi-copies)
   helicity map: ||M^T M / s - I|| = 0.060 +- 0.018,  det M = -0.9972+0.0156i  ->  chi = -1 (exact -1; stable over all jackknife samples: True)

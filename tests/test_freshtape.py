@@ -121,5 +121,47 @@ def test_fresh_exact_production_not():
     assert dev_prod > 1e-5, f"production unexpectedly exact: {dev_prod}"
 
 
+def test_shipped_fresh_path_matches_certified_reference():
+    """Exercise the SHIPPED evolve_field_cc fresh branch (not a re-implementation)
+    against a reference built only from the certified legal layers.
+
+    This is the test that a mutation of the batch size (3 -> 2 swaps) or of the
+    phase-continuation must fail: both change the reference/shipped agreement,
+    not merely a stored checksum.
+    """
+    import numpy as np
+    from pca3d.models.coincube import (COIN_D, PERMS, SIGNS, evolve_field_cc,
+                                       layer_env)
+
+    L, TCYC, Q, SEED, LAUNCH = 8, 2, 0.5, 5, 1   # dense: reads must differ
+
+    # reference: same medium draw, layers composed by hand from layer_env
+    rng = np.random.default_rng(SEED)
+    env = rng.random((3, L, L, L)) < Q
+    phase = [0, 0, 0]
+    g = np.zeros((4, L, L, L))
+    g[LAUNCH, L // 2, L // 2, L // 2] = 1.0
+    ref = [g.copy()]
+    for _t in range(TCYC):
+        for a in (0, 1, 2):
+            for o in (0, 1):
+                new = np.empty_like(g)
+                for c in range(4):
+                    cp = int(PERMS[a][c])
+                    new[cp] = np.where(env[a], float(SIGNS[a][c]) * g[c], g[cp])
+                g = new
+                for c in range(4):
+                    g[c] = np.roll(g[c], int(COIN_D[a][c]), axis=a)
+                for _s in range(3):                    # F1: three batches,
+                    env[a] = layer_env(env[a], a, phase[a] % 2)   # certified
+                    phase[a] += 1                      # phase-continuing
+        ref.append(g.copy())
+    ref = np.stack(ref)
+
+    got = evolve_field_cc(L, 1, TCYC, Q, seed=SEED, launch=LAUNCH,
+                          n_blocks=1, streaming="fresh")
+    assert np.allclose(np.asarray(got), ref, atol=1e-14)
+
+
 if __name__ == "__main__":
     sys.exit(pytest.main([__file__, "-q"]))

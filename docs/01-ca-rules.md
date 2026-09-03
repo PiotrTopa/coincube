@@ -112,11 +112,34 @@ space (parity). Under Branch B, invariance is required of the full cycle `S_cycl
 of each `S_k` -- but the deficit of each individual step is recorded, because it is
 exactly the quantity that has to die out in the true continuum limit.
 
+**R6 relaxation, adopted for the chiral single-node construction (the coincube).**
+A single Weyl node is intrinsically chiral: parity maps it to a node of the opposite
+chirality, so no rule carrying exactly one Weyl fermion can be parity invariant.
+Accordingly the coincube retains only the PROPER rotations of the lattice point group
+that its coin can represent -- the 12 tetrahedral rotations, `T = A4` -- together with
+the antiunitary conjugation `U(-k) = U(k)*` which replaces parity as the exact global
+constraint (it is what pairs the census charges). Parity, time reversal and the odd
+axis transpositions are broken by design, and the breaking is not incidental: the
+quaternionic orientation `C_x C_y C_z = +1` is what forbids the odd permutations, and
+the same orientation is the origin of the node's `k_x k_y k_z` velocity anisotropy
+(manuscript, Sec. "The chiral anisotropy"). The inversion-doubled (massive) model
+restores the parity pair and cancels that anisotropy exactly.
+
+This relaxation is scoped to R6 only; R1-R5, R4half and R7 are unrelaxed for every
+model in this repository.
+
 ## R7 -- No hidden continuum input
 
 The rule is specified entirely by combinatorics on bits. No metric, vierbein, gamma
 matrix, or real-valued coupling may appear in the definition of the update. Continuum
 objects may only *emerge* in the analysis of the resulting automaton.
+
+Note on the model's continuous dials. The densities `q`, `q_m` and `g` are parameters of
+the INITIAL PRODUCT MEASURE over bit configurations, not of the update rule: the update
+is a fixed signed permutation of bits, identical at every density. This is what R7
+permits (a probability distribution over classical initial conditions is not a continuum
+object inside the rule); it is also why the dressing law `v(q)` is an ensemble property
+rather than a tunable coupling in the automaton.
 
 ---
 

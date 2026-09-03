@@ -18,6 +18,32 @@ def test_quaternion_tables():
             assert COIN_D[a][int(PERMS[a][c])] == -COIN_D[a][c]
 
 
+def test_quaternion_orientation():
+    """The triple's ORIENTATION is load bearing (chirality of the node, the
+    sign of the odd anisotropy, and why the C_a (x) Z doubling fails); it is
+    invisible to the algebra tests above, which are sign-flip invariant."""
+    cx, cy, cz = (np.asarray(c, float) for c in COIN_C)
+    assert np.allclose(cx @ cy @ cz, np.eye(4))     # paper Sec. V B
+    assert np.allclose(cz @ cy @ cx, -np.eye(4))    # the composed cycle order
+    # spectral consequence: the node frequency of the cyclic cycle order
+    om = abs(np.angle(np.linalg.eigvals(annealed_u(np.zeros(3), 0.08))[0]))
+    assert abs(om - 0.31595) < 1e-4
+
+
+def test_swap_once_equals_certified_layer():
+    """_swap_once (used by every measured result) must be the certified
+    legal layer layer_env, bit for bit, on both origins and all axes."""
+    from pca3d.models.coincube import _swap_once, xp
+    rng = np.random.default_rng(17)
+    env = rng.random((4, 6, 6, 6)) < 0.3
+    for a in range(3):
+        sa = (a + 1) % 3
+        for o in (0, 1):
+            got = _swap_once(xp.asarray(env[a]), sa, o)
+            got = got.get() if hasattr(got, "get") else np.asarray(got)
+            assert np.array_equal(got, layer_env(env[a], a, o))
+
+
 def test_layer_bijectivity_and_conservation():
     rng = np.random.default_rng(5)
     L = 4

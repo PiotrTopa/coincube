@@ -1,0 +1,6 @@
+axis x: physical gauge 40 terms (deg 2: 5, deg 4: 8, deg 6: 18, deg 8: 8, deg 10: 1); bare 49 terms (deg 2: 5, deg 4: 12, deg 6: 22, deg 8: 9, deg 10: 1)
+axis y: physical gauge 40 terms (deg 2: 5, deg 4: 8, deg 6: 18, deg 8: 8, deg 10: 1); bare 42 terms (deg 2: 5, deg 4: 10, deg 6: 18, deg 8: 8, deg 10: 1)
+axis z: physical gauge 40 terms (deg 2: 5, deg 4: 8, deg 6: 18, deg 8: 8, deg 10: 1); bare 51 terms (deg 2: 5, deg 4: 14, deg 6: 22, deg 8: 9, deg 10: 1)
+env swap block: 3 terms
+all headline assertions passed (physical gauge: 40 terms, axis-universal; bare gauge axis-dependent 49/42/51 — gauge artifact; env swap block 3 terms)
+fresh-tape check passed: conversion-block extraction is schedule-independent (no streaming input); one F1 batch factor == composition of three production streaming factors (lift asserted sign-for-sign on a 4-site ring), and its action is again the single quadratic transport bilinear of the composed permutation

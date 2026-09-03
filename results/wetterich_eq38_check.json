@@ -1,0 +1,10 @@
+{
+ "reference": "arXiv:2203.14081 (Wetterich), Eq. (38) / label CS9",
+ "claim": "top-monomial coefficient is -2, printed -1",
+ "local_factor_equals_printed_CS8": true,
+ "extracted_action_equals_corrected_CS9": true,
+ "printed_CS9_satisfies_CS3": false,
+ "corrected_CS9_satisfies_CS3": true,
+ "discrepancy": "single monomial p1p2p3p4 b1b2b3b4; printed coefficient -1, correct -2",
+ "elapsed_s": 0.0029904842376708984
+}

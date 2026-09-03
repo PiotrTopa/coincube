@@ -383,12 +383,74 @@ def cyclefield_first_reread(k, rotating, Tmax=60):
     return None
 
 
+def torus_horizon(Lmax=200, Tmax=12):
+    """Kinematic torus horizon of the FLUSHED (interacting) schedule.
+
+    Per cycle the axis-a field receives three batches -- one after each of
+    its two axis-a substeps and one post-imprint flush -- so by Lemma B its
+    bits move 9 sites/cycle monotonically, while the carrier moves at most
+    one site per axis-s_a substep, i.e. 2 sites/cycle along s_a (plus at
+    most one intra-cycle step).  A wrap-induced re-read at cycle separation
+    dt therefore needs
+
+        9*n_batches(dt) = dy  (mod L),   |dy| <= m(dt),  dy = m (mod 2),
+
+    with n_batches and m counted from the real substep word.  This function
+    enumerates read pairs on that word and returns, for each T, the largest
+    L that still admits a wrap match (so every L above it is safe).
+
+    Asserts the manuscript's sufficient condition L > 11T + 6.
+    """
+    worst = {}
+    for T in range(1, Tmax + 1):
+        # substep word of T cycles: (axis, is_read_of_field_a, batches_after)
+        # field a = 0 (s_a = 1); per cycle: axis0 o0, axis0 o1, axis1 x2,
+        # axis2 x2, then the flush batch.
+        reads, nb, m_at = [], 0, []
+        msteps = 0
+        for _t in range(T):
+            for axis in (0, 1, 2):
+                for _o in (0, 1):
+                    if axis == 0:
+                        reads.append((nb, msteps))   # read precedes its batch
+                        nb += 1                      # own-axis batch
+                    if axis == 1:                    # s_a substep: carrier +-1
+                        msteps += 1
+            nb += 1                                  # post-imprint flush batch
+        bad_L = 0
+        for i in range(len(reads)):
+            for j in range(i + 1, len(reads)):
+                dn = reads[j][0] - reads[i][0]
+                m = reads[j][1] - reads[i][1]
+                d_bit = 3 * dn                       # Lemma B, 3 swaps/batch
+                for L_ in range(4, Lmax + 1, 2):
+                    for dy in range(-m, m + 1):
+                        if (dy - m) % 2:
+                            continue
+                        if (d_bit - dy) % L_ == 0:
+                            bad_L = max(bad_L, L_)
+                            break
+        worst[T] = bad_L
+        assert bad_L <= 11 * T + 6, (T, bad_L)
+    return worst
+
+
 def main():
     t0 = time.time()
     law = 1 - 2 * G * Q * Q
     print(f"== T2/TASK 2: imprint writes under fresh-tape streaming ==")
     print(f"   L={L}, T={T}, q={Q}, g={G}, launch {C0}; "
           f"law/cycle = 1-2gq^2 = {law:.6f}\n")
+
+    th = torus_horizon()
+    RESULTS["torus_horizon"] = {str(k): v for k, v in th.items()}
+    print(f" torus horizon of the flushed schedule (largest wrap-admitting "
+          f"L per T): {dict(list(th.items())[:6])}")
+    print(f"   sufficient bound L > 11T+6 verified for T <= {max(th)}; "
+          f"this run L={L}, T={T} (horizon {th[T]}), i3 run L=40, T=3 "
+          f"(horizon {th[3]})   [OK]")
+    assert L > th[T] and 40 > th[3]
+
     ann = annealed_percycle()
 
     # gate: g = 0 must reduce to the fresh-tape identity, with and without

@@ -196,12 +196,14 @@ def main():
             sr = jackknife([s[f] / s["100"] for s in jk])
             dia = _diamond(FAMILIES[f][0])
             zd = (dia - ratio) / sr if sr > 0 else float("nan")
-            rows[f] = {"v": float(full[f]), "ratio": float(ratio),
+            sv = jackknife([s[f] for s in jk])       # ABSOLUTE-slope error
+            rows[f] = {"v": float(full[f]), "sig_v": sv,
+                       "ratio": float(ratio),
                        "sig_ratio": sr, "diamond": dia,
                        "z_diamond": float(zd),
                        "per_delta": full[f + "_per_delta"]}
-            print(f"    {f:>4}: v={full[f]:.4f}  ratio={ratio:.4f}+-{sr:.4f}"
-                  f"  z_diamond={zd:.1f}")
+            print(f"    {f:>4}: v={full[f]:.4f}+-{sv:.4f}  "
+                  f"ratio={ratio:.4f}+-{sr:.4f}  z_diamond={zd:.1f}")
         results[mode] = {
             "lam_mod": float(abs(lam)), "sig_mod": smod,
             "om0": float(abs(np.angle(lam))), "sig_om": som, "rows": rows}

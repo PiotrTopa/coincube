@@ -1,0 +1,21 @@
+1. sectors share the node (lam0 = 0.589514+0.192712j); chiralities -1 / +1  -> Dirac doubling: True
+2. Dirac-Clifford on the node: {h_a,h_b} = 2v^2 d_ab (v = 1.180579), {h_a,h_m} = 0, h_m^2 = mu^2 (mu = 1.000000)  [OK]
+3. mass law m(q_m) vs arctan(q_m / (1 - q_m)):
+   q_m=0.01  m = 0.0101006666  arctan = 0.0101006666  diff = 8.67e-17
+   q_m=0.02  m = 0.0204053307  arctan = 0.0204053307  diff = 1.25e-16
+   q_m=0.05  m = 0.0525830616  arctan = 0.0525830616  diff = 3.12e-16
+   q_m=0.1   m = 0.1106572212  arctan = 0.1106572212  diff = 1.25e-16
+   q_m=0.2   m = 0.2449786631  arctan = 0.2449786631  diff = 1.94e-16
+   EXACT (<= 1e-9 at every q_m)  [OK]
+4. relativistic dispersion (q_m = 0.05, m = 0.05258, v = 1.18058): isotropy at fixed |k| + scalar-correction scaling
+   |k|=0.005: direction spread 8.67e-04, scalar deviation from sqrt form 2.89e-03
+   |k|=0.01: direction spread 3.32e-03, scalar deviation from sqrt form 1.13e-02
+   |k|=0.02: direction spread 1.26e-02, scalar deviation from sqrt form 4.14e-02
+   spread scaling under k x2: 3.82  (O(k^2) curvature -> ~4)
+   scalar deviation at fixed vk/m ~ 1.1 vs q_m:
+     q_m=0.1     rel dev = 5.00e-01
+     q_m=0.05    rel dev = 2.76e-01   (ratio 0.55)
+     q_m=0.025   rel dev = 1.44e-01   (ratio 0.52)
+     q_m=0.0125  rel dev = 7.39e-02   (ratio 0.51)
+
+M8 exact level: Dirac doubling, full Clifford, exact arctan mass law, ISOTROPIC massive dispersion (scalar corrections higher-order)  [ALL OK]

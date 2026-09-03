@@ -1,0 +1,7 @@
+control-variant split of dC2 (substrate, single-site iota):
+  iota  |dC2| parity  |dC2| occup.  |blocking|  block/total
+   100    1.3477e-01    1.3477e-01  0.0000e+00        0.000
+   010    1.5388e-01    1.5388e-01  3.1126e-03        0.020
+   111    1.6941e-01    1.6941e-01  4.5111e-03        0.027
+
+(the occupancy variant is an instrument CONTROL only — it breaks PH and is never part of the model; the blocking artifact is the parity-vs-occupancy difference, separable as predicted.)

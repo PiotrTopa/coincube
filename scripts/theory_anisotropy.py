@@ -185,9 +185,9 @@ for da in bal:
 odds = np.array(odds)
 OUT["nogo_models"] = int(len(odds))
 OUT["nogo_min_abs_odd"] = float(odds.min())
-assert odds.min() > 0.1, odds.min()
+assert odds.min() > 0.85 * 0.1384, odds.min()   # >= 0.85x the production value
 print(f"  12 units, 48 triples; {len(odds)} isotropic-node models; "
-      f"min |odd| = {odds.min():.4f} (assert > 0.1)")
+      f"min |odd| = {odds.min():.4f} (assert >= 0.85x production)")
 
 # ---------------------------------------------------------------- C
 print("=== C. inversion-doubling cancellation (Dirac branch) ===")
