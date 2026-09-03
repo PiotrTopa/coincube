@@ -1,5 +1,5 @@
 
---- annealed q=0.08 qm=0.05  (R=3000 x 8 launches, 3463s evolve) ---
+--- annealed q=0.08 qm=0.05  (R=3000 x 8 launches, 3566s evolve) ---
   node poles (+Im): phases ['0.2724', '0.2781', '0.3747', '0.3768'] moduli ['0.575', '0.590', '0.579', '0.592']
   omega_c = 0.3246 +- 0.0074, m_meas = 0.05218 +- 0.00561  (annealed theory m = 0.05258; arctan law 0.05258)
   upper branch omega_+ - omega_c  (pred = sqrt(m^2 + v^2 d^2), v = 1.1806):
@@ -10,7 +10,7 @@
    pred  0.0704  0.0977  0.1291
   [gate PASSED]
 
---- quenched q=0.08 qm=0.05  (R=3000 x 8 launches, 2817s evolve) ---
+--- quenched q=0.08 qm=0.05  (R=3000 x 8 launches, 2847s evolve) ---
   node poles (+Im): phases ['0.2656', '0.2707', '0.3722', '0.3793'] moduli ['0.595', '0.582', '0.582', '0.589']
   omega_c = 0.3224 +- 0.0103, m_meas = 0.05687 +- 0.00403  (annealed theory m = 0.05258; arctan law 0.05258)
   upper branch omega_+ - omega_c  (pred = sqrt(m^2 + v^2 d^2), v = 1.1806):
