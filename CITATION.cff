@@ -8,7 +8,7 @@ authors:
     orcid: "https://orcid.org/0009-0005-2870-2463"
 year: 2026
 repository-code: "https://github.com/PiotrTopa/coincube"
-license: MIT
+license: MIT   # applies to the software; the manuscript in paper/ is all rights reserved (paper/LICENSE)
 preferred-citation:
   type: article
   title: "Fermionic quantum field theories as probabilistic cellular automata in three dimensions"

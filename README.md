@@ -183,6 +183,7 @@ committed evidence behind every number in the paper.
 ## Layout
 
     paper/          manuscript: topa-coincube-I.{tex,pdf} (REVTeX), figures
+                    (all rights reserved — see paper/LICENSE, not MIT)
     docs/           the R1-R7 rules contract every construction obeys
     src/pca3d/
       core/         lattice, bit encoding, unique-jump verification
@@ -230,5 +231,16 @@ all certificates run on CPU.
 
 ## License
 
-MIT (see `LICENSE`). The manuscript in `paper/` is the author's preprint
-version and is not covered by the code license.
+Two licenses, by directory:
+
+  - **Code, tests and results — MIT** (see `LICENSE`): everything in
+    `src/`, `scripts/`, `tests/` and the machine-readable artifacts in
+    `results/`. Use it, modify it, redistribute it; attribution appreciated,
+    warranty none.
+  - **Manuscript and figures — all rights reserved** (see `paper/LICENSE`):
+    `paper/topa-coincube-I.{tex,pdf}` and `paper/figs/`. The author's
+    preprint, available for reading, citation and review; no redistribution
+    or derivative-works license is granted. Scholarly quotation is
+    unaffected.
+
+Copyright (c) 2026 Piotr Stanisław Topa.
