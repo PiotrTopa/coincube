@@ -29,6 +29,44 @@ This repository contains the complete verification code behind the paper
 Every claim tagged [proven] / [machine-checked] / [measured] in the paper
 maps to a runnable, self-asserting script here.
 
+## Abstract
+
+*The manuscript abstract, in plain text.*
+
+Wetterich has shown that certain probabilistic cellular automata in 1+1
+dimensions are exactly equivalent to fermionic quantum field theories, and
+posed the three-dimensional construction as an open problem. We construct
+one: a layered automaton (the "coincube") whose conversion blocks form the
+real quaternion representation of Cl(0,3), controlled by binary environment
+fields whose streaming outruns the carrier ("fresh tape") — no bit is ever
+consulted twice, and the quenched single-particle ensemble propagator equals
+the annealed Bloch operator identically at every time, a theorem of the
+model. Exact consequences: the step operator is unitary with respect to an
+explicit complex structure, with the spectral analysis its faithful
+complexification; the local Grassmann action is extracted mechanically; the
+single-carrier excitation is a Weyl fermion with an exactly isotropic
+leading cone, confirmed by gated measurement (slope ratios 1 within errors,
+the factorized-transport benchmark excluded by ≥10 error bars, helicity
+residues with chirality −1); at finite momentum the node carries a
+parity-odd anisotropy c(q)·kx·ky·kz/|k|, carried by every member of the
+four-component coin class (exhaustive enumeration) and cancelled exactly on
+the inversion-doubled Dirac branch, whose gap is exactly
+2·arctan[qm/(1−qm)] while the off-resonant spectators of the computed
+44-point Floquet–Weyl census stay exactly massless; a media-mediated
+interaction obeys Ug = (1−2gq²)·U exactly at every cycle. The obstructions
+are charted alongside: ballistic transport admits only finite velocity sets
+(proven); Abelian sign gauges leave the factorized surface (measured over a
+finite gauge menu); no protected two-component node survives a
+table-exhaustive search. Finally, a dichotomy for the quaternionic event
+class: an isotropic cone forces overdamping — Q = ω₀/Γ ≤ π/(2·ln 2) at every
+density, 0.66 at the working density (proven) — while in-state unitarity
+forces factorized transport, under stated hypotheses on the read geometry
+and the medium. The postselected two-boundary amplitudes evade the
+dichotomy, exactly unitary at all times under the fresh tape, with the
+positivity of their induced weight open: the exactly relativistic object of
+this construction is an amplitude whose probabilistic reading is not settled
+here.
+
 ## In plain terms, for the software engineer
 
 **The machine.** Picture a 3D grid, say 48×48×48 cells. Each cell holds a
