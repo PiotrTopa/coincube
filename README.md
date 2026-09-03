@@ -24,7 +24,7 @@ cycle.
 This repository contains the complete verification code behind the paper
 
 > P. S. Topa, *Fermionic quantum field theories as probabilistic cellular
-> automata in three dimensions* (2026) — `paper/main.pdf`
+> automata in three dimensions* (2026) — `paper/topa-coincube-I.pdf`
 
 Every claim tagged [proven] / [machine-checked] / [measured] in the paper
 maps to a runnable, self-asserting script here.
@@ -144,7 +144,7 @@ committed evidence behind every number in the paper.
 
 ## Layout
 
-    paper/          manuscript (REVTeX source, figures, PDF)
+    paper/          manuscript: topa-coincube-I.{tex,pdf} (REVTeX), figures
     docs/           the R1-R7 rules contract every construction obeys
     src/pca3d/
       core/         lattice, bit encoding, unique-jump verification
