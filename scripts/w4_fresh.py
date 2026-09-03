@@ -15,12 +15,16 @@ gives the measured map n(u); fit n = M u and check:
 Gate: the annealed row must reproduce the exact frame (chi = -1, small
 residuals) before the quenched row is believed.
 """
-import json, pathlib, time
+import json, os, pathlib, time
 import numpy as np
 
 from pca3d.models.coincube import evolve_field_cc
 
 L, R, TCYC, NB = 48, 3000, 6, 6
+# replication overrides (independent seed stream, separate output file):
+R = int(os.environ.get("W4F_R", R))
+SEED0 = int(os.environ.get("W4F_SEED", 11))
+OUT = os.environ.get("W4F_OUT", "results/w4_fresh.json")
 DELTA = 0.08
 RUNS = [("annealed", 0.08), ("quenched", 0.08)]
 X_POINTS = [np.array(v, float) * np.pi for v in
@@ -75,7 +79,9 @@ def plus_projector(U, lam_ref):
     return np.outer(rv, lv.conj()) / (lv.conj() @ rv)
 
 
-def analyse(mode, q, seed=11):
+def analyse(mode, q, seed=None):
+    if seed is None:
+        seed = SEED0
     t0 = time.time()
     Gs = [evolve_field_cc(L, R, TCYC, q, seed + 100 * c,
                           annealed=(mode == "annealed"), launch=c,
@@ -172,5 +178,5 @@ for mode, q in RUNS:
         assert r["ang_err_mean"] < 0.05, "GATE FAILED: pointwise agreement"
         print("  [gate PASSED]")
     results.append(r)
-pathlib.Path("results/w4_fresh.json").write_text(json.dumps(results, indent=1))
-print("\nwritten: results/w4_fresh.json")
+pathlib.Path(OUT).write_text(json.dumps(results, indent=1))
+print(f"\nwritten: {OUT}")

@@ -32,10 +32,10 @@ maps to a runnable, self-asserting script here.
 ## In plain terms, for the software engineer
 
 **The machine.** Picture a 3D grid, say 48×48×48 cells. Each cell holds a
-few bits: one *carrier* particle bit with a 2-bit internal register (the
-"coin" — four channels), plus three independent boolean *environment*
-fields, one per axis, each bit set to 1 with probability `q` at
-initialization. That initialization is the **only randomness in the entire
+few bits: four *carrier* occupation bits — one per internal channel, the
+2-bit "coin" register saying which channel a particle at that cell
+occupies — plus three independent boolean *environment* fields, one per
+axis, each bit set to 1 with probability `q` at initialization. That initialization is the **only randomness in the entire
 system**. From t=0 on, everything is a deterministic, reversible, local
 update rule — a massively parallel bijective state machine. Every step is
 a permutation of global states, so nothing is ever lost: you could run it

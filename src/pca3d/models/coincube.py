@@ -14,18 +14,26 @@ Per axis-a sub-step, three sequential layers, each a manifestly legal CA layer
       C^2 = -I comes from); |11> -> +|11>.
   L1 (motion): channel c translates by d_a(c) along axis a, unconditionally.
       Species-dependent translations are legal CA layers.
-  L3 (env): axis-a env field pair-swaps along the NEXT axis (a+1 mod 3),
-      origin alternating per sub-step — autonomous streaming; Bernoulli(q)
-      product measure is stationary. Cross-streaming is the legal
-      decorrelation knob: co-streaming (env_a along axis a) lets a
-      non-converting carrier co-move with its env bit and re-read it, so
-      conversions arrive in near-scalar bursts (C^2 = -I) — measured to
-      PT-split the Weyl pair at the X point into a real+oscillating pair
-      (node destroyed). Cross-streaming decorrelates every read.
+  L3 (env): axis-a env field pair-swaps along the NEXT axis (a+1 mod 3).
+      THE MODEL (streaming='fresh', the manuscript's schedule): three
+      phase-continuing pair-swap layers per sub-step — bits stream at
+      +-6 sites/cycle, the carrier at <=2, no bit is ever read twice
+      (fresh-tape theorem: quenched propagator == annealed operator
+      exactly, torus horizon T <= ceil(L/8)). The generic single-swap
+      schedule (streaming='production', the code default, kept as the
+      byte-identical baseline of the generic-schedule campaign) has
+      origin alternating per sub-step and carries re-read corrections.
+      Bernoulli(q) product measure is stationary under any pair-swap
+      schedule. Cross-streaming is mandatory: co-streaming (env_a along
+      axis a) lets a non-converting carrier co-move with its env bit and
+      re-read it, so conversions arrive in near-scalar bursts (C^2 = -I)
+      — measured to PT-split the Weyl pair at the X point into a
+      real+oscillating pair (node destroyed).
 
 Annealed Bloch operator per sub-step: T_a(k) = E_a(k_a) [(1-q) I + q C_a],
-E_a = diag(e^{i k_a d_a}); cycle U = Tz^2 Ty^2 Tx^2. Same quaternion tables
-as ADR 0011; carries the isotropic Weyl cone at all 8 BZ corners.
+E_a = diag(e^{i k_a d_a}); cycle U = Tz^2 Ty^2 Tx^2; under the fresh-tape
+schedule this operator theory is exact for the automaton. Carries the
+isotropic Weyl cone at all 8 BZ corners.
 """
 
 from __future__ import annotations

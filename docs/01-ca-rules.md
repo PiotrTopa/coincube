@@ -35,7 +35,7 @@ Consequences we rely on, and therefore must never silently lose:
   - Every configuration maps to exactly one successor, and has exactly one predecessor.
   - In the presence of a compatible complex structure (R5) this is a unitary evolution.
 
-This is the single most important constraint. `pca3d.core.uniquejump` verifies it by
+This is the single most important constraint. `pca3d.core.automaton` (`check_unique_jump`) verifies it by
 explicit bijectivity check on the configuration permutation, never by argument.
 
 ## R3 -- Homogeneity

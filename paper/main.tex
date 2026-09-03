@@ -413,7 +413,8 @@ propagator factorization, the linear conversion law, the mass law---is
 exact for the automaton itself. (b)~On the $L^3$ torus ($L$ even) the
 same holds for every evolution of $T\le\lceil L/8\rceil$ cycles, and
 this horizon is sharp: the first wrap-induced re-read joins two reads
-separated by exactly $2\lceil L/8\rceil$ axis substeps. \evP{}, \evM{}
+separated by exactly $2\lceil L/8\rceil$ of the field's own axis-$a$
+substeps. \evP{}, \evM{}
 \end{theorem}
 
 The proof (Appendix~\ref{app:proofs}) is a four-line kinematic argument
@@ -632,7 +633,8 @@ Theorem~\ref{thm:freshtape} the two rows measure the same operator.
 Results (Fig.~\ref{fig:cone}): the annealed gate row reproduces the
 exact operator (cubic-channel ratios within $10^{-3}$ of unity;
 off-symmetry channels within their own statistics; node modulus
-$0.619\pm0.005$ vs $0.620$), and the quenched row lands on the same
+$0.619\pm0.005$ vs $0.620$, frequency $0.334\pm0.032$ vs $0.316$), and
+the quenched row lands on the same
 operator, as Theorem~\ref{thm:freshtape} demands: node modulus
 $0.630\pm0.005$ ($+1.6\%$, $1.8\sigma$) and frequency
 $0.3205\pm0.0067$ ($+1.4\%$, $0.7\sigma$) against the closed forms,
@@ -800,7 +802,10 @@ $b_m$-flipping controlled Givens, driven by a fourth environment field of
 density $q_m$, streamed at three phase-continuing swaps per cycle along a
 fixed axis so that its reads are also fresh---a once-per-cycle field
 outruns the carrier iff its speed is at least $3$, and the fresh-tape
-identity then covers the massive model) couples the chiralities. Two operator identities carry the
+identity then covers the massive model; on the torus the mass tape
+advances three sites per cycle against a carrier bound of two, so its
+first wrap re-read requires a cycle separation of $\lceil L/5\rceil=10$
+at $L=48$, beyond the $T=6$ window used) couples the chiralities. Two operator identities carry the
 sector \evP{}: $U(k)=(\openone\otimes R_m)[U_4(k)\oplus U_4(-k)]$ and, at
 the node, $U(0)=U_4(0)\otimes M_2$ with $M_2$ a scaled rotation of the mass
 bit; hence the gap is \emph{exactly}
@@ -977,8 +982,12 @@ common-noise walkers (exact $g=0$ gate: the branches agree bit for bit)
 confirm the law at every retained cycle within the flip-shot-noise
 tolerance, with momentum spread at the noise floor ($\le4\times10^{-4}$
 wherever all probe momenta are retained; at the last cycle the
-amplitude gate retains a single probe momentum)---isotropy survives
-interaction exactly, by theorem and by measurement \evX{}.
+amplitude gate retains a single probe momentum). At these parameters
+the shot-noise tolerance exceeds the law's total deviation from unity,
+so the run's measured content is the isotropy and the per-cycle
+consistency; the law's \emph{magnitude} rests on the exact
+enumeration above---isotropy survives interaction exactly, by theorem
+and by measurement \evX{}.
 
 \section{Damping: a theorem and its unitary completion}
 \label{sec:damping}
@@ -1462,8 +1471,8 @@ Abelian-gauge diamond & \texttt{w2\_scalar\_gauges}\\
 coin scans ($n=2,4$) & \texttt{w3\_transfer\_scan}\\
 annealed cone & \texttt{w3\_cone\_verify}, \texttt{theory\_real\_cone}\\
 lift certificates & \texttt{w3c\_lift\_check}\\
-composite sign coherence & \texttt{w3c\_composite\_check}\\
-sector certificates (both schedules) & \texttt{theory\_3d\_certs}\\
+composite sign coherence (1D ring) & \texttt{w3c\_composite\_check}\\
+3D sign coherence; sectors & \texttt{theory\_3d\_certs}\\
 $[\hat S,P]$ proof blocks & \texttt{theory\_sp\_proof}\\
 fresh-tape theorem & \texttt{freshtape\_proof}\\
 re-read kinematics & \texttt{reread\_kinematics}\\
@@ -1524,8 +1533,14 @@ instrument) and every final quantity (slope, ratio) is jackknifed at the
 end-of-pipeline level over leave-one-block-out samples; the annealed gate
 row's deviation from the exact operator is recorded per channel and added
 in quadrature as a systematic. Off-symmetry direction families are measured alongside the
-cubic stars, and the diamond-exclusion significance is computed in code for
-every channel, with the weakest channel quoted.
+cubic stars. The diamond-exclusion significance is computed in code for
+every channel by the generic-schedule instrument; for the fresh-model
+rows the quoted significances are the committed ratios' distances from
+the benchmark values in units of their own jackknife errors---direct
+arithmetic on the stored rows---with the weakest channel quoted. The
+cone and helicity instruments draw their media from a common seed
+stream, so their quenched excursions are correlated; the massive
+instrument uses an independent stream.
 
 \emph{Gates.} Every production run carries an annealed known-answer row
 through the identical pipeline; a failed gate discards the run. Amplitude

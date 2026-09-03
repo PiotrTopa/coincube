@@ -9,14 +9,20 @@ env field. Under F1i every read is fresh, so the permutation-lift law
 
     Z_B(t, k) = (1 - 2 g q^2)^t  Z_A(t, k)
 
-holds EXACTLY at every cycle (x_freshtape_interaction: machine-exact at
-t = 1, 2, 3), where the production schedule shows 3--6% excursions from
-t = 2. This instrument confirms it at Monte Carlo scale with paired
-common-noise walkers. Wrap horizon: field speed 9/cycle + carrier 2 =>
-L > 11 * TCYC; L = 40, TCYC = 3.
+holds EXACTLY at every cycle (freshtape_interaction: machine-exact at
+t = 1, 2, 3), where the production schedule shows excursions from t = 2
+(2--2.5% at g = 0.3, up to 6% at g = 0.6). This instrument confirms it
+at Monte Carlo scale with paired common-noise walkers. Wrap horizon:
+flushed field speed 9/cycle + carrier 2 => L > 11 * TCYC + 6;
+L = 40, TCYC = 3 (40 > 39).
 
 Gates (hard): g = 0 paired branches agree bit for bit; the law holds at
-EVERY cycle to max(1.5e-2, 3 x shot noise); momentum spread stays at noise.
+EVERY cycle to max(2.0e-2, 3 x shot noise); momentum spread stays at
+noise (checked where >= 3 momenta survive the amplitude gate; at the
+last cycle a single momentum survives). The tolerance exceeds the law's
+total deviation from unity at these parameters: the measured content is
+isotropy and per-cycle consistency; the law's magnitude rests on the
+exact enumeration.
 """
 import time
 

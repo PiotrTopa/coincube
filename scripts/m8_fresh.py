@@ -11,12 +11,16 @@ Verdict variables:
   - massive dispersion: upper-branch omega_+(delta) - omega_c per direction
     family vs sqrt(m^2 + v^2 delta^2); family agreement = isotropy.
 """
-import json, pathlib, time
+import json, os, pathlib, time
 import numpy as np
 
 from pca3d.models.coincube import annealed_u8, evolve_field_m8
 
 L, R, TCYC, NB = 48, 3000, 6, 8
+# replication overrides (independent seed stream, separate output file):
+R = int(os.environ.get("M8F_R", R))
+SEED0 = int(os.environ.get("M8F_SEED", 11))
+OUT = os.environ.get("M8F_OUT", "results/m8_fresh.json")
 Q, QM = 0.08, 0.05
 RUNS = [("annealed",), ("quenched",)]
 DELTAS = (0.04, 0.07, 0.10)
@@ -46,7 +50,9 @@ def u_fit(Gmat):
     return B @ np.linalg.pinv(A, rcond=1e-8)
 
 
-def analyse(mode, seed=11):
+def analyse(mode, seed=None):
+    if seed is None:
+        seed = SEED0
     t0 = time.time()
     Gs = [evolve_field_m8(L, R, TCYC, Q, QM, seed + 100 * c,
                           annealed=(mode == "annealed"), launch=c,
@@ -161,5 +167,5 @@ for (mode,) in RUNS:
             "GATE FAILED: multiplet centre"
         print("  [gate PASSED]")
     results.append(r)
-pathlib.Path("results/m8_fresh.json").write_text(json.dumps(results, indent=1))
-print("\nwritten: results/m8_fresh.json")
+pathlib.Path(OUT).write_text(json.dumps(results, indent=1))
+print(f"\nwritten: {OUT}")

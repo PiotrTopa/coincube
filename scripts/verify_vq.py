@@ -11,9 +11,12 @@ from __future__ import annotations
 import json, pathlib
 import numpy as np
 from pca3d.analysis.correlations import measure_transport
+from pca3d.core.backend import _try_cupy
 from pca3d.core.lattice import Lattice
 from pca3d.models import conditional as C
 from pca3d.models.generic import BlockAutomaton, RuleCycle
+
+USE_GPU = _try_cupy() is not None  # GPU if present, CPU otherwise (slower)
 
 L, T, E, SEEDS = 4096, 600, 64, 6
 rules = C.enumerate_conditional_rules()
@@ -28,7 +31,7 @@ def v_at(idx, q, seeds=SEEDS, T=T):
     cyc = cycle(rules[idx]); vs=[]; als=[]
     for sd in range(seeds):
         r = measure_transport(cyc, n_steps=T, ensemble=E, seed=7000+sd, species=0,
-                              v_max=2.0, estimator="centroid", use_gpu=True,
+                              v_max=2.0, estimator="centroid", use_gpu=USE_GPU,
                               densities=(0.5, q))
         vs.append(r.velocity); als.append(r.exponent)
     vs=np.array(vs)

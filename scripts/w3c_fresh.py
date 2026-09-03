@@ -21,6 +21,7 @@ max(2%, 3 sigma).
 """
 import ast
 import json
+import os
 import pathlib
 import time
 
@@ -36,6 +37,10 @@ except Exception:
 from pca3d.models.coincube import annealed_u, evolve_field_cc
 
 L, R, TCYC, NB = 48, 3000, 6, 10
+# replication overrides (independent seed stream, separate output file):
+R = int(os.environ.get("W3CF_R", R))
+SEED0 = int(os.environ.get("W3CF_SEED", 11))
+OUT = os.environ.get("W3CF_OUT", "results/w3c_fresh.json")
 Q = 0.08
 DELTAS = (0.03, 0.05, 0.08)
 T0 = 1
@@ -50,6 +55,11 @@ def _norm(v):
 
 R1 = (0.276, 0.850, 0.448)
 R2 = (0.732, 0.214, 0.647)
+
+#: factorized-transport (diamond) slope-ratio prediction per unit direction,
+#: source-identical to w3c_corner.py
+def _diamond(v):
+    return float(np.abs(_norm(v)).sum())
 FAMILIES = {
     "100": [(1, 0, 0), (-1, 0, 0), (0, 1, 0), (0, -1, 0), (0, 0, 1), (0, 0, -1)],
     "110": [(a, b, 0) for a in (1, -1) for b in (1, -1)] +
@@ -100,7 +110,9 @@ def _assert_estimator_identity():
 
 # --- pipeline (w3c staging) --------------------------------------------------
 
-def analyse(mode, seed=11):
+def analyse(mode, seed=None):
+    if seed is None:
+        seed = SEED0
     t0 = time.time()
     Gs = [evolve_field_cc(L, R, TCYC, Q, seed + 100 * c,
                           annealed=(mode == "annealed"), launch=c,
@@ -182,10 +194,14 @@ def main():
         for f in FAMILIES:
             ratio = full[f] / full["100"]
             sr = jackknife([s[f] / s["100"] for s in jk])
+            dia = _diamond(FAMILIES[f][0])
+            zd = (dia - ratio) / sr if sr > 0 else float("nan")
             rows[f] = {"v": float(full[f]), "ratio": float(ratio),
-                       "sig_ratio": sr,
+                       "sig_ratio": sr, "diamond": dia,
+                       "z_diamond": float(zd),
                        "per_delta": full[f + "_per_delta"]}
-            print(f"    {f:>4}: v={full[f]:.4f}  ratio={ratio:.4f}+-{sr:.4f}")
+            print(f"    {f:>4}: v={full[f]:.4f}  ratio={ratio:.4f}+-{sr:.4f}"
+                  f"  z_diamond={zd:.1f}")
         results[mode] = {
             "lam_mod": float(abs(lam)), "sig_mod": smod,
             "om0": float(abs(np.angle(lam))), "sig_om": som, "rows": rows}
@@ -206,9 +222,8 @@ def main():
     print("\n[T2 GATE PASSED] fresh-tape quenched node parameters equal the "
           "annealed closed forms within statistics -- the production-schedule "
           "shifts are eliminated.")
-    pathlib.Path("results/w3c_fresh.json").write_text(
-        json.dumps(results, indent=1))
-    print("written: results/w3c_fresh.json")
+    pathlib.Path(OUT).write_text(json.dumps(results, indent=1))
+    print(f"written: {OUT}")
 
 
 if __name__ == "__main__":
